@@ -3588,13 +3588,13 @@
     "C:\\Users\\taole\\.nuget\\packages\\": {}
   },
   "project": {
-    "version": "1.0.0",
+    "version": "0.1.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\taole\\source\\repos\\AI_Print\\AI_Print\\AI_Print.csproj",
+      "projectUniqueName": "C:\\Users\\taole\\source\\repos\\AI_Print\\AI_Print.csproj",
       "projectName": "AI_Print",
-      "projectPath": "C:\\Users\\taole\\source\\repos\\AI_Print\\AI_Print\\AI_Print.csproj",
+      "projectPath": "C:\\Users\\taole\\source\\repos\\AI_Print\\AI_Print.csproj",
       "packagesPath": "C:\\Users\\taole\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\taole\\source\\repos\\AI_Print\\AI_Print\\obj\\",
+      "outputPath": "C:\\Users\\taole\\source\\repos\\AI_Print\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\taole\\AppData\\Roaming\\NuGet\\NuGet.Config",

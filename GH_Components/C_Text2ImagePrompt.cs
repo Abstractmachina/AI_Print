@@ -1,9 +1,13 @@
+using AI_Print.Types;
 using Grasshopper;
 using Grasshopper.Kernel;
 using Newtonsoft.Json;
 using Rhino.Geometry;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 
 namespace AI_Print.Grasshopper {
 	public class C_Text2ImagePrompt : GH_Component {
@@ -39,7 +43,7 @@ namespace AI_Print.Grasshopper {
 		/// </summary>
 		protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager) {
 			pManager.AddTextParameter("Raw POST Response", "Res", "Raw Response received from API", GH_ParamAccess.item);
-			pManager.AddTextParameter("Base64", "B64", "Base64 encoded image", GH_ParamAccess.list);
+			pManager.AddTextParameter("Base64", "B64", "Base64 encoded image", GH_ParamAccess.item);
 
 			// Sometimes you want to hide a specific parameter from the Rhino preview.
 			// You can use the HideParameter() method as a quick way:
@@ -85,9 +89,35 @@ namespace AI_Print.Grasshopper {
 
 			if (lastRawResponse == null) {
 				AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "No output found.");
-				return;
 			} else {
-				DA.SetData("Raw POST Response", lastRawResponse);
+				Console.WriteLine(lastRawResponse);
+				var responseObject = JsonConvert.DeserializeObject<ResponseArtefacts>(lastRawResponse);
+				AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, responseObject.Artefacts.ToString());
+				AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, responseObject.Artefacts[0].FinishReason);
+
+
+				if (responseObject != null && responseObject.Artefacts != null && responseObject.Artefacts.Count != 0) {
+					var image = Util.FromBase64String(responseObject.Artefacts[0].Base64);
+
+					var filepath = dir + filename + ".jpg";
+					AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, filepath);
+					//i2.Save(filepath, ImageFormat.Jpeg);
+					var bmp = new Bitmap(image);
+					bmp.Save(filepath, ImageFormat.Png);
+				}
+				//image.Save(dir + filename + ".jpg");
+				
+				//if (responseObject == null) throw new Exception("API request failed. ResponseObject is null");
+				// var rr = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseObject.artifacts[0]);
+				// foreach(KeyValuePair<string, object>pair in rr) {
+				//     Console.WriteLine(pair.Key);
+				//     Console.WriteLine(pair.Value);
+				// }
+				// Console.WriteLine(responseObject.artifacts.Count);
+				// foreach (var v in responseObject.artifacts)
+				// Console.WriteLine(v);
+				// foreach(KeyValuePair<string, object>item in responseObject) Console.WriteLine(item.Key.GetType());
+				DA.SetData("Raw POST Response", lastRawResponse.Length);
 			}
 			//if (lastResponse != null) {
 			//	DA.SetDataList("Link", lastResponse.output);

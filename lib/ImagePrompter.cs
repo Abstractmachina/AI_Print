@@ -21,10 +21,10 @@ namespace AI_Print {
                 try {
                     if (apiKey == null) throw new Exception("Missing Stability API key.");
 
-                    // set up request object
+                    // set up test request object
                     var payload = new RequestPayload(
                         new List<TextPrompt>{
-                            new TextPrompt("star-shaped, red apple", 0.5f)
+                            new TextPrompt("two red apples fighting", 1.0f)
                         },
                         512, 512
                     );
@@ -37,8 +37,6 @@ namespace AI_Print {
                     // send request and receive response, which is converted to a json string
                     var response = await client.SendAsync(request);
                     string responseContent = await response.Content.ReadAsStringAsync();
-
-
                     return responseContent;
                     //var responseObject = JsonConvert.DeserializeObject<ResponseArtefacts>(responseContent);
                     //if (responseObject == null) throw new Exception("API request failed. ResponseObject is null");
