@@ -33,3 +33,5 @@ C:\Users\taole\source\repos\AI_Print\obj\Debug\net48\AI_Print.csproj.CopyComplet
 C:\Users\taole\source\repos\AI_Print\obj\Debug\net48\AI_Print.gha
 C:\Users\taole\source\repos\AI_Print\obj\Debug\net48\AI_Print.pdb
 C:\Users\taole\source\repos\AI_Print\bin\Debug\net48\SpatialSlur.dll
+C:\Users\taole\source\repos\AI_Print\obj\Debug\net48\AI_Print.Properties.Resources.resources
+C:\Users\taole\source\repos\AI_Print\obj\Debug\net48\AI_Print.csproj.GenerateResource.cache

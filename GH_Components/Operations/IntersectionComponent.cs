@@ -61,10 +61,10 @@ namespace AI_Print.Grasshopper.Fields {
         {
             get
             {
-                //You can add image files to your project resources and access them like this:
-                //return Resources.intersect;
-                //return null;
-            }
+				//You can add image files to your project resources and access them like this:
+				//return Resources.intersect;
+				return null;
+			}
         }
 
         /// <summary>
