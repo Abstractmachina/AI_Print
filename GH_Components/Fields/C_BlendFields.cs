@@ -88,12 +88,14 @@ namespace AI_Print.GH_Components.Fields
         /// </summary>
         protected override System.Drawing.Bitmap Icon
         {
-            get
-            {
-                //You can add image files to your project resources and access them like this:
-                // return Resources.IconForThisComponent;
+            get {
+                //return Resources.AMField;
                 return null;
             }
+        }
+
+        public override GH_Exposure Exposure {
+            get { return GH_Exposure.primary; }
         }
 
         /// <summary>

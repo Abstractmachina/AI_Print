@@ -108,15 +108,15 @@ namespace AI_Print.Grasshopper.Fields {
 			return vals;
 		}
 
-		/// <summary>
-		/// Provides an Icon for the component.
-		/// </summary>
 		protected override System.Drawing.Bitmap Icon {
 			get {
-				//You can add image files to your project resources and access them like this:
-				// return Resources.IconForThisComponent;
+				//return Resources.AMField;
 				return null;
 			}
+		}
+
+		public override GH_Exposure Exposure {
+			get { return GH_Exposure.primary; }
 		}
 
 		/// <summary>
