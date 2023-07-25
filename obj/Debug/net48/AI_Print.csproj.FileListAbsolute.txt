@@ -32,3 +32,4 @@ C:\Users\taole\source\repos\AI_Print\obj\Debug\net48\AI_Print.csproj.CoreCompile
 C:\Users\taole\source\repos\AI_Print\obj\Debug\net48\AI_Print.csproj.CopyComplete
 C:\Users\taole\source\repos\AI_Print\obj\Debug\net48\AI_Print.gha
 C:\Users\taole\source\repos\AI_Print\obj\Debug\net48\AI_Print.pdb
+C:\Users\taole\source\repos\AI_Print\bin\Debug\net48\SpatialSlur.dll

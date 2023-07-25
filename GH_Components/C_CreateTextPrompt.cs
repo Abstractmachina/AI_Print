@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Grasshopper.Kernel;
 using Rhino.Geometry;
 
-namespace AI_Print.GH_Components
+namespace AI_Print.Grasshopper
 {
     public class C_CreateTextPrompt : GH_Component
     {
@@ -12,9 +12,9 @@ namespace AI_Print.GH_Components
         /// Initializes a new instance of the C_CreateTextPrompt class.
         /// </summary>
         public C_CreateTextPrompt()
-          : base("C_CreateTextPrompt", "Nickname",
-              "Description",
-              "Category", "Subcategory")
+          : base("Create Text Prompts", "Prompts",
+              "Create one or multiple text prompts with weights.",
+              Labels.PluginName, Labels.Category_Param)
         {
         }
 
@@ -23,6 +23,8 @@ namespace AI_Print.GH_Components
         /// </summary>
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
+            pManager.AddTextParameter("Text", "T", "Text content of prompt.", GH_ParamAccess.item);
+            pManager.AddTextParameter("Weights", "W", "Weight as a factor between 0-1. If list length does not match number of text prompt, a default value of 0.5 will be assigned for the remaining weights.", GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -30,6 +32,7 @@ namespace AI_Print.GH_Components
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
+            pManager.AddGenericParameter("Text Prompts", "P", "List of text prompts.", GH_ParamAccess.item);
         }
 
         /// <summary>

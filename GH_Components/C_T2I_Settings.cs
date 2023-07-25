@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Grasshopper.Kernel;
 using Rhino.Geometry;
 
-namespace AI_Print.GH_Components
+namespace AI_Print.Grasshopper
 {
     public class C_T2I_Settings : GH_Component
     {

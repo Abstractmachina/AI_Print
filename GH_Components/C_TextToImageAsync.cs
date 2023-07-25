@@ -11,7 +11,7 @@ using Grasshopper.Kernel;
 using GrasshopperAsyncComponent;
 using Newtonsoft.Json;
 
-namespace AI_Print.GH_Components {
+namespace AI_Print.Grasshopper {
 	public class C_TextToImageAsync : GH_AsyncComponent {
 
 
@@ -55,7 +55,7 @@ namespace AI_Print.GH_Components {
 				//for (int i = 0; i <= MaxIterations; i++) {
 				//	var sw = new SpinWait();
 				//	for (int j = 0; j <= 100; j++)
-				//		sw.SpinOnce();
+				//		sw.SpinOnce();sla
 
 				//	ReportProgress(Id, ((double)(i + 1) / (double)MaxIterations));
 
@@ -179,7 +179,7 @@ namespace AI_Print.GH_Components {
 		}
 
 		protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
-			pManager.AddTextParameter("Output", "O", "Nothing really interesting.", GH_ParamAccess.item);
+			pManager.AddTextParameter("Image Link", "L", "Path to saved image on disk.", GH_ParamAccess.item);
 			pManager.AddTextParameter("Debug", "D", "Debug Log", GH_ParamAccess.list);
 		}
 

@@ -16,6 +16,9 @@
   </ItemGroup>
   
   <ItemGroup>
+    <Reference Include="SpatialSlur">
+      <HintPath>lib\SpatialSlur\SpatialSlur.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   
