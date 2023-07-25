@@ -9,5 +9,6 @@ namespace AI_Print {
             public static string PluginName = "AI Print";
             public static string Category_Image = "Image";
             public static string Category_Param = "Params";
-        }
+        public static string Category_Fields = "Fields";
+    }
 }
