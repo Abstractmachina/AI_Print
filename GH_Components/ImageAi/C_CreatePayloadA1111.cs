@@ -4,17 +4,17 @@ using System.Collections.Generic;
 using Grasshopper.Kernel;
 using Rhino.Geometry;
 
-namespace AI_Print.Grasshopper
+namespace AI_Print.GH_Components.ImageAi
 {
-    public class C_CreateTextPrompt : GH_Component
+    public class C_CreatePayloadA1111 : GH_Component
     {
         /// <summary>
-        /// Initializes a new instance of the C_CreateTextPrompt class.
+        /// Initializes a new instance of the C_CreatePayloadA1111 class.
         /// </summary>
-        public C_CreateTextPrompt()
-          : base("Create Text Prompts", "Prompts",
-              "Create one or multiple text prompts with weights.",
-              Labels.PluginName, Labels.Category_Param)
+        public C_CreatePayloadA1111()
+          : base("Create Auto1111 Payload", "CreatePayload",
+              "Create a json payload for Auto1111 API",
+              Labels.PluginName, Labels.Category_Image)
         {
         }
 
@@ -23,8 +23,6 @@ namespace AI_Print.Grasshopper
         /// </summary>
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
-            pManager.AddTextParameter("Text", "T", "Text content of prompt.", GH_ParamAccess.item);
-            pManager.AddTextParameter("Weights", "W", "Weight as a factor between 0-1. If list length does not match number of text prompt, a default value of 0.5 will be assigned for the remaining weights.", GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -32,7 +30,6 @@ namespace AI_Print.Grasshopper
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddGenericParameter("Text Prompts", "P", "List of text prompts.", GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -61,7 +58,7 @@ namespace AI_Print.Grasshopper
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("B7F6B172-055C-42F9-ACF3-D478A59D78FE"); }
+            get { return new Guid("D387CDA1-8280-42E7-8B61-B212CA6114A6"); }
         }
     }
 }

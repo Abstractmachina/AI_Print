@@ -16,6 +16,31 @@ using AI_Print.Types;
 namespace AI_Print {
 	static internal class ImagePrompter {
 
+
+        public static async Task<string> Auto1111_T2I(string address, string username, string password, Auto1111Payload payload) {
+            using (HttpClient client = new HttpClient()) {
+                Console.WriteLine("... Attempting to send POST request /sdapi/v1/txt2img");
+                string endpoint = address + "/sdapi/v1/txt2img";
+
+                var request = new HttpRequestMessage(HttpMethod.Post, endpoint);
+
+                var json = JsonConvert.SerializeObject(payload);
+                request.Content = new StringContent(json);
+
+                request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+                var response = await client.SendAsync(request);
+                Console.WriteLine(response.StatusCode);
+                var result = await response.Content.ReadAsStringAsync();
+
+                Console.WriteLine("... results coming in ....");
+
+
+                return result;
+            }
+        }
+
+
         public static async Task<string?> POST_TextToImage(string? apiKey) {
             using (HttpClient client = new HttpClient()) {
                 try {

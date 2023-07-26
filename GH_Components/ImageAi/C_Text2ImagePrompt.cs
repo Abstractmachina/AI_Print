@@ -9,7 +9,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 
-namespace AI_Print.Grasshopper {
+namespace AI_Print.GH_Components.ImageAi {
 	public class C_Text2ImagePrompt : GH_Component {
 		/// <summary>
 		/// Each implementation of GH_Component must provide a public 
@@ -19,17 +19,13 @@ namespace AI_Print.Grasshopper {
 		/// new tabs/panels will automatically be created.
 		/// </summary>
 		public C_Text2ImagePrompt()
-		  : base("Text-to-Image Prompt", "T2I",
-			"Generate an image from a text prompt",
+		  : base("Text-to-Image", "T2I",
+			"Generate images from a text prompt",
 			Labels.PluginName, Labels.Category_Image) { }
 
-		/// <summary>
-		/// Registers all the input parameters for this component.
-		/// </summary>
-		protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager) {
+		protected override void RegisterInputParams(GH_InputParamManager pManager) {
 			pManager.AddBooleanParameter("Generate", "G", "Send prompt to generate image from text prompt", GH_ParamAccess.item);
-			pManager.AddTextParameter("API Key", "Key", "Key for accessing Stable Diffusion API.", GH_ParamAccess.item, "");
-			pManager.AddTextParameter("Prompt", "P", "Textual Prompt", GH_ParamAccess.item, "");
+			pManager.AddTextParameter("Payload", "P", "Auto1111 Payload", GH_ParamAccess.item, "");
 			pManager.AddTextParameter("File Directory", "FD", "Location to save image", GH_ParamAccess.item);
 			pManager.AddTextParameter("File Name", "N", "Name of saved image. (Note: If multiple images are generated, a number sequence will be appended to the file name)", GH_ParamAccess.item);
 
@@ -41,7 +37,7 @@ namespace AI_Print.Grasshopper {
 		/// <summary>
 		/// Registers all the output parameters for this component.
 		/// </summary>
-		protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager) {
+		protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
 			pManager.AddTextParameter("Raw POST Response", "Res", "Raw Response received from API", GH_ParamAccess.item);
 			pManager.AddTextParameter("Base64", "B64", "Base64 encoded image", GH_ParamAccess.item);
 
@@ -75,7 +71,7 @@ namespace AI_Print.Grasshopper {
 			if (apiKey == "") {
 				AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Stable Diffusion API Key required. Create an account to get one.");
 			}
-			
+
 			//when user sends of request, splash msg will be displayed. after new response is received, it is saved and solution is expired.
 			if (processRequest) {
 				DA.SetData("Raw POST Response", "... PROCESSING ...");
@@ -89,7 +85,8 @@ namespace AI_Print.Grasshopper {
 
 			if (lastRawResponse == null) {
 				AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "No output found.");
-			} else {
+			}
+			else {
 				Console.WriteLine(lastRawResponse);
 				var responseObject = JsonConvert.DeserializeObject<ResponseArtefacts>(lastRawResponse);
 				AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, responseObject.Artefacts.ToString());
@@ -106,7 +103,7 @@ namespace AI_Print.Grasshopper {
 					bmp.Save(filepath, ImageFormat.Png);
 				}
 				//image.Save(dir + filename + ".jpg");
-				
+
 				//if (responseObject == null) throw new Exception("API request failed. ResponseObject is null");
 				// var rr = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseObject.artifacts[0]);
 				// foreach(KeyValuePair<string, object>pair in rr) {
@@ -139,7 +136,7 @@ namespace AI_Print.Grasshopper {
 		/// You can add image files to your project resources and access them like this:
 		/// return Resources.IconForThisComponent;
 		/// </summary>
-		protected override System.Drawing.Bitmap Icon => null;
+		protected override Bitmap Icon => null;
 
 		/// <summary>
 		/// Each component must have a unique Guid to identify it. 

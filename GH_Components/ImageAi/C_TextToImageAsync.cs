@@ -11,11 +11,11 @@ using Grasshopper.Kernel;
 using GrasshopperAsyncComponent;
 using Newtonsoft.Json;
 
-namespace AI_Print.Grasshopper {
+namespace AI_Print.GH_Components.ImageAi {
 	public class C_TextToImageAsync : GH_AsyncComponent {
 
 
-		public C_TextToImageAsync() : base("Sample Async Component", "CYCLOMATRON-X", "Spins uselessly.", Labels.PluginName, Labels.Category_Image) {
+		public C_TextToImageAsync() : base("Text To Image Async", "T2IA", "Does not block GH while fetching API response.", Labels.PluginName, Labels.Category_Image) {
 			BaseWorker = new FetchImageWorker();
 		}
 
@@ -109,6 +109,7 @@ namespace AI_Print.Grasshopper {
 
 			private RequestPackage? _package = null;
 			private List<string> _debug = new List<string>();
+			private Auto1111Payload? _payload = null;
 
 			public override void GetData(IGH_DataAccess DA, GH_ComponentParamServer Params) {
 				if (CancellationToken.IsCancellationRequested) return;
@@ -122,20 +123,25 @@ namespace AI_Print.Grasshopper {
 
 
 				if (!DA.GetData("Generate", ref processRequest)) return;
-				if (!DA.GetData("API Key", ref _apiKey)) return;
-				//if (!DA.GetData("Prompt", ref _prompts)) return;
+				if (!DA.GetData("API Address", ref _apiKey)) return;
+				//if (!DA.GetData("Auto1111 Payload", ref _prompts)) return;
 				if (!DA.GetData("File Directory", ref _dir)) return;
 				if (!DA.GetData("File Name", ref _filename)) return;
 
-				if (_apiKey == "" || _dir == null || _filename == null) {
-					//AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Stable Diffusion API Key required. Create an account to get one.");
-					return;
-				}
+
+				//_prompts = new List<GH_TextPrompt>();
+				//_prompts.Add(new GH_TextPrompt(new TextPrompt("red apple with weird human head", 0.5f)));
+				//_package = new RequestPackage(_apiKey, _prompts.Select(p => p.Value).ToList(), _dir, _filename);
 
 
-				_prompts = new List<GH_TextPrompt>();
-				_prompts.Add(new GH_TextPrompt(new TextPrompt("red apple with weird human head", 0.5f)));
-				_package = new RequestPackage(_apiKey, _prompts.Select(p => p.Value).ToList(), _dir, _filename);
+				// prepare scribble image as base64 string
+				byte[] imageArray = System.IO.File.ReadAllBytes(@"./assets/scribbleTest_01.png");
+				var scribble = Convert.ToBase64String(imageArray);
+
+
+				_payload = new Auto1111Payload("3d printing clay, layer, toolpath", "bad, worse, low quality, strange, ugly", 20, 7, 598, 624, new AlwaysOnScripts(ControlNetSettingsFactory.Create("control_v11p_sd15_scribble [d4ba51ff]", "scribble_hed", scribble)));
+
+
 
 				_debug.Add(_package.ToString());
 				//int _maxIterations = 100;
@@ -172,8 +178,8 @@ namespace AI_Print.Grasshopper {
 
 		protected override void RegisterInputParams(GH_InputParamManager pManager) {
 			pManager.AddBooleanParameter("Generate", "G", "Send prompt to generate image from text prompt", GH_ParamAccess.item);
-			pManager.AddTextParameter("API Key", "Key", "Key for accessing Stable Diffusion API.", GH_ParamAccess.item, "");
-			pManager.AddTextParameter("Prompt", "P", "Textual Prompt", GH_ParamAccess.list);
+			pManager.AddTextParameter("API Address", "A", "API address of hosted or local Auto1111 server", GH_ParamAccess.item, "");
+			pManager.AddTextParameter("Payload", "P", "Auto1111 Payload", GH_ParamAccess.list);
 			pManager.AddTextParameter("File Directory", "FD", "Location to save image", GH_ParamAccess.item);
 			pManager.AddTextParameter("File Name", "N", "Name of saved image. (Note: If multiple images are generated, a number sequence will be appended to the file name)", GH_ParamAccess.item);
 		}
