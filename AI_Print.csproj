@@ -46,7 +46,7 @@
 	  <StartArguments>
 		  /nosplash /runscript="_-RunScript (
 		  Set GH = Rhino.GetPlugInObject(""Grasshopper"")
-		  Call GH.OpenDocument(""C:\Users\taole\source\repos\AI_Print\user_sketch\stableDif_test00_230614.gh"")
+		  Call GH.OpenDocument(""D:\Repos\AI_Print\user_sketch\stableDif_test00_230614.gh"")
 		  )"
 	  </StartArguments>
     <StartAction>Program</StartAction>

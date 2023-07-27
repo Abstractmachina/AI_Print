@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,6 +11,8 @@ using AI_Print.Types;
 using Grasshopper.Kernel;
 using GrasshopperAsyncComponent;
 using Newtonsoft.Json;
+using static System.Net.WebRequestMethods;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace AI_Print.GH_Components.ImageAi {
 	public class C_TextToImageAsync : GH_AsyncComponent {
@@ -32,17 +35,45 @@ namespace AI_Print.GH_Components.ImageAi {
 
 				// if not enough information was collected, exit
 				if (_package == null || !_package.Ready) return;
+                ReportProgress("Fetching", 0.5);
 
-				ReportProgress("Fetching", 0.5);
-				var response = await ImagePrompter.POST_TextToImage(_package.ApiKey);
+                // prepare scribble image as base64 string
+                // prepare scribble image as base64 string
+                byte[] imageArray = System.IO.File.ReadAllBytes(@"D:\Repos\AI_Print\user_sketch\scribbleTest_01.png");
+                var scribble = Convert.ToBase64String(imageArray);
 
-				var responseObject = JsonConvert.DeserializeObject<ResponseArtefacts>(response);
+				_debug.Add(scribble);
 
-				_debug.Add(responseObject.Artefacts[0].FinishReason);
-				//var image = Util.FromBase64String(responseObject.Artefacts[0].Base64);
+                // FOR TESTING
+                // TODO: Delete
+                var serverAddress = "http://127.0.0.1:7860";
+                var payload = new Auto1111Payload("3d printing clay, layer, toolpath", "bad, worse, low quality, strange, ugly", 20, 7, 598, 624, new AlwaysOnScripts(ControlNetSettingsFactory.Create("control_v11p_sd15_scribble [d4ba51ff]", "scribble_hed", scribble)));
 
-				try {
-					var success = Util.SaveImageFromBase64(responseObject.Artefacts[0].Base64, @"C:\Users\taole\source\repos\AI_Print\user_sketch\output\test4.jpg");
+                var response = await ImagePrompter.Auto1111_T2I(serverAddress, "admin", "admin", payload);
+
+                var responseObject = JsonConvert.DeserializeObject<ResponseObject>(response);
+
+
+
+                // Console.WriteLine(responseObject.Images.Select(x => Console.WriteLine(x));
+                if (responseObject != null)
+                {
+                    for (int i = 0; i < responseObject.Images.Count; i++)
+                    {
+                        var image = Util.FromBase64String(responseObject.Images[i]);
+                        var date = DateTime.Now.ToString("yymmddhhmmss");
+                        string path = String.Format("./user_sketch/output/{0}", date);
+                        System.IO.Directory.CreateDirectory(path);
+                        image.Save(path + String.Format("/img{0}.png", i), System.Drawing.Imaging.ImageFormat.Png);
+                    }
+                }
+
+
+                //_debug.Add(responseObject.Artefacts[0].FinishReason);
+                //var image = Util.FromBase64String(responseObject.Artefacts[0].Base64);
+
+                try {
+					//var success = Util.SaveImageFromBase64(responseObject.Artefacts[0].Base64, @"C:\Users\taole\source\repos\AI_Print\user_sketch\output\test4.jpg");
 				}
 				catch (Exception ex) {
 					_debug.Add(ex.Message);
@@ -134,12 +165,10 @@ namespace AI_Print.GH_Components.ImageAi {
 				//_package = new RequestPackage(_apiKey, _prompts.Select(p => p.Value).ToList(), _dir, _filename);
 
 
-				// prepare scribble image as base64 string
-				byte[] imageArray = System.IO.File.ReadAllBytes(@"./assets/scribbleTest_01.png");
-				var scribble = Convert.ToBase64String(imageArray);
+				
 
 
-				_payload = new Auto1111Payload("3d printing clay, layer, toolpath", "bad, worse, low quality, strange, ugly", 20, 7, 598, 624, new AlwaysOnScripts(ControlNetSettingsFactory.Create("control_v11p_sd15_scribble [d4ba51ff]", "scribble_hed", scribble)));
+				//_payload = new Auto1111Payload("3d printing clay, layer, toolpath", "bad, worse, low quality, strange, ugly", 20, 7, 598, 624, new AlwaysOnScripts(ControlNetSettingsFactory.Create("control_v11p_sd15_scribble [d4ba51ff]", "scribble_hed", scribble)));
 
 
 

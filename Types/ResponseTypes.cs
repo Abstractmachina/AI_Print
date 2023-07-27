@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 namespace AI_Print.Types {
     public class ResponseArtefacts {
 		[JsonProperty("artifacts")]
-        public List<ResponseObject>? Artefacts { get; set; }
+        public List<ResponseObject_old>? Artefacts { get; set; }
     }
 
-    public class ResponseObject {
+    public class ResponseObject_old {
         [JsonProperty("base64")]
         public string? Base64 { get; set; }
         [JsonProperty("finishReason")]

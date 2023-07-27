@@ -48,7 +48,7 @@ namespace AI_Print.GH_Components.ImageAi {
 
 
 		bool processRequest = false;
-		SDResponse? lastResponse = null;
+		//SDResponse? lastResponse = null;
 		string? lastRawResponse = null;
 		/// <summary>
 		/// This is the method that actually does the work.
