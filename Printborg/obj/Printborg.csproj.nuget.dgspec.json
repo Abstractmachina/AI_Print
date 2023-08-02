@@ -1,20 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\taole\\source\\repos\\Printborg\\Printborg\\Printborg.csproj": {}
+    "D:\\Repos\\Printborg\\Printborg\\Printborg.csproj": {}
   },
   "projects": {
-    "C:\\Users\\taole\\source\\repos\\Printborg\\Printborg\\Printborg.csproj": {
+    "D:\\Repos\\Printborg\\Printborg\\Printborg.csproj": {
       "version": "0.1.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\taole\\source\\repos\\Printborg\\Printborg\\Printborg.csproj",
+        "projectUniqueName": "D:\\Repos\\Printborg\\Printborg\\Printborg.csproj",
         "projectName": "Printborg",
-        "projectPath": "C:\\Users\\taole\\source\\repos\\Printborg\\Printborg\\Printborg.csproj",
-        "packagesPath": "C:\\Users\\taole\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\taole\\source\\repos\\Printborg\\Printborg\\obj\\",
+        "projectPath": "D:\\Repos\\Printborg\\Printborg\\Printborg.csproj",
+        "packagesPath": "C:\\Users\\Tao\\.nuget\\packages\\",
+        "outputPath": "D:\\Repos\\Printborg\\Printborg\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\taole\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Tao\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -49,7 +53,7 @@
               "version": "[7.0.0, )"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.315\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.306\\RuntimeIdentifierGraph.json"
         }
       }
     }
