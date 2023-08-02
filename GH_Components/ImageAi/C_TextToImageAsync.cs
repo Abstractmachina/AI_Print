@@ -18,7 +18,7 @@ namespace AI_Print.GH_Components.ImageAi
 {
     public class C_TextToImageAsync : GH_AsyncComponent
     {
-
+        
 
         public C_TextToImageAsync() : base("Text To Image Async", "T2IA", "Does not block GH while fetching API response.", Labels.PluginName, Labels.Category_Image)
         {
@@ -27,6 +27,9 @@ namespace AI_Print.GH_Components.ImageAi
 
         private class FetchImageWorker : WorkerInstance
         {
+            //private RequestPackage? _package = null;
+            public List<string> _debug = new List<string>();
+            private Auto1111Payload? _payload = null;
             int MaxIterations { get; set; } = 100;
 
             private ResponseArtefacts? _responseObject = null;
@@ -43,12 +46,11 @@ namespace AI_Print.GH_Components.ImageAi
                 try
                 {
 
-                    ReportProgress("Fetching", 0.5);
+                    ReportProgress("Working", 0.5);
 
                     // prepare scribble image as base64 string
                     byte[] imageArray = System.IO.File.ReadAllBytes(@"D:\Repos\AI_Print\user_sketch\scribbleTest_01.png");
                     var scribble = Convert.ToBase64String(imageArray);
-
                     _debug.Add(scribble);
 
                     // FOR TESTING
@@ -118,6 +120,10 @@ namespace AI_Print.GH_Components.ImageAi
             }
             public override WorkerInstance Duplicate() => new FetchImageWorker();
 
+
+            /// <summary>
+            /// OBSOLETE
+            /// </summary>
             private class RequestPackage
             {
 
@@ -165,9 +171,7 @@ namespace AI_Print.GH_Components.ImageAi
                 }
             }
 
-            private RequestPackage? _package = null;
-            private List<string> _debug = new List<string>();
-            private Auto1111Payload? _payload = null;
+            
 
             public override void GetData(IGH_DataAccess DA, GH_ComponentParamServer Params)
             {
@@ -230,6 +234,7 @@ namespace AI_Print.GH_Components.ImageAi
 
                 DA.SetData(0, $"Response not received.");
                 DA.SetDataList(1, _debug);
+                
             }
         }
 
