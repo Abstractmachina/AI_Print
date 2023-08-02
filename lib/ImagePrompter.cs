@@ -12,10 +12,82 @@ using Newtonsoft.Json.Linq;
 
 using AI_Print.Json;
 using AI_Print.Types;
+using Rhino.Runtime.RhinoAccounts;
+using System.Threading;
 
 namespace AI_Print {
 	static internal class ImagePrompter {
 
+        private static async Task<string> Skip(string baseAddress, HttpClient client)
+        {
+            string endpoint = "/sdapi/v1/skip";
+
+            var response = await client.PostAsync(endpoint, null);
+            return await response.Content.ReadAsStringAsync();
+        }
+
+        public static async Task<ResponseObject?> Auto1111TextToImage(string baseAddress, Auto1111Payload payload)
+        {
+
+            using (HttpClient client = new HttpClient())
+            {
+
+                client.BaseAddress = new Uri(baseAddress);
+                client.Timeout = Timeout.InfiniteTimeSpan;
+
+                // IApiHandler handler = new Auto1111Handler(client);
+
+                // skip any jobs that are running from before
+                var interruptStatus = await Skip(baseAddress, client);
+                Console.WriteLine(interruptStatus);
+                string uri = baseAddress + "/sdapi/v1/txt2img";
+
+                var requestMsg = new HttpRequestMessage();
+                var json = JsonConvert.SerializeObject(payload);
+
+                // requestMsg.Content = new StringContent(json);
+                // requestMsg.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+                Console.WriteLine("test");
+                var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+                var response = client.PostAsync("/sdapi/v1/txt2img", content);
+
+
+                // continuously poll api for task progress until completed
+                while (!response.IsCompleted)
+                {
+                    Console.WriteLine("still in progress ...");
+                    await pollProgess(baseAddress, client);
+
+                    await Task.Delay(2000);
+                }
+
+                Console.WriteLine("Image generation finished ...");
+
+                var result = await response.Result.Content.ReadAsStringAsync();
+
+                var resultObject = JsonConvert.DeserializeObject<ResponseObject>(result);
+                return resultObject;
+            }
+        }
+
+        private static async Task pollProgess(string baseAddress, HttpClient client)
+        {
+            string progressUri = baseAddress + "/sdapi/v1/progress";
+
+            var progressResponse = await client.GetAsync(progressUri);
+            progressResponse.EnsureSuccessStatusCode();
+
+            string responseContent = await progressResponse.Content.ReadAsStringAsync();
+            var status = JsonConvert.DeserializeObject<ProgressStatus>(responseContent);
+            if (status != null)
+            {
+                Console.WriteLine("Progress: " + status.Progress);
+                Console.WriteLine("estimated eta: " + status.Eta);
+                Console.WriteLine("Job: " + status.stateObject.Job);
+            }
+        }
 
         public static async Task<string> Auto1111_T2I(string address, string username, string password, Auto1111Payload payload) {
             using (HttpClient client = new HttpClient()) {
@@ -40,7 +112,13 @@ namespace AI_Print {
             }
         }
 
+         
 
+        /// <summary>
+        /// OBSOLETE Text to Image for Stability AIs official API. requires account and credits. 
+        /// </summary>
+        /// <param name="apiKey"></param>
+        /// <returns></returns>
         public static async Task<string?> POST_TextToImage(string? apiKey) {
             using (HttpClient client = new HttpClient()) {
                 try {
@@ -83,8 +161,9 @@ namespace AI_Print {
         }
 
 
+
         /// <summary>
-        /// send request to stablediffusionapi.com. Not used, as I found out that it's a third party API.
+        /// OBSOLETE send request to stablediffusionapi.com. Not used, as I found out that it's a third party API.
         /// </summary>
         /// <param name="apiKey"></param>
         /// <param name="prompt"></param>
