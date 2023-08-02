@@ -1,0 +1,62 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <Version>0.1</Version>
+    <Title>PrintborgGH</Title>
+    <Description>Grasshopper implementation of Printborg</Description>
+    <TargetExt>.gha</TargetExt>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="DotNetEnv" Version="2.5.0" />
+    <PackageReference Include="Grasshopper" Version="7.13.21348.13001" IncludeAssets="compile;build" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Reference Include="SpatialSlur">
+      <HintPath>..\SpatialSlur\SpatialSlur.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="GH_Components\Operations\" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\Printborg\Printborg.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  
+  <PropertyGroup Condition="$(Configuration) == 'Debug' AND $([MSBuild]::IsOSPlatform(Windows))">
+    <StartProgram>C:\Program Files\Rhino 7\System\Rhino.exe</StartProgram>
+	  <StartArguments>
+		  /nosplash /runscript="_-RunScript (
+		  Set GH = Rhino.GetPlugInObject(""Grasshopper"")
+		  <!--Call GH.OpenDocument(""D:\Repos\Printborg\user_sketch\stableDif_test00_230614.gh"")-->
+		  Call GH.OpenDocument(""C:\Users\taole\source\repos\Printborg"")
+		  )"
+	  </StartArguments>
+    <StartAction>Program</StartAction>
+	<Nullable>enable</Nullable>
+	<LangVersion>8.0</LangVersion>
+  </PropertyGroup>
+
+</Project>
