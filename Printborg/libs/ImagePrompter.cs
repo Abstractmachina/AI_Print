@@ -15,7 +15,7 @@ using Printborg.Types;
 using Printborg.Json;
 
 namespace Printborg {
-	static internal class ImagePrompter {
+	static public class ImagePrompter {
 
         private static async Task<string> Skip(string baseAddress, HttpClient client)
         {
@@ -118,7 +118,7 @@ namespace Printborg {
         /// </summary>
         /// <param name="apiKey"></param>
         /// <returns></returns>
-        public static async Task<string?> POST_TextToImage(string? apiKey) {
+        public static async Task<string> POST_TextToImage(string apiKey) {
             using (HttpClient client = new HttpClient()) {
                 try {
                     if (apiKey == null) throw new Exception("Missing Stability API key.");

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using Grasshopper.Kernel;
+using PrintborgGH;
 using Rhino.Geometry;
 using SpatialSlur.SlurCore;
 using SpatialSlur.SlurField;

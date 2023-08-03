@@ -8,7 +8,7 @@ namespace Printborg {
 	internal class TextToImagePrompt {
 		public string Key { get; set; }
 		public string Prompt { get; set; }
-		public string? Negative_prompt { get; set; }
+		public string Negative_prompt { get; set; }
 		public int Width { get; set; }
 		public int Height { get; set; }
 		public int Samples { get; set; }
@@ -22,14 +22,14 @@ namespace Printborg {
 		public bool Self_attention { get; set; }
 		public bool Upscale { get; set; }
 		public string Embedding_model { get; set; }
-		public string? Webhook { get; set; }
-		public string? Track_id { get; set; }
+		public string Webhook { get; set; }
+		public string Track_id { get; set; }
 
 		public TextToImagePrompt(string key) : this(key, "a round, red apple") { }
 
 		public TextToImagePrompt(string key, string prompt) : this(key, prompt, null, 512, 512) { }
 
-		public TextToImagePrompt(string key, string prompt, string? negative_prompt, int width, int height) : this(key, prompt, negative_prompt, width, height, 1, 20) { }
+		public TextToImagePrompt(string key, string prompt, string negative_prompt, int width, int height) : this(key, prompt, negative_prompt, width, height, 1, 20) { }
 
 		public TextToImagePrompt(
 			string key, string prompt, string negative_prompt, int width, int height, int samples, int num_inference_steps
@@ -38,7 +38,7 @@ namespace Printborg {
 		) {
 		}
 
-		public TextToImagePrompt(string key, string prompt, string negative_prompt, int width, int height, int samples, int num_inference_steps, bool safety_checker, bool enhance_prompt, int? seed, float guidance_scale, bool multi_lingual, bool panorama, bool self_attention, bool upscale, string embeddings_model, string? webhook, string? track_id) {
+		public TextToImagePrompt(string key, string prompt, string negative_prompt, int width, int height, int samples, int num_inference_steps, bool safety_checker, bool enhance_prompt, int? seed, float guidance_scale, bool multi_lingual, bool panorama, bool self_attention, bool upscale, string embeddings_model, string webhook, string	  track_id) {
 			Key = key;
 			Prompt = prompt;
 			Negative_prompt = negative_prompt;

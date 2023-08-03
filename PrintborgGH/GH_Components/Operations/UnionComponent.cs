@@ -8,7 +8,7 @@ using SpatialSlur.SlurField;
 // folder in Grasshopper.
 // You can use the _GrasshopperDeveloperSettings Rhino command for that.
 
-namespace Printborg.Grasshopper.Fields {
+namespace PrintborgGH.Fields {
     public class UnionComponent : GH_Component
     {
         /// <summary>

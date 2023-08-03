@@ -11,6 +11,7 @@ using Printborg.Types;
 using Grasshopper.Kernel;
 using GrasshopperAsyncComponent;
 using Newtonsoft.Json;
+using Printborg;
 
 namespace PrintborgGH.Components.ImageAi {
 	public class C_TextToImageAsync : GH_AsyncComponent {
@@ -69,10 +70,9 @@ namespace PrintborgGH.Components.ImageAi {
 						for (int i = 0; i < response.Images.Count; i++) {
 							_debug.Add("... converting image");
 
-							var image = Util.FromBase64String(response.Images[i]);
+							var image = Printborg.Util.FromBase64String(response.Images[i]);
 							image.Save(path + String.Format("/img{0}.png", i), System.Drawing.Imaging.ImageFormat.Png);
 						}
-
 						_debug.Add("... output saved successfully");
 					}
 
@@ -164,7 +164,7 @@ namespace PrintborgGH.Components.ImageAi {
 
 				if (!DA.GetData("Generate", ref processRequest)) return;
 				if (!DA.GetData("API Address", ref _apiKey)) return;
-				if (!DA.GetData("Auto1111 Payload", ref _payload)) return;
+				if (!DA.GetData("Payload", ref _payload)) return;
 				if (!DA.GetData("File Directory", ref _dir)) return;
 				if (!DA.GetData("File Name", ref _filename)) return;
 

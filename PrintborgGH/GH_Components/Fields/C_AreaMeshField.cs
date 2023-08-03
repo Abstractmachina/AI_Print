@@ -8,7 +8,7 @@ using Rhino.Geometry;
 using SpatialSlur.SlurField;
 using SpatialSlur.SlurRhino;
 
-namespace Printborg.Grasshopper.Fields {
+namespace PrintborgGH.Components.Fields {
 	public class C_AreaMeshField : GH_Component {
 		List<string> debug = new List<string>();
 

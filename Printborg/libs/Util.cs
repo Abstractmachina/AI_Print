@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Printborg {
-	internal static class Util {
+	public static class Util {
 
 		public static bool SaveImageFromBase64(string base64, string filepath) {
 			var img = FromBase64String(base64);

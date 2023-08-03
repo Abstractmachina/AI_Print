@@ -5,7 +5,7 @@ using Rhino.Geometry;
 using SpatialSlur.SlurField;
 using SpatialSlur.SlurRhino;
 
-namespace Printborg.Grasshopper.Fields {
+namespace PrintborgGH.Fields {
     public class PlaneTrimComponent : GH_Component
     {
         /// <summary>

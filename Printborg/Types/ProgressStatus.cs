@@ -28,9 +28,9 @@ namespace Printborg.Types
         public float Eta { get; set; }
 
         [JsonProperty("current_image")]
-        public string? CurrentImage { get; set; }
+        public string CurrentImage { get; set; }
         [JsonProperty("textinfo")]
-        public string? TextInfo { get; set; }
+        public string TextInfo { get; set; }
 
         [JsonProperty("state")]
         public Stateobject stateObject { get; set; }

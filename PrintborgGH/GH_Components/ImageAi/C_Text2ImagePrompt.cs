@@ -9,6 +9,8 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 
+using Printborg;
+
 namespace PrintborgGH.Components.ImageAi {
 	public class C_Text2ImagePrompt : GH_Component {
 		/// <summary>
@@ -94,7 +96,7 @@ namespace PrintborgGH.Components.ImageAi {
 
 
 				if (responseObject != null && responseObject.Artefacts != null && responseObject.Artefacts.Count != 0) {
-					var image = Util.FromBase64String(responseObject.Artefacts[0].Base64);
+					var image = Printborg.Util.FromBase64String(responseObject.Artefacts[0].Base64);
 
 					var filepath = dir + filename + ".jpg";
 					AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, filepath);

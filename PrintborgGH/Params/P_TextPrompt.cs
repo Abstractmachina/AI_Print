@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Printborg.GH_Params {
+namespace PrintborgGH.Params {
     public class P_TextPrompt : GH_Param<GH_TextPrompt> {
         public P_TextPrompt()
           : base("Text Prompt", "TPrompt", "Represents Text prompt consisting of text and weight", Labels.PluginName, Labels.Category_Param, GH_ParamAccess.item) { }

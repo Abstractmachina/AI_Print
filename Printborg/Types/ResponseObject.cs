@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Printborg.Types
 {
-    internal class ResponseObject
+    public class ResponseObject
     {
         [JsonProperty("images")]
         public List<string> Images { get; set; }

@@ -2,18 +2,19 @@
 using System.Collections.Generic;
 
 using Grasshopper.Kernel;
+using Printborg.Types;
 using Rhino.Geometry;
 
-namespace PrintborgGH.Components.ImageAi
+namespace PrintborgGH.GH_Components.ImageAi
 {
-    public class C_CreatePayloadA1111 : GH_Component
+    public class C_CreateAlwaysOnScripts : GH_Component
     {
         /// <summary>
-        /// Initializes a new instance of the C_CreatePayloadA1111 class.
+        /// Initializes a new instance of the C_CreateAlwaysOnScripts class.
         /// </summary>
-        public C_CreatePayloadA1111()
-          : base("Create Auto1111 Payload", "CreatePayload",
-              "Create a json payload for Auto1111 API",
+        public C_CreateAlwaysOnScripts()
+          : base("Create AlwaysOn Scripts", "AO Scripts",
+              "Create an AlwaysOnScripts object if any extensions for Auto1111 need to be used. Please refer to the official Auto1111 API documentation for more details.",
               Labels.PluginName, Labels.Category_Image)
         {
         }
@@ -23,6 +24,9 @@ namespace PrintborgGH.Components.ImageAi
         /// </summary>
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
+            pManager.AddTextParameter("Model", "M", "Stable Diffusion extension model used", GH_ParamAccess.item);
+            pManager.AddTextParameter("Module", "M", "Stable Diffusion module used", GH_ParamAccess.item);
+            pManager.AddTextParameter("Input Image", "I", "Base64-encoded image used for certain extensions (e.g. Scribble)", GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -30,6 +34,7 @@ namespace PrintborgGH.Components.ImageAi
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
+            pManager.AddGenericParameter("AlwaysOnScripts", "AOS", "AlwaysOnScripts object to be fed into the CreateAuto1111Payload component", GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -38,6 +43,16 @@ namespace PrintborgGH.Components.ImageAi
         /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
         protected override void SolveInstance(IGH_DataAccess DA)
         {
+            string model = null;
+            string module = null;
+            string inputImage = null;
+
+            if (!DA.GetData(0, ref model)) return;
+            if (!DA.GetData(1, ref module)) return;
+            DA.GetData(2, ref inputImage);
+
+            if (inputImage == null) AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "No input image found");
+            var scripts = new AlwaysOnScripts(ControlNetSettingsFactory.Create(model, module, inputImage));
         }
 
         /// <summary>
@@ -58,7 +73,7 @@ namespace PrintborgGH.Components.ImageAi
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("D387CDA1-8280-42E7-8B61-B212CA6114A6"); }
+            get { return new Guid("A117F547-E782-46A3-B61D-32093754CDF0"); }
         }
     }
 }

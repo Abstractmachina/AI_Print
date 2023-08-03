@@ -4,7 +4,7 @@ using Grasshopper.Kernel;
 using Rhino.Geometry;
 using SpatialSlur.SlurField;
 
-namespace Printborg.Grasshopper.Fields {
+namespace PrintborgGH.Fields {
     public class IntersectionComponent : GH_Component
     {
         /// <summary>
