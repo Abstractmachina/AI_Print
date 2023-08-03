@@ -27,15 +27,20 @@ namespace PrintborgGH.Components.ImageAi
             pManager.AddTextParameter("Prompt", "P", "Textual prompt. Be as desscriptive as possible for accurate image generation.", GH_ParamAccess.item, "a red apple");
             pManager.AddTextParameter("Negative Prompt", "NP", "Negative prompts are used to dissuade the AI from generating undesirable results.", GH_ParamAccess.item, "bad, worse, low quality, strange, ugly");
             pManager.AddTextParameter("Sampler Name", "SN", "Choose sampler type. Please refer to Stable Diffusion Documentation for more detailed information.", GH_ParamAccess.item, "Euler");
-            pManager.AddNumberParameter("Steps", "Stp", "Number of iterations.", GH_ParamAccess.item, 20);
-            pManager.AddNumberParameter("CFG Scale", "CFG", "Measure of how closely AI will follow the text prompt.", GH_ParamAccess.item, 7);
-            pManager.AddNumberParameter("Batch Size", "BS", "Number of images to generate.", GH_ParamAccess.item, 1);
-            pManager.AddNumberParameter("Width", "W", "Width of image in pixels", GH_ParamAccess.item, 512);
-            pManager.AddNumberParameter("Height", "H", "Height of image in pixels", GH_ParamAccess.item, 512);
+            pManager.AddIntegerParameter("Steps", "Stp", "Number of iterations.", GH_ParamAccess.item, 20);
+            pManager.AddIntegerParameter("CFG Scale", "CFG", "Measure of how closely AI will follow the text prompt.", GH_ParamAccess.item, 7);
+            pManager.AddIntegerParameter("Batch Size", "BS", "Number of images to generate.", GH_ParamAccess.item, 1);
+            pManager.AddIntegerParameter("Width", "W", "Width of image in pixels", GH_ParamAccess.item, 512);
+            pManager.AddIntegerParameter("Height", "H", "Height of image in pixels", GH_ParamAccess.item, 512);
             pManager.AddGenericParameter("Always On Scripts", "AOS", "Optional. Additional settings if extension modules are required.", GH_ParamAccess.item);
 
+            pManager[3].Optional = true;
+            pManager[4].Optional = true;
+            pManager[5].Optional = true;
+            pManager[6].Optional = true;
+            pManager[7].Optional = true;
             pManager[8].Optional = true;
-    }
+        }
 
         /// <summary>
         /// Registers all the output parameters for this component.
@@ -63,16 +68,20 @@ namespace PrintborgGH.Components.ImageAi
             AlwaysOnScripts? scripts = null;
 
 
-            if (!DA.GetData(0, ref prompt)) return;
-            if (!DA.GetData(1, ref negativePrompt)) return;
-            if (!DA.GetData(2, ref samplerName)) return;
-            if (!DA.GetData(3, ref steps)) return;
-            if (!DA.GetData(4, ref cfgScale)) return;
-            if (!DA.GetData(5, ref batchSize)) return;
-            if (!DA.GetData(6, ref width)) return;
-            if (!DA.GetData(6, ref height)) return;
-            if (!DA.GetData(6, ref scripts)) return;
+            DA.GetData(0, ref prompt);
+            DA.GetData(1, ref negativePrompt);
+            DA.GetData(2, ref samplerName);
+            DA.GetData(3, ref steps);
+            DA.GetData(4, ref cfgScale);
+            DA.GetData(5, ref batchSize);
+            DA.GetData(6, ref width);
+            DA.GetData(6, ref height);
+            DA.GetData(6, ref scripts);
 
+            var payload = new Auto1111Payload(prompt, negativePrompt, steps, cfgScale, width, height, scripts);
+
+            AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, payload.ToString());
+            DA.SetData(0, payload);
         }
 
         /// <summary>

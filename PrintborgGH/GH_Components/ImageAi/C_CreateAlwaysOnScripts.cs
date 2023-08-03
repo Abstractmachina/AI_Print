@@ -53,6 +53,10 @@ namespace PrintborgGH.GH_Components.ImageAi
 
             if (inputImage == null) AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "No input image found");
             var scripts = new AlwaysOnScripts(ControlNetSettingsFactory.Create(model, module, inputImage));
+
+            AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, scripts.ToString());
+
+            DA.SetData(0, scripts);
         }
 
         /// <summary>

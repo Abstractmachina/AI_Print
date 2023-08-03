@@ -64,7 +64,25 @@ namespace Printborg.Types
         {
             _controlnetSettings = controlNetSettings;
         }
-    }
+
+		public override string ToString() {
+            string output = "AlwaysOnScripts:\n{\n";
+            if (_controlnetSettings != null) {
+                output += "\tcontrolnet: {\n\t\targs: {\n";
+                foreach (var a in _controlnetSettings.Arguments) {
+                    output += String.Format("\t\t\tmodel: {0}\n", a.Model);
+                    output += String.Format("\t\t\tmodule: {0}\n", a.Module);
+                    output += String.Format("\t\t\tinputImage: {0}\n", a.inputImage);
+
+                }
+                output += "\t\t}\n\t}\n"; // close args, close controlnet
+
+			}
+            output += "}"; // close AlwaysOnScripts
+            return output;
+
+		}
+	}
 
     /// <summary>
     /// Initiate control net settings with different configurations
@@ -92,8 +110,10 @@ namespace Printborg.Types
     public class ControlNetSetting
     {
 
-        [JsonProperty("args")]
         private List<ControlNetArgument> _arguments = new List<ControlNetArgument>();
+
+        [JsonProperty("args")]
+        internal List<ControlNetArgument> Arguments { get { return _arguments; } }
 
         public ControlNetSetting() { }
 
@@ -104,7 +124,7 @@ namespace Printborg.Types
         /// <summary>
         /// added for the sake of json conversion. always nested inside controlnet settings
         /// </summary>
-        private class ControlNetArgument
+        internal class ControlNetArgument
         {
             private string _model = "";
             private string _module = "";

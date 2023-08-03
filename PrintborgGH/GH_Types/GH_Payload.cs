@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Printborg.Types;
 
 namespace PrintborgGH.GH_Types
 {
-    public class GH_Payload : GH_Goo<Image>
+    public class GH_Payload : GH_Goo<Auto1111Payload>
     {
         public override bool IsValid => true;
 
@@ -17,25 +18,25 @@ namespace PrintborgGH.GH_Types
 
 
         #region Constructors
-        public GH_Image() { }
+        public GH_Payload() { }
 
-        public GH_Image(Image image)
+        public GH_Payload(Auto1111Payload image)
         {
             this.Value = image;
         }
 
-        public GH_Image(GH_Image source)
+        public GH_Payload(GH_Payload source)
         {
             this.Value = source.Value;
         }
         #endregion
 
 
-        public override Image Value { get => base.Value; set => base.Value = value; }
+        public override Auto1111Payload Value { get => base.Value; set => base.Value = value; }
 
         public override IGH_Goo Duplicate()
         {
-            return new GH_Image(this);
+            return new GH_Payload(this);
         }
 
         public override string ToString()

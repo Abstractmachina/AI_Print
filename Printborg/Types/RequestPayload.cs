@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Printborg.Types {
     /// <summary>
-    /// contains the content sent to Stability.ai via POST request
+    /// OBSOLETE contains the content sent to Stability.ai via POST request
     /// </summary>
     public class RequestPayload {
         public int Height { get; set; }

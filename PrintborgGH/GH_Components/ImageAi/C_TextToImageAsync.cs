@@ -209,7 +209,7 @@ namespace PrintborgGH.Components.ImageAi {
 		protected override void RegisterInputParams(GH_InputParamManager pManager) {
 			pManager.AddBooleanParameter("Generate", "G", "Send prompt to generate image from text prompt", GH_ParamAccess.item);
 			pManager.AddTextParameter("API Address", "A", "API address of hosted or local Auto1111 server", GH_ParamAccess.item, "");
-			pManager.AddTextParameter("Payload", "P", "Auto1111 Payload", GH_ParamAccess.list);
+			pManager.AddTextParameter("Payload", "P", "Auto1111 Payload", GH_ParamAccess.item);
 			pManager.AddTextParameter("File Directory", "FD", "Location to save image", GH_ParamAccess.item);
 			pManager.AddTextParameter("File Name", "N", "Name of saved image. (Note: If multiple images are generated, a number sequence will be appended to the file name)", GH_ParamAccess.item);
 		}
