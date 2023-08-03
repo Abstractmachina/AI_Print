@@ -5,7 +5,7 @@ using Grasshopper.Kernel;
 using Printborg.Types;
 using Rhino.Geometry;
 
-namespace PrintborgGH.Components.ImageAi
+namespace PrintborgGH.Components.AI
 {
     public class C_CreateA1111Payload : GH_Component
     {
@@ -15,7 +15,7 @@ namespace PrintborgGH.Components.ImageAi
         public C_CreateA1111Payload()
           : base("Create Auto1111 Payload", "A1111Payload",
               "Create a payload for Auto1111 API",
-              Labels.PluginName, Labels.Category_Image)
+              Labels.PluginName, Labels.Category_AI)
         {
         }
 

@@ -25,9 +25,47 @@ namespace Printborg {
             return await response.Content.ReadAsStringAsync();
         }
 
+
+
+        public static async Task<ResponseObject> Auto1111TextToImageWithReport(Action<string, double> ReportProgress, string baseAddress, Auto1111Payload payload) {
+            using (HttpClient client = new HttpClient()) {
+
+                client.BaseAddress = new Uri(baseAddress);
+                client.Timeout = Timeout.InfiniteTimeSpan;
+
+                string uri = "/sdapi/v1/txt2img";
+
+                var json = JsonConvert.SerializeObject(payload);
+
+                var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+                var response = client.PostAsync("/sdapi/v1/txt2img", content);
+
+
+                // continuously poll api for task progress until completed
+                while (!response.IsCompleted) {
+                    Console.WriteLine("still in progress ...");
+                    ReportProgress("generating", await pollProgess(baseAddress, client));
+
+                    await Task.Delay(2000);
+                }
+
+                ReportProgress("finished", 1.0);
+
+
+                Console.WriteLine("Image generation finished ...");
+
+                var result = await response.Result.Content.ReadAsStringAsync();
+
+                var resultObject = JsonConvert.DeserializeObject<ResponseObject>(result);
+                return resultObject;
+            }
+        }
+
+  
+
         public static async Task<ResponseObject> Auto1111TextToImage(string baseAddress, Auto1111Payload payload)
         {
-
             using (HttpClient client = new HttpClient())
             {
 
@@ -71,7 +109,7 @@ namespace Printborg {
             }
         }
 
-        private static async Task pollProgess(string baseAddress, HttpClient client)
+        public static async Task<ProgressStatus> pollProgess(string baseAddress, HttpClient client)
         {
             string progressUri = baseAddress + "/sdapi/v1/progress";
 
@@ -85,7 +123,9 @@ namespace Printborg {
                 Console.WriteLine("Progress: " + status.Progress);
                 Console.WriteLine("estimated eta: " + status.Eta);
                 Console.WriteLine("Job: " + status.stateObject.Job);
+                return status;
             }
+            return null;
         }
 
         public static async Task<string> Auto1111_T2I(string address, string username, string password, Auto1111Payload payload) {

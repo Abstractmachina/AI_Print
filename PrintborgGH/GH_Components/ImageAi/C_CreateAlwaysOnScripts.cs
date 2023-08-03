@@ -15,7 +15,7 @@ namespace PrintborgGH.GH_Components.ImageAi
         public C_CreateAlwaysOnScripts()
           : base("Create AlwaysOn Scripts", "AO Scripts",
               "Create an AlwaysOnScripts object if any extensions for Auto1111 need to be used. Please refer to the official Auto1111 API documentation for more details.",
-              Labels.PluginName, Labels.Category_Image)
+              Labels.PluginName, Labels.Category_AI)
         {
         }
 

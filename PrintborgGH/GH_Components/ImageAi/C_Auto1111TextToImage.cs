@@ -13,9 +13,9 @@ using GrasshopperAsyncComponent;
 using Newtonsoft.Json;
 using Printborg;
 
-namespace PrintborgGH.Components.ImageAi {
-	public class C_TextToImageAsync : GH_AsyncComponent {
-		public C_TextToImageAsync() : base("A1111 Text-To-Image", "A41T2I", "Generate image from a text prompt in Automatic1111.", Labels.PluginName, Labels.Category_Image) {
+namespace PrintborgGH.Components.AI {
+	public class C_Auto1111TextToImage : GH_AsyncComponent {
+		public C_Auto1111TextToImage() : base("A1111 Text-To-Image", "A41T2I", "Generate image from a text prompt in Automatic1111.", Labels.PluginName, Labels.Category_AI) {
 			BaseWorker = new FetchImageWorker();
 		}
 
@@ -32,30 +32,23 @@ namespace PrintborgGH.Components.ImageAi {
 				// Checking for cancellation
 				if (CancellationToken.IsCancellationRequested) { return; }
 
-				// if not enough information was collected, exit
-				//if (_package == null || !_package.Ready) return;
 				try {
 
-					ReportProgress("Working", 0.5);
-
-					// prepare scribble image as base64 string
-					byte[] imageArray = System.IO.File.ReadAllBytes(@"C:\Users\taole\source\repos\Printborg\user_sketch\scribbleTest_01.png");
-					var scribble = Convert.ToBase64String(imageArray);
+					//ReportProgress("Working", 0.5);
 
 					// FOR TESTING
 					// TODO: Delete after linked to data input in gh
 					//var serverAddress = "http://127.0.0.1:7860"; // local auto1111 server
-					var serverAddress = "https://37af3813aead713f87.gradio.live";
-					var payload = new Auto1111Payload("3d printing clay, layer, toolpath", "bad, worse, low quality, strange, ugly", 20, 7, 598, 624, new AlwaysOnScripts(ControlNetSettingsFactory.Create("control_v11p_sd15_scribble [d4ba51ff]", "scribble_hed", scribble)));
+					//var serverAddress = "https://37af3813aead713f87.gradio.live";
+					//var payload = new Auto1111Payload("3d printing clay, layer, toolpath", "bad, worse, low quality, strange, ugly", 20, 7, 598, 624, new AlwaysOnScripts(ControlNetSettingsFactory.Create("control_v11p_sd15_scribble [d4ba51ff]", "scribble_hed", scribble)));
 
 
 					_debug.Add("... sending post request");
-					//var response = await ImagePrompter.Auto1111_T2I(serverAddress, "admin", "admin", payload);
-					//var responseObject = JsonConvert.DeserializeObject<ResponseObject>(response);
-
-					var response = await ImagePrompter.Auto1111TextToImage(serverAddress, payload);
 
 
+
+
+					var response = await ImagePrompter.Auto1111TextToImageWithReport(ReportProgress, _baseAddress, _payload);
 
 
 					// Console.WriteLine(responseObject.Images.Select(x => Console.WriteLine(x));
@@ -151,26 +144,37 @@ namespace PrintborgGH.Components.ImageAi {
 			}
 
 
+			private bool _processRequest = false;
+			private string _baseAddress = "";
+			private string _dir = "";
+			private string _filename = "";
 
 			public override void GetData(IGH_DataAccess DA, GH_ComponentParamServer Params) {
 				if (CancellationToken.IsCancellationRequested) return;
 
-				bool processRequest = false;
-				string _apiKey = "";
-				string _dir = "";
-				string _filename = "";
-				Auto1111Payload? _payload = null;
+				bool startProcess = false;
 
-
-				if (!DA.GetData("Generate", ref processRequest)) return;
-				if (!DA.GetData("API Address", ref _apiKey)) return;
-				if (!DA.GetData("Payload", ref _payload)) return;
-				if (!DA.GetData("File Directory", ref _dir)) return;
-				if (!DA.GetData("File Name", ref _filename)) return;
-
+				if (!DA.GetData("Generate", ref startProcess)) {
+					Parent.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Input required");
+					return;
+				}
+				if (!DA.GetData("API Address", ref _baseAddress)) {
+					Parent.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "API base address required.");
+					return;
+				}
+				if (!DA.GetData("Payload", ref _payload)) {
+					Parent.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Auto1111 Payload required");
+					return;
+				}
+				if (!DA.GetData("File Directory", ref _dir)) {
+					Parent.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Please specify folder where the output will be saved");
+					return;
+				}
+				if (!DA.GetData("File Name", ref _filename)) {
+					Parent.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "File prefix not specified. Files will be prefixed with 'img'");
+				}
 
 				//_payload = new Auto1111Payload("3d printing clay, layer, toolpath", "bad, worse, low quality, strange, ugly", 20, 7, 598, 624, new AlwaysOnScripts(ControlNetSettingsFactory.Create("control_v11p_sd15_scribble [d4ba51ff]", "scribble_hed", scribble)));
-
 
 
 				//int _maxIterations = 100;
@@ -207,9 +211,9 @@ namespace PrintborgGH.Components.ImageAi {
 
 
 		protected override void RegisterInputParams(GH_InputParamManager pManager) {
-			pManager.AddBooleanParameter("Generate", "G", "Send prompt to generate image from text prompt", GH_ParamAccess.item);
+			pManager.AddBooleanParameter("Generate", "G", "Start Image generation request. (Hint: use boolean button)", GH_ParamAccess.item);
 			pManager.AddTextParameter("API Address", "A", "API address of hosted or local Auto1111 server", GH_ParamAccess.item, "");
-			pManager.AddTextParameter("Payload", "P", "Auto1111 Payload", GH_ParamAccess.item);
+			pManager.AddGenericParameter("Payload", "P", "Auto1111 Payload", GH_ParamAccess.item);
 			pManager.AddTextParameter("File Directory", "FD", "Location to save image", GH_ParamAccess.item);
 			pManager.AddTextParameter("File Name", "N", "Name of saved image. (Note: If multiple images are generated, a number sequence will be appended to the file name)", GH_ParamAccess.item);
 		}

@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using Grasshopper.Kernel;
 using Rhino.Geometry;
 
-namespace PrintborgGH.Components.ImageAi {
+namespace PrintborgGH.Components.AI {
 	public class C_T2I_Settings : GH_Component {
 		public C_T2I_Settings()
 		  : base("C_T2I_Settings", "Nickname",
 			  "Description",
-			  Labels.PluginName, Labels.Category_Image) {
+			  Labels.PluginName, Labels.Category_AI) {
 		}
 
 		protected override void RegisterInputParams(GH_InputParamManager pManager) {

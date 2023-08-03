@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Grasshopper.Kernel;
 using Rhino.Geometry;
 
-namespace PrintborgGH.Components.ImageAi {
+namespace PrintborgGH.Components.AI {
 	public class C_CreateTextPrompt : GH_Component {
 		/// <summary>
 		/// Initializes a new instance of the C_CreateTextPrompt class.
