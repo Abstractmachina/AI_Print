@@ -18,7 +18,10 @@ namespace PrintborgGH.Components.AI
 {
     public class C_Auto1111TextToImage : GH_AsyncComponent
     {
-        public C_Auto1111TextToImage() : base("A1111 Text-To-Image", "A41T2I", "Generate image from a text prompt in Automatic1111.", Labels.PluginName, Labels.Category_AI)
+        public C_Auto1111TextToImage() 
+            : base("A1111 Text-To-Image", "A41T2I", 
+                  "Generate image from a text prompt in Automatic1111.", 
+                    Labels.PluginName, Labels.Category_AI)
         {
             BaseWorker = new FetchImageWorker();
         }
@@ -27,9 +30,7 @@ namespace PrintborgGH.Components.AI
         {
             public List<string> _debug = new List<string>();
             private Auto1111Payload? _payload = null;
-            int MaxIterations { get; set; } = 100;
 
-            private ResponseArtefacts? _responseObject = null;
 
             public FetchImageWorker() : base(null) { }
 
