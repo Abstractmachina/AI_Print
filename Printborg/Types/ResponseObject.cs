@@ -16,5 +16,34 @@ namespace Printborg.Types
         public ResponseObject()
         {
         }
+
+        public override string ToString()
+        {
+            string output = "ResponseObject: {\n";
+            output += "\timages:{\n";
+            if (Images == null) 
+            { 
+                output += "\t\tno images"; 
+            }
+            else
+            {
+                foreach (var i in Images)
+                {
+                    if (i.Length > 20)
+                    {
+                        output += String.Format("\t\t{0}[...],", i.Substring(0, 20));
+                    }
+                    else
+                    {
+                        output += String.Format("\t\t{0},", i);
+                    }
+
+                }
+            }
+            output += "\t}\n"; // close images
+            output += String.Format("\tinfo: {\n\t\t{0}\n\t}", Info); // closed info
+            output += "}"; // close ResponseObject
+            return output;
+        }
     }
 }

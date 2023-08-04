@@ -45,7 +45,8 @@ namespace Printborg {
                 // continuously poll api for task progress until completed
                 while (!response.IsCompleted) {
                     Console.WriteLine("still in progress ...");
-                    ReportProgress("generating", await pollProgess(baseAddress, client));
+                    var progressStatus = await pollProgess(baseAddress, client);
+                    ReportProgress("generating", progressStatus.Progress);
 
                     await Task.Delay(2000);
                 }

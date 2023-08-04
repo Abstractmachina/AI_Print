@@ -53,6 +53,11 @@ namespace Printborg.Types
             _height = height;
             _alwaysOnScripts = alwaysOnScripts;
         }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
     public class AlwaysOnScripts
     {
