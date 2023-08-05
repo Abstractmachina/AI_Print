@@ -1,34 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Grasshopper.Kernel;
 using GrasshopperAsyncComponent;
 using Newtonsoft.Json;
-using Printborg.Types;
-using PrintborgGH.GH_Types;
 using Rhino.Geometry;
 
-namespace PrintborgGH.Components.AI
+namespace PrintborgGH.GH_Components.ImageAi
 {
-    public class C_GetControlNetModels : GH_AsyncComponent
+    public class C_GetControlnetModules : GH_AsyncComponent
     {
-        public C_GetControlNetModels()
-          : base("Get Controlnet Models", "Models",
-              "Get currently installed models from server",
+        /// <summary>
+        /// Initializes a new instance of the C_GetControlnetModules class.
+        /// </summary>
+        public C_GetControlnetModules()
+          : base("Get Controlnet Modules", "Modules",
+              "Get currently installed modules from server" ,
               Labels.PluginName, Labels.Category_AI)
         {
-            BaseWorker = new fetchAuto1111ModelWorker();
+            BaseWorker = new fetchAuto1111ModuleWorker();
         }
 
-        private class fetchAuto1111ModelWorker : WorkerInstance
+        private class fetchAuto1111ModuleWorker : WorkerInstance
         {
             public List<string> _debug = new List<string>();
 
 
-            public fetchAuto1111ModelWorker() : base(null) { }
+            public fetchAuto1111ModuleWorker() : base(null) { }
 
             public override async void DoWork(Action<string, double> ReportProgress, Action Done)
             {
@@ -49,7 +49,7 @@ namespace PrintborgGH.Components.AI
                     {
                         client.BaseAddress = new Uri(_baseAddress);
                         client.Timeout = TimeSpan.FromSeconds(30d);
-                        string uri = "/controlnet/model_list";
+                        string uri = "/controlnet/module_list";
 
 
                         //var content = new StringContent(null, System.Text.Encoding.UTF8, "application/json");
@@ -80,7 +80,7 @@ namespace PrintborgGH.Components.AI
                 Done();
 
             }
-            public override WorkerInstance Duplicate() => new fetchAuto1111ModelWorker();
+            public override WorkerInstance Duplicate() => new fetchAuto1111ModuleWorker();
 
 
 
@@ -123,8 +123,8 @@ namespace PrintborgGH.Components.AI
                 if (_resultString == "") DA.SetData(0, $"Response not received.");
                 else
                 {
-                    var models = JsonConvert.DeserializeObject<ModelList>(_resultString).Models;
-                    DA.SetDataList(0, models);
+                    var modules = JsonConvert.DeserializeObject<ModuleList>(_resultString).Modules;
+                    DA.SetDataList(0, modules);
 
                 }
 
@@ -181,18 +181,18 @@ namespace PrintborgGH.Components.AI
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("BBA0CCBB-78DD-4301-A21A-6FA31D9D5012"); }
+            get { return new Guid("AE287DCB-200F-448C-9BE1-F75E2F203E7B"); }
         }
 
         public override GH_Exposure Exposure => GH_Exposure.primary;
 
 
-        private class ModelList
+        private class ModuleList
         {
-            [JsonProperty("model_list")]
-            public List<string> Models { get; set; }
+            [JsonProperty("module_list")]
+            public List<string> Modules { get; set; }
 
-            public ModelList() { }
+            public ModuleList() { }
 
 
         }
