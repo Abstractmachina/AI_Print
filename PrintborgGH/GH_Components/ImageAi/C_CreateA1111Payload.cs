@@ -75,8 +75,8 @@ namespace PrintborgGH.Components.AI
             DA.GetData(4, ref cfgScale);
             DA.GetData(5, ref batchSize);
             DA.GetData(6, ref width);
-            DA.GetData(6, ref height);
-            DA.GetData(6, ref scripts);
+            DA.GetData(7, ref height);
+            DA.GetData(8, ref scripts);
 
             var payload = new Auto1111Payload(prompt, negativePrompt, steps, cfgScale, width, height, scripts);
 
