@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using Grasshopper.Kernel;
 using GrasshopperAsyncComponent;
 using Newtonsoft.Json;
+using Printborg.API;
 using Printborg.Types;
 using PrintborgGH.GH_Types;
 using Rhino.Geometry;
@@ -47,29 +48,7 @@ namespace PrintborgGH.Components.AI
                     if (_baseAddress == "") throw new Exception("base address is empty");
 
                     _debug.Add("baseAddress: " + _baseAddress);
-
-                    using (HttpClient client = new HttpClient())
-                    {
-                        client.BaseAddress = new Uri(_baseAddress);
-                        client.Timeout = TimeSpan.FromSeconds(30d);
-                        string uri = "/controlnet/model_list";
-
-                        var rawResponse = client.GetAsync(uri);
-
-                        while (!rawResponse.IsCompleted)
-                        {
-                            ReportProgress("Fetching", 0.5d);
-                            await Task.Delay(2000);
-                        }
-
-
-                        rawResponse.Result.EnsureSuccessStatusCode();
-
-                        string responseContent = await rawResponse.Result.Content.ReadAsStringAsync();
-
-                        _debug.Add(responseContent);
-                        _resultString = responseContent;
-                    }
+                    _resultString = await Auto1111Controller.GetControlnetModels(_baseAddress, ReportProgress);
                 }
                 catch (Exception ex)
                 {

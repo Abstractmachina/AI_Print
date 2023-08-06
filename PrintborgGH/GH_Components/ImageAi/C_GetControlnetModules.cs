@@ -27,7 +27,9 @@ namespace PrintborgGH.GH_Components.ImageAi
         private class fetchAuto1111ModuleWorker : WorkerInstance
         {
             public List<string> _debug = new List<string>();
-
+            private bool _processRequest = false;
+            private string _baseAddress = "";
+            private string _resultString = "";
 
             public fetchAuto1111ModuleWorker() : base(null) { }
 
@@ -47,32 +49,6 @@ namespace PrintborgGH.GH_Components.ImageAi
                     _debug.Add("baseAddress: " + _baseAddress);
 
                     _resultString = await Auto1111Controller.GetControlnetModules(_baseAddress, ReportProgress);
-
-                    //using (HttpClient client = new HttpClient())
-                    //{
-                    //    client.BaseAddress = new Uri(_baseAddress);
-                    //    client.Timeout = TimeSpan.FromSeconds(30d);
-                    //    string uri = "/controlnet/module_list";
-
-
-                    //    //var content = new StringContent(null, System.Text.Encoding.UTF8, "application/json");
-
-                    //    var rawResponse = client.GetAsync(uri);
-
-                    //    while (!rawResponse.IsCompleted)
-                    //    {
-                    //        ReportProgress("Fetching", 0.5d);
-                    //        await Task.Delay(2000);
-                    //    }
-
-
-                    //    rawResponse.Result.EnsureSuccessStatusCode();
-
-                    //    string responseContent = await rawResponse.Result.Content.ReadAsStringAsync();
-
-                    //    _debug.Add(responseContent);
-                    //    _resultString = responseContent;
-                    //}
                 }
                 catch (Exception ex)
                 {
@@ -85,17 +61,10 @@ namespace PrintborgGH.GH_Components.ImageAi
             }
             public override WorkerInstance Duplicate() => new fetchAuto1111ModuleWorker();
 
-
-
-            private bool _processRequest = false;
-            private string _baseAddress = "";
-            private string _resultString = "";
-
             public override void GetData(IGH_DataAccess DA, GH_ComponentParamServer Params)
             {
                 if (CancellationToken.IsCancellationRequested) return;
 
-                //bool startProcess = false;
                 if (!_processRequest)
                 {
                     if (!DA.GetData("Send", ref _processRequest))
@@ -110,12 +79,6 @@ namespace PrintborgGH.GH_Components.ImageAi
                         return;
                     }
                 }
-
-                //if (startProcess)
-                //{
-                //    _processRequest = true;
-                //    startProcess = false;
-                //}
             }
 
             public override void SetData(IGH_DataAccess DA)

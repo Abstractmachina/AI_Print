@@ -14,6 +14,7 @@ using System.Threading;
 using Printborg.Types;
 using Printborg.Json;
 using System.Net;
+using System.Runtime.CompilerServices;
 
 namespace Printborg.API {
 	static public class Auto1111Controller {
@@ -30,14 +31,36 @@ namespace Printborg.API {
         {
             if (baseAddress == null || baseAddress == "") throw new ArgumentException(baseAddress, nameof(baseAddress));
 
+            return await Auto1111Controller.Get(baseAddress, "/controlnet/module_list", ReportProgress, 30);
+        }
+        public static async Task<string> GetControlnetModels(string baseAddress, Action<string, double> ReportProgress)
+        {
+            if (baseAddress == null || baseAddress == "") throw new ArgumentException(baseAddress, nameof(baseAddress));
+
+            return await Auto1111Controller.Get(baseAddress, "/controlnet/model_list", ReportProgress, 30);
+        }
+
+        /// <summary>
+        /// Generic Get request
+        /// </summary>
+        /// <param name="baseAddress">base address if API provider</param>
+        /// <param name="endpoint">specific Get endpoint (e.g. /endpoint )</param>
+        /// <param name="ReportProgress">Delegate function to report the task progress. first value is a short label, second value is percentage in decimal points (0.-1)</param>
+        /// <param name="timeout">time out in seconds before request is cancelled.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        public static async Task<string> Get(string baseAddress, string endpoint, Action<string, double> ReportProgress, int timeout = 30)
+        {
+            if (baseAddress == null || baseAddress == "") throw new ArgumentException(baseAddress, nameof(baseAddress));
+
 
             using (HttpClient client = new HttpClient())
             {
                 client.BaseAddress = new Uri(baseAddress);
-                client.Timeout = TimeSpan.FromSeconds(30d);
-                string uri = "/controlnet/module_list";
-
-                var rawResponse = client.GetAsync(uri);
+                if (timeout == 0) client.Timeout = Timeout.InfiniteTimeSpan;
+                else client.Timeout = TimeSpan.FromSeconds(timeout);
+                 
+                var rawResponse = client.GetAsync(endpoint);
 
                 while (!rawResponse.IsCompleted)
                 {
