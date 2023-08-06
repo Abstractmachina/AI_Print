@@ -16,15 +16,27 @@ using Printborg.Json;
 using System.Net;
 using System.Runtime.CompilerServices;
 
-namespace Printborg.API {
-	static public class Auto1111Controller {
+namespace Printborg.API
+{
+    static public class Auto1111Controller
+    {
 
-        private static async Task<string> Skip(string baseAddress, HttpClient client)
+        /// <summary>
+        /// Skip any previously started jobs
+        /// </summary>
+        /// <param name="baseAddress"></param>
+        /// <returns></returns>
+        public static async Task<string> Skip(string baseAddress)
         {
-            string endpoint = "/sdapi/v1/skip";
+            if (baseAddress == null || baseAddress == "") throw new ArgumentException(baseAddress, nameof(baseAddress));
 
-            var response = await client.PostAsync(endpoint, null);
-            return await response.Content.ReadAsStringAsync();
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(baseAddress);
+                string endpoint = "/sdapi/v1/skip";
+                var response = await client.PostAsync(endpoint, null);
+                return await response.Content.ReadAsStringAsync();
+            }
         }
 
         public static async Task<string> GetControlnetModules(string baseAddress, Action<string, double> ReportProgress)
@@ -59,7 +71,7 @@ namespace Printborg.API {
                 client.BaseAddress = new Uri(baseAddress);
                 if (timeout == 0) client.Timeout = Timeout.InfiniteTimeSpan;
                 else client.Timeout = TimeSpan.FromSeconds(timeout);
-                 
+
                 var rawResponse = client.GetAsync(endpoint);
 
                 while (!rawResponse.IsCompleted)
@@ -75,43 +87,49 @@ namespace Printborg.API {
             }
         }
 
-        public static async Task<ResponseObject> Auto1111TextToImageWithReport(Action<string, double> ReportProgress, string baseAddress, Auto1111Payload payload) {
-            using (HttpClient client = new HttpClient()) {
+        public static async Task<string> Auto1111TextToImageWithProgressPolling(Action<string, double> ReportProgress, string baseAddress, Auto1111Payload payload, int pollFrequency = 1000)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                if (baseAddress == null || baseAddress == "") throw new ArgumentException(baseAddress, nameof(baseAddress));
+
+                if (payload == null) throw new ArgumentNullException(nameof(payload));
 
                 client.BaseAddress = new Uri(baseAddress);
                 client.Timeout = Timeout.InfiniteTimeSpan;
+                string textToImageUri = "/sdapi/v1/txt2img";
 
-                string uri = "/sdapi/v1/txt2img";
-
+                // prep payload
                 var json = JsonConvert.SerializeObject(payload);
-
                 var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
 
-                var response = client.PostAsync(uri, content);
+                // send post request
+                var rawResponse = client.PostAsync(textToImageUri, content);
 
 
                 // continuously poll api for task progress until completed
-                while (!response.IsCompleted) {
-                    Console.WriteLine("still in progress ...");
-                    var progressStatus = await pollProgess(baseAddress, client);
-                    ReportProgress("generating", progressStatus.Progress);
+                while (!rawResponse.IsCompleted)
+                {
+                    //request to api to get progress status
+                    string progressUri = "/sdapi/v1/progress";
+                    var progressResponse = await client.GetAsync(progressUri);
+                    // throw error if not successful
+                    progressResponse.EnsureSuccessStatusCode();
 
-                    await Task.Delay(2000);
+                    string responseContent = await progressResponse.Content.ReadAsStringAsync();
+                    var status = JsonConvert.DeserializeObject<ProgressStatus>(responseContent);
+                    ReportProgress("generating", status.Progress);
+
+                    await Task.Delay(pollFrequency);
                 }
 
                 ReportProgress("finished", 1.0);
 
-
-                Console.WriteLine("Image generation finished ...");
-
-                var result = await response.Result.Content.ReadAsStringAsync();
-
-                var resultObject = JsonConvert.DeserializeObject<ResponseObject>(result);
-                return resultObject;
+                return await rawResponse.Result.Content.ReadAsStringAsync();
             }
         }
 
-  
+
 
         public static async Task<ResponseObject> Auto1111TextToImage(string baseAddress, Auto1111Payload payload)
         {
@@ -124,8 +142,8 @@ namespace Printborg.API {
                 // IApiHandler handler = new Auto1111Handler(client);
 
                 // skip any jobs that are running from before
-                var interruptStatus = await Skip(baseAddress, client);
-                Console.WriteLine(interruptStatus);
+                //var interruptStatus = await Skip(baseAddress, client);
+                //Console.WriteLine(interruptStatus);
                 string uri = baseAddress + "/sdapi/v1/txt2img";
 
                 var requestMsg = new HttpRequestMessage();
@@ -177,8 +195,10 @@ namespace Printborg.API {
             return null;
         }
 
-        public static async Task<string> Auto1111_T2I(string address, string username, string password, Auto1111Payload payload) {
-            using (HttpClient client = new HttpClient()) {
+        public static async Task<string> Auto1111_T2I(string address, string username, string password, Auto1111Payload payload)
+        {
+            using (HttpClient client = new HttpClient())
+            {
                 Console.WriteLine("... Attempting to send POST request /sdapi/v1/txt2img");
                 string endpoint = address + "/sdapi/v1/txt2img";
 
@@ -198,6 +218,6 @@ namespace Printborg.API {
 
                 return result;
             }
-        }    
-	}
+        }
+    }
 }

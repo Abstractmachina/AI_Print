@@ -13,6 +13,9 @@ using GrasshopperAsyncComponent;
 using Newtonsoft.Json;
 using Printborg;
 using System.Net.Http;
+using Printborg.API;
+using System.Diagnostics;
+using GH_IO.Serialization;
 
 namespace PrintborgGH.Components.AI
 {
@@ -23,7 +26,7 @@ namespace PrintborgGH.Components.AI
                   "Generate image from a text prompt in Automatic1111.",
                     Labels.PluginName, Labels.Category_AI)
         {
-            BaseWorker = new FetchImageWorker();
+            BaseWorker = new FetchImageWorker(this);
         }
 
         private class FetchImageWorker : WorkerInstance
@@ -31,192 +34,152 @@ namespace PrintborgGH.Components.AI
             public List<string> _debug = new List<string>();
             private Auto1111Payload? _payload = null;
             private string _responseString = "";
+            private string _baseAddress = "";
+            private string _dir = "";
+            private string _filename = "";
+            private List<string> _outputImages = new List<string>();
 
             public FetchImageWorker() : base(null) { }
+            public FetchImageWorker(GH_AsyncComponent parent) : base(parent)
+            {
+               
+            }
 
             public override async void DoWork(Action<string, double> ReportProgress, Action Done)
             {
                 // Checking for cancellation
                 if (CancellationToken.IsCancellationRequested) { return; }
+                if (!_startRequest) {
+                    Parent2.RequestCancellation();
+                    return; }
+
+                _debug.Clear();
+                _responseString = "";
+                _outputImages.Clear();
 
                 try
                 {
+                    await Auto1111Controller.Skip(_baseAddress);
                     _debug.Add("... sending post request");
 
+                    // error checking
                     if (_baseAddress == "") throw new Exception("base address is empty");
                     if (_dir == "") throw new Exception("no directory specified");
                     if (_filename == "") throw new Exception("filename invalid");
                     if (_payload == null) throw new Exception("invalid payload");
 
                     _debug.Add("baseAddress: " + _baseAddress);
-                    _debug.Add("dir: " + _dir);
-                    _debug.Add("filename: " + _filename);
 
-                    //ResponseObject response = null;
-                    using (HttpClient client = new HttpClient())
-                    {
-                        client.BaseAddress = new Uri(_baseAddress);
-                        client.Timeout = Timeout.InfiniteTimeSpan;
+                    // send post request with polling
+                    _responseString = await Auto1111Controller.Auto1111TextToImageWithProgressPolling(ReportProgress, _baseAddress, _payload);
 
-                        string textToImageUri = "/sdapi/v1/txt2img";
+                    if (CancellationToken.IsCancellationRequested) { return; }
 
-                        var json = JsonConvert.SerializeObject(_payload);
-
-                        var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-
-                        var rawResponse = client.PostAsync(textToImageUri, content);
-
-
-                        // continuously poll api for task progress until completed
-                        while (!rawResponse.IsCompleted)
-                        {
-                            Console.WriteLine("still in progress ...");
-
-                            //request to api to get progress status
-                            string progressUri = "/sdapi/v1/progress";
-                            var progressResponse = await client.GetAsync(progressUri);
-                            // throw error if not successful
-                            progressResponse.EnsureSuccessStatusCode();
-
-                            string responseContent = await progressResponse.Content.ReadAsStringAsync();
-                            var status = JsonConvert.DeserializeObject<ProgressStatus>(responseContent);
-                            if (status != null)
-                            {
-
-                            }
-
-
-
-
-                            ReportProgress("generating", status.Progress);
-
-                            await Task.Delay(1000);
-                        }
-
-                        ReportProgress("finished", 1.0);
-                        
-
-                        Console.WriteLine("Image generation finished ...");
-
-                        _responseString = await rawResponse.Result.Content.ReadAsStringAsync();
-
-                    }
-
-                    //var response = await ImagePrompter.Auto1111TextToImageWithReport(ReportProgress, _baseAddress, _payload);
-
-
+                    // if a response was received, convert images and save to directory
                     if (_responseString != "")
                     {
-                        var responseObject = JsonConvert.DeserializeObject<ResponseObject>(_responseString);
-                        if (responseObject == null) { throw new Exception("Invalid ResponseObject"); }
-
                         _debug.Add("... response received");
-                        _debug.Add("... creating current directory");
-                        _debug.Add(responseObject == null ? "invalid response object" : responseObject.ToString());
-
-                        if (responseObject.Images == null) throw new Exception("invalid images received");
-
-                        var date = DateTime.Now.ToString("yymmddhhmmss");
-                        string path = String.Format("D:\\Repos\\Printborg\\PrintborgGH\\user_sketch\\output\\{0}", date);
-                        System.IO.Directory.CreateDirectory(path);
-
-                        for (int i = 0; i < responseObject.Images.Count; i++)
-                        {
-                            _debug.Add("... converting image");
-
-                            var image = Printborg.Util.FromBase64String(responseObject.Images[i]);
-                            image.Save(path + String.Format("/img{0}.png", i), System.Drawing.Imaging.ImageFormat.Png);
-                        }
-                        _debug.Add("... output saved successfully");
+                        var responseObject = convertResponseString(_responseString);
+                        _outputImages = SaveResponseToDirectory(responseObject, _dir, _filename);
                     }
-
-
-                    //_debug.Add(responseObject.Artefacts[0].FinishReason);
-                    //var image = Util.FromBase64String(responseObject.Artefacts[0].Base64);
-
-                    //var success = Util.SaveImageFromBase64(responseObject.Artefacts[0].Base64, @"C:\Users\taole\source\repos\Printborg\user_sketch\output\test4.jpg");
                 }
                 catch (Exception ex)
                 {
                     _debug.Add(ex.ToString());
                 }
+
+                
+                _startRequest = false; //set boolean gate to false
                 Done();
             }
+
+
+            private ResponseObject convertResponseString(string responseString)
+            {
+                var responseObject = JsonConvert.DeserializeObject<ResponseObject>(responseString);
+                if (responseObject == null) { throw new Exception("Invalid ResponseObject"); }
+                if (responseObject.Images == null) throw new Exception("invalid images received");
+
+                return responseObject;
+            }
+
+            /// <summary>
+            /// Save images to dir and return as list of base64 strings.
+            /// </summary>
+            /// <param name="obj"></param>
+            /// <param name="dir"></param>
+            /// <param name="filePrefix"></param>
+            /// <returns></returns>
+            /// <exception cref="Exception"></exception>
+            private List<string> SaveResponseToDirectory(ResponseObject obj, string dir, string filePrefix)
+            {
+                _debug.Add("... creating current directory");
+                var date = DateTime.Now.ToString("yymmddhhmmss");
+                string path = dir + date;
+                _debug.Add("output path: " + path);
+                System.IO.Directory.CreateDirectory(path);
+
+                for (int i = 0; i < obj.Images.Count; i++)
+                {
+                    _debug.Add("... converting image");
+                    string fullPath = path + String.Format("\\{0}{1}.png", filePrefix, i);
+                    _debug.Add("will save at: " + fullPath);
+                    //ConvertAndSaveBase64ToFile(obj.Images[i], path);
+                    var image = Printborg.Util.FromBase64String(obj.Images[i]);
+                    image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+                }
+
+                _debug.Add("... output saved successfully");
+                return obj.Images;
+            }
+
+            private void ConvertAndSaveBase64ToFile(string imageString, string path)
+            {
+                var image = Printborg.Util.FromBase64String(imageString);
+                image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+            }
+
             public override WorkerInstance Duplicate() => new FetchImageWorker();
 
-
-
-            private string _baseAddress = "";
-            private string _dir = "";
-            private string _filename = "";
+            private bool _startRequest = false;
 
             public override void GetData(IGH_DataAccess DA, GH_ComponentParamServer Params)
             {
                 if (CancellationToken.IsCancellationRequested) return;
 
-                bool startProcess = false;
-
-                if (!DA.GetData("Generate", ref startProcess))
+                if (!_startRequest)
                 {
-                    Parent.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Input required");
-                    return;
+                    if (!DA.GetData("Generate", ref _startRequest))
+                    {
+                        Parent.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Input required");
+                        return;
+                    }
+                    if (!DA.GetData("API Address", ref _baseAddress))
+                    {
+                        Parent.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "API base address required.");
+                        return;
+                    }
+                    if (!DA.GetData("Payload", ref _payload))
+                    {
+                        Parent.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Auto1111 Payload required");
+                        return;
+                    }
+                    if (!DA.GetData("File Directory", ref _dir))
+                    {
+                        Parent.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Please specify folder where the output will be saved");
+                        return;
+                    }
+                    if (!DA.GetData("File Name", ref _filename))
+                    {
+                        Parent.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "File prefix not specified. Files will be prefixed with 'img'");
+                        _filename = "img";
+                    }
                 }
-                if (!DA.GetData("API Address", ref _baseAddress))
-                {
-                    Parent.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "API base address required.");
-                    return;
-                }
-                if (!DA.GetData("Payload", ref _payload))
-                {
-                    Parent.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Auto1111 Payload required");
-                    return;
-                }
-                if (!DA.GetData("File Directory", ref _dir))
-                {
-                    Parent.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Please specify folder where the output will be saved");
-                    return;
-                }
-                if (!DA.GetData("File Name", ref _filename))
-                {
-                    Parent.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "File prefix not specified. Files will be prefixed with 'img'");
-                    _filename = "img";
-                }
-
-
-
-
-
-
-
-                //_payload = new Auto1111Payload("3d printing clay, layer, toolpath", "bad, worse, low quality, strange, ugly", 20, 7, 598, 624, new AlwaysOnScripts(ControlNetSettingsFactory.Create("control_v11p_sd15_scribble [d4ba51ff]", "scribble_hed", scribble)));
-
-
-                //int _maxIterations = 100;
-                //DA.GetData(0, ref _maxIterations);
-                //if (_maxIterations > 1000) _maxIterations = 1000;
-                //if (_maxIterations < 10) _maxIterations = 10;
-
-                //MaxIterations = _maxIterations;
             }
 
             public override void SetData(IGH_DataAccess DA)
             {
                 if (CancellationToken.IsCancellationRequested) return;
-
-
-                //if (_responseObject != null && _responseObject.Artefacts != null && _responseObject.Artefacts.Count != 0) {
-                //	var image = Util.FromBase64String(_responseObject.Artefacts[0].Base64);
-
-                //	var filepath = _package.Dir +  _package.Filename + ".jpg";
-                //	//AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, filepath);
-                //	//i2.Save(filepath, ImageFormat.Jpeg);
-                //	//var bmp = new Bitmap(image);
-                //	//bmp.Save(filepath, ImageFormat.Png);
-                //	DA.SetData(0, "Response received.");
-                //	return;
-
-                //}
-
 
                 DA.SetData(0, $"Response not received.");
                 DA.SetDataList(1, _debug);
@@ -236,7 +199,7 @@ namespace PrintborgGH.Components.AI
 
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
-            pManager.AddTextParameter("Image Link", "L", "Path to saved image on disk.", GH_ParamAccess.item);
+            pManager.AddTextParameter("Images", "I", "Images in base64", GH_ParamAccess.list);
             pManager.AddTextParameter("Debug", "D", "Debug Log", GH_ParamAccess.list);
         }
 

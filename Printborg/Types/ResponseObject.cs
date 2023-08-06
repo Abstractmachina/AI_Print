@@ -41,7 +41,7 @@ namespace Printborg.Types
                 }
             }
             output += "\t}\n"; // close images
-            //output += String.Format("\tinfo: {\n\t\t{0}\n\t}", Info); // closed info
+            output += String.Format("\tinfo: {{\n\t\t{0}\n\t}}", Info); // closed info
             output += "}"; // close ResponseObject
             return output;
         }
