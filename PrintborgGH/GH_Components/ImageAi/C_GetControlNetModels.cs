@@ -26,6 +26,9 @@ namespace PrintborgGH.Components.AI
         private class fetchAuto1111ModelWorker : WorkerInstance
         {
             public List<string> _debug = new List<string>();
+            private bool _processRequest = false;
+            private string _baseAddress = "";
+            private string _resultString = "";
 
 
             public fetchAuto1111ModelWorker() : base(null) { }
@@ -50,9 +53,6 @@ namespace PrintborgGH.Components.AI
                         client.BaseAddress = new Uri(_baseAddress);
                         client.Timeout = TimeSpan.FromSeconds(30d);
                         string uri = "/controlnet/model_list";
-
-
-                        //var content = new StringContent(null, System.Text.Encoding.UTF8, "application/json");
 
                         var rawResponse = client.GetAsync(uri);
 
@@ -83,16 +83,10 @@ namespace PrintborgGH.Components.AI
             public override WorkerInstance Duplicate() => new fetchAuto1111ModelWorker();
 
 
-
-            private bool _processRequest = false;
-            private string _baseAddress = "";
-            private string _resultString = "";
-
             public override void GetData(IGH_DataAccess DA, GH_ComponentParamServer Params)
             {
                 if (CancellationToken.IsCancellationRequested) return;
 
-                //bool startProcess = false;
                 if (!_processRequest)
                 {
                     if (!DA.GetData("Send", ref _processRequest))
@@ -107,12 +101,6 @@ namespace PrintborgGH.Components.AI
                         return;
                     }
                 }
-
-                //if (startProcess)
-                //{
-                //    _processRequest = true;
-                //    startProcess = false;
-                //}
             }
 
             public override void SetData(IGH_DataAccess DA)

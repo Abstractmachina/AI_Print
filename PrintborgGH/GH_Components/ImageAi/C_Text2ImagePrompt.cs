@@ -10,6 +10,7 @@ using System.Drawing.Imaging;
 using System.IO;
 
 using Printborg;
+using Printborg.API;
 
 namespace PrintborgGH.Components.AI {
 	public class C_Text2ImagePrompt : GH_Component {
@@ -78,7 +79,7 @@ namespace PrintborgGH.Components.AI {
 			if (processRequest) {
 				DA.SetData("Raw POST Response", "... PROCESSING ...");
 				DA.SetData("Link", "... PROCESSING ...");
-				lastRawResponse = await ImagePrompter.POST_TextToImage(apiKey);
+				lastRawResponse = await Auto1111Controller.POST_TextToImage(apiKey);
 				//if (lastRawResponse != null && lastRawResponse != "") lastResponse = JsonConvert.DeserializeObject<SDResponse>(lastRawResponse);
 				processRequest = false;
 				ExpireSolution(true);

@@ -184,7 +184,6 @@ namespace PrintborgGH.Components.AI
 
 
 
-            private bool _processRequest = false;
             private string _baseAddress = "";
             private string _dir = "";
             private string _filename = "";

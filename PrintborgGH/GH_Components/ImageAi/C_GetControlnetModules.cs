@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using Grasshopper.Kernel;
 using GrasshopperAsyncComponent;
 using Newtonsoft.Json;
+using Printborg.API;
 using Rhino.Geometry;
 
 namespace PrintborgGH.GH_Components.ImageAi
@@ -45,31 +46,33 @@ namespace PrintborgGH.GH_Components.ImageAi
 
                     _debug.Add("baseAddress: " + _baseAddress);
 
-                    using (HttpClient client = new HttpClient())
-                    {
-                        client.BaseAddress = new Uri(_baseAddress);
-                        client.Timeout = TimeSpan.FromSeconds(30d);
-                        string uri = "/controlnet/module_list";
+                    _resultString = await Auto1111Controller.GetControlnetModules(_baseAddress, ReportProgress);
+
+                    //using (HttpClient client = new HttpClient())
+                    //{
+                    //    client.BaseAddress = new Uri(_baseAddress);
+                    //    client.Timeout = TimeSpan.FromSeconds(30d);
+                    //    string uri = "/controlnet/module_list";
 
 
-                        //var content = new StringContent(null, System.Text.Encoding.UTF8, "application/json");
+                    //    //var content = new StringContent(null, System.Text.Encoding.UTF8, "application/json");
 
-                        var rawResponse = client.GetAsync(uri);
+                    //    var rawResponse = client.GetAsync(uri);
 
-                        while (!rawResponse.IsCompleted)
-                        {
-                            ReportProgress("Fetching", 0.5d);
-                            await Task.Delay(2000);
-                        }
+                    //    while (!rawResponse.IsCompleted)
+                    //    {
+                    //        ReportProgress("Fetching", 0.5d);
+                    //        await Task.Delay(2000);
+                    //    }
 
 
-                        rawResponse.Result.EnsureSuccessStatusCode();
+                    //    rawResponse.Result.EnsureSuccessStatusCode();
 
-                        string responseContent = await rawResponse.Result.Content.ReadAsStringAsync();
+                    //    string responseContent = await rawResponse.Result.Content.ReadAsStringAsync();
 
-                        _debug.Add(responseContent);
-                        _resultString = responseContent;
-                    }
+                    //    _debug.Add(responseContent);
+                    //    _resultString = responseContent;
+                    //}
                 }
                 catch (Exception ex)
                 {
