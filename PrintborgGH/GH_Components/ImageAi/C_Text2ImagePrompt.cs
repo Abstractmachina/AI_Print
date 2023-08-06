@@ -79,7 +79,7 @@ namespace PrintborgGH.Components.AI {
 			if (processRequest) {
 				DA.SetData("Raw POST Response", "... PROCESSING ...");
 				DA.SetData("Link", "... PROCESSING ...");
-				lastRawResponse = await Auto1111Controller.POST_TextToImage(apiKey);
+				//lastRawResponse = await Auto1111Controller.POST_TextToImage(apiKey);
 				//if (lastRawResponse != null && lastRawResponse != "") lastResponse = JsonConvert.DeserializeObject<SDResponse>(lastRawResponse);
 				processRequest = false;
 				ExpireSolution(true);

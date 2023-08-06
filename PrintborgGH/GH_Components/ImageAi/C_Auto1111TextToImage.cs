@@ -18,9 +18,9 @@ namespace PrintborgGH.Components.AI
 {
     public class C_Auto1111TextToImage : GH_AsyncComponent
     {
-        public C_Auto1111TextToImage() 
-            : base("A1111 Text-To-Image", "A41T2I", 
-                  "Generate image from a text prompt in Automatic1111.", 
+        public C_Auto1111TextToImage()
+            : base("A1111 Text-To-Image Generation", "A1111T2I",
+                  "Generate image from a text prompt in Automatic1111.",
                     Labels.PluginName, Labels.Category_AI)
         {
             BaseWorker = new FetchImageWorker();
@@ -30,7 +30,7 @@ namespace PrintborgGH.Components.AI
         {
             public List<string> _debug = new List<string>();
             private Auto1111Payload? _payload = null;
-
+            private string _responseString = "";
 
             public FetchImageWorker() : base(null) { }
 
@@ -41,33 +41,18 @@ namespace PrintborgGH.Components.AI
 
                 try
                 {
-
-
-                    // FOR TESTING
-                    // TODO: Delete after linked to data input in gh
-                    //var serverAddress = "http://127.0.0.1:7860"; // local auto1111 server
-                    //var serverAddress = "https://37af3813aead713f87.gradio.live";
-                    //var payload = new Auto1111Payload("3d printing clay, layer, toolpath", "bad, worse, low quality, strange, ugly", 20, 7, 598, 624, new AlwaysOnScripts(ControlNetSettingsFactory.Create("control_v11p_sd15_scribble [d4ba51ff]", "scribble_hed", scribble)));
-
-
-                    _debug.Add(JsonConvert.SerializeObject(_payload));
                     _debug.Add("... sending post request");
-
-
-
 
                     if (_baseAddress == "") throw new Exception("base address is empty");
                     if (_dir == "") throw new Exception("no directory specified");
                     if (_filename == "") throw new Exception("filename invalid");
                     if (_payload == null) throw new Exception("invalid payload");
 
-                    _debug.Add("baseAddress: "+  _baseAddress);
-                    _debug.Add("dir: "+  _dir);
-                    _debug.Add("filename: "+  _filename);
-                    _debug.Add("payload: "+  _payload.ToString());
+                    _debug.Add("baseAddress: " + _baseAddress);
+                    _debug.Add("dir: " + _dir);
+                    _debug.Add("filename: " + _filename);
 
-
-                    ResponseObject response = null;
+                    //ResponseObject response = null;
                     using (HttpClient client = new HttpClient())
                     {
                         client.BaseAddress = new Uri(_baseAddress);
@@ -97,10 +82,7 @@ namespace PrintborgGH.Components.AI
                             var status = JsonConvert.DeserializeObject<ProgressStatus>(responseContent);
                             if (status != null)
                             {
-                                _debug.Add("Progress: " + status.Progress);
-                                _debug.Add("estimated eta: " + status.Eta);
-                                _debug.Add("Job: " + status.stateObject.Job);
-                                
+
                             }
 
 
@@ -108,44 +90,41 @@ namespace PrintborgGH.Components.AI
 
                             ReportProgress("generating", status.Progress);
 
-                            await Task.Delay(2000);
+                            await Task.Delay(1000);
                         }
 
                         ReportProgress("finished", 1.0);
-
+                        
 
                         Console.WriteLine("Image generation finished ...");
 
-                        var result = await rawResponse.Result.Content.ReadAsStringAsync();
+                        _responseString = await rawResponse.Result.Content.ReadAsStringAsync();
 
-                        response = JsonConvert.DeserializeObject<ResponseObject>(result);
                     }
-
-
-
-
-
-
-
 
                     //var response = await ImagePrompter.Auto1111TextToImageWithReport(ReportProgress, _baseAddress, _payload);
 
 
-                    if (response != null)
+                    if (_responseString != "")
                     {
-                        _debug.Add(response.ToString());
+                        var responseObject = JsonConvert.DeserializeObject<ResponseObject>(_responseString);
+                        if (responseObject == null) { throw new Exception("Invalid ResponseObject"); }
+
                         _debug.Add("... response received");
                         _debug.Add("... creating current directory");
-                        if (response.Images == null) throw new Exception("invalid images received");
-                        var date = DateTime.Now.ToString("yymmdd.hhmmss");
-                        string path = String.Format("./user_sketch/output/{0}", date);
+                        _debug.Add(responseObject == null ? "invalid response object" : responseObject.ToString());
+
+                        if (responseObject.Images == null) throw new Exception("invalid images received");
+
+                        var date = DateTime.Now.ToString("yymmddhhmmss");
+                        string path = String.Format("D:\\Repos\\Printborg\\PrintborgGH\\user_sketch\\output\\{0}", date);
                         System.IO.Directory.CreateDirectory(path);
 
-                        for (int i = 0; i < response.Images.Count; i++)
+                        for (int i = 0; i < responseObject.Images.Count; i++)
                         {
                             _debug.Add("... converting image");
 
-                            var image = Printborg.Util.FromBase64String(response.Images[i]);
+                            var image = Printborg.Util.FromBase64String(responseObject.Images[i]);
                             image.Save(path + String.Format("/img{0}.png", i), System.Drawing.Imaging.ImageFormat.Png);
                         }
                         _debug.Add("... output saved successfully");
@@ -162,23 +141,6 @@ namespace PrintborgGH.Components.AI
                     _debug.Add(ex.ToString());
                 }
                 Done();
-
-
-                //await Task.Delay(2000);
-
-
-                //for (int i = 0; i <= MaxIterations; i++) {
-                //	var sw = new SpinWait();
-                //	for (int j = 0; j <= 100; j++)
-                //		sw.SpinOnce();sla
-
-                //	ReportProgress(Id, ((double)(i + 1) / (double)MaxIterations));
-
-                //	// Checking for cancellation
-                //	if (CancellationToken.IsCancellationRequested) { return; }
-                //}
-
-                //Done();
             }
             public override WorkerInstance Duplicate() => new FetchImageWorker();
 
@@ -219,6 +181,12 @@ namespace PrintborgGH.Components.AI
                     Parent.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "File prefix not specified. Files will be prefixed with 'img'");
                     _filename = "img";
                 }
+
+
+
+
+
+
 
                 //_payload = new Auto1111Payload("3d printing clay, layer, toolpath", "bad, worse, low quality, strange, ugly", 20, 7, 598, 624, new AlwaysOnScripts(ControlNetSettingsFactory.Create("control_v11p_sd15_scribble [d4ba51ff]", "scribble_hed", scribble)));
 
