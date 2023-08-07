@@ -1,4 +1,5 @@
 ﻿using Grasshopper.Kernel.Types;
+using Rhino.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -39,11 +40,27 @@ namespace Printborg.GH_Types {
         }
 
         public override bool CastTo<Q>(ref Q target) {
+
+            //cast to string = base64
+
+            //cast to mesh
+
+
             return base.CastTo(ref target);
         }
 
         public override bool CastFrom(object source) {
+
+            if (source == null) return false;
+            if (source.GetType() == typeof(Mesh)) {
+                //convert mesh to image
+            }
+            if (source.GetType() == typeof (string)) { 
+                // possibly a base64 encoded image 
+            
+            }
             return base.CastFrom(source);
+
         }
     }
 }
