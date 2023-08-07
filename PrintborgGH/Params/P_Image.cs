@@ -9,9 +9,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace PrintborgGH.Params {
-    public class P_TextPrompt : GH_Param<GH_TextPrompt> {
-        public P_TextPrompt()
-          : base("Text Prompt", "TPrompt", "Represents Text prompt consisting of text and weight", Labels.PluginName, Labels.Category_Param, GH_ParamAccess.item) { }
+    public class P_Image : GH_Param<GH_Image> {
+        public P_Image()
+          : base("Image", "IMG", "Raster Image", Labels.PluginName, Labels.Category_Param, GH_ParamAccess.item) { }
 
         #region properties
         public override GH_Exposure Exposure {
@@ -40,7 +40,7 @@ namespace PrintborgGH.Params {
 
         public override string TypeName {
             get {
-                return "Text Prompt";
+                return "Image";
             }
         }
         #endregion
@@ -50,15 +50,15 @@ namespace PrintborgGH.Params {
         /// Since IGH_Goo is an interface rather than a class, we HAVE to override this method. 
         /// For IGH_Goo parameters it's usually good to return a blank GH_ObjectWrapper.
         /// </summary>
-        //protected override GH_Classifier InstantiateT() {
-        //  //return new GH_ObjectWrapper();
-        //  return new GH_Classifier();
-        //}
+        protected override GH_Image InstantiateT() {
+            //return new GH_ObjectWrapper();
+            return new GH_Image();
+        }
 
-        ///// <summary>
-        ///// Since our parameter is of type IGH_Goo, it will accept ALL data. 
-        ///// We need to remove everything now that is not, GH_Colour, GH_Curve or null.
-        ///// </summary>
+        /// <summary>
+        /// Since our parameter is of type IGH_Goo, it will accept ALL data. 
+        /// We need to remove everything now that is not, GH_Colour, GH_Curve or null.
+        /// </summary>
         //protected override void OnVolatileDataCollected() {
         //  //for (int p = 0; p < m_data.PathCount; p++) {
         //  //  List<IGH_Goo> branch = m_data.Branches[p];
