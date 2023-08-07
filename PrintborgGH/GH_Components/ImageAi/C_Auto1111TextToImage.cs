@@ -27,6 +27,9 @@ namespace PrintborgGH.Components.AI
                     Labels.PluginName, Labels.Category_AI)
         {
             BaseWorker = new FetchImageWorker(this);
+            BaseWorker.Parent2 = this;
+
+
         }
 
         private class FetchImageWorker : WorkerInstance
@@ -40,18 +43,25 @@ namespace PrintborgGH.Components.AI
             private List<string> _outputImages = new List<string>();
 
             public FetchImageWorker() : base(null) { }
-            public FetchImageWorker(GH_AsyncComponent parent) : base(parent)
+            public FetchImageWorker(GH_AsyncComponent parent2) : base(parent2)
             {
-               
+
             }
 
             public override async void DoWork(Action<string, double> ReportProgress, Action Done)
             {
+                _debug.Add("parent: ");
+                _debug.Add(Parent == null ? "null" : Parent.ToString());
+                _debug.Add("parent2: ");
+                _debug.Add(Parent2 == null ? "null" : Parent2.ToString());
+
                 // Checking for cancellation
                 if (CancellationToken.IsCancellationRequested) { return; }
-                if (!_startRequest) {
-                    Parent2.RequestCancellation();
-                    return; }
+                if (!_startRequest)
+                {
+                    //Parent2.RequestCancellation();
+                    return;
+                }
 
                 _debug.Clear();
                 _responseString = "";
@@ -80,7 +90,28 @@ namespace PrintborgGH.Components.AI
                     {
                         _debug.Add("... response received");
                         var responseObject = convertResponseString(_responseString);
-                        _outputImages = SaveResponseToDirectory(responseObject, _dir, _filename);
+                        _outputImages = responseObject.Images;
+                        //_outputImages = SaveResponseToDirectory(responseObject, _dir, _filename);
+
+                        _debug.Add("... creating current directory");
+                        var date = DateTime.Now.ToString("yymmddhhmmss");
+                        string path = _dir + date;
+                        _debug.Add("output path: " + path);
+                        System.IO.Directory.CreateDirectory(path);
+
+                        for (int i = 0; i < responseObject.Images.Count; i++)
+                        {
+                            _debug.Add("... converting image");
+                            string fullPath = path + String.Format("\\{0}{1}.jpg", _filename, i);
+                            _debug.Add("will save at: " + fullPath);
+                            //ConvertAndSaveBase64ToFile(obj.Images[i], path);
+                            var image = Printborg.Util.FromBase64String(responseObject.Images[i]);
+                            _debug.Add(String.Format("width: {0}, height: {1}", image.Width, image.Height));
+                            //image.Save(path); // IMAGE SAVE NOT WORKING generic erro GDI+
+                            //image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+                        }
+
+                        _debug.Add("... output saved successfully");
                     }
                 }
                 catch (Exception ex)
@@ -88,7 +119,7 @@ namespace PrintborgGH.Components.AI
                     _debug.Add(ex.ToString());
                 }
 
-                
+
                 _startRequest = false; //set boolean gate to false
                 Done();
             }

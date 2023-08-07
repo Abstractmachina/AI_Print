@@ -35,9 +35,10 @@ namespace GrasshopperAsyncComponent
         //{
         //    Parent = _parent;
         //}
-        protected WorkerInstance(GH_AsyncComponent _parent)
+        protected WorkerInstance(GH_AsyncComponent parent2)
         {
-            Parent2 = _parent;
+            Parent = parent2;
+            Parent2 = parent2;
         }
 
         /// <summary>
