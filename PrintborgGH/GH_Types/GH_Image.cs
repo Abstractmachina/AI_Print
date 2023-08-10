@@ -26,6 +26,9 @@ namespace Printborg.GH_Types {
         public GH_Image(GH_Image source) {
             this.Value = source.Value;
         }
+        public GH_Image(string base64String) {
+            this.Value = Util.FromBase64String(base64String);
+        }
         #endregion
 
 
