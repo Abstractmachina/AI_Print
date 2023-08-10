@@ -27,7 +27,7 @@ namespace Printborg {
 			Image image;
 
 			var mstream = new MemoryStream(bytes);
-			image = Image.FromStream(mstream);
+			image = Image.FromStream(mstream, true);
 			//image.Save(@"C:\Users\taole\source\repos\Printborg\user_sketch\output\test3.jpg");
 			return (Image)image.Clone();
 		}

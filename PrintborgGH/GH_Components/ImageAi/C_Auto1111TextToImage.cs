@@ -16,6 +16,9 @@ using System.Net.Http;
 using Printborg.API;
 using System.Diagnostics;
 using GH_IO.Serialization;
+using System.Drawing;
+using Sprache;
+using System.IO;
 
 namespace PrintborgGH.Components.AI
 {
@@ -94,7 +97,7 @@ namespace PrintborgGH.Components.AI
                         //_outputImages = SaveResponseToDirectory(responseObject, _dir, _filename);
 
                         _debug.Add("... creating current directory");
-                        var date = DateTime.Now.ToString("yymmddhhmmss");
+                        var date = DateTime.Now.ToString("yyMMdd_hhmmss");
                         string path = _dir + date;
                         _debug.Add("output path: " + path);
                         System.IO.Directory.CreateDirectory(path);
@@ -102,13 +105,24 @@ namespace PrintborgGH.Components.AI
                         for (int i = 0; i < responseObject.Images.Count; i++)
                         {
                             _debug.Add("... converting image");
-                            string fullPath = path + String.Format("\\{0}{1}.jpg", _filename, i);
+                            string fullPath = path + String.Format("\\{0}{1}.jpeg", _filename, i);
                             _debug.Add("will save at: " + fullPath);
                             //ConvertAndSaveBase64ToFile(obj.Images[i], path);
-                            var image = Printborg.Util.FromBase64String(responseObject.Images[i]);
+                            //var image = Printborg.Util.FromBase64String(responseObject.Images[i]);
+
+                            byte[] bytes = Convert.FromBase64String(responseObject.Images[i]);
+
+                            Image image;
+
+                            var mstream = new MemoryStream(bytes);
+                            image = Image.FromStream(mstream, true);
+                            //image.Save(@"C:\Users\taole\source\repos\Printborg\user_sketch\output\test3.jpg");
                             _debug.Add(String.Format("width: {0}, height: {1}", image.Width, image.Height));
                             //image.Save(path); // IMAGE SAVE NOT WORKING generic erro GDI+
-                            //image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+
+                            var bm = new Bitmap(image);
+
+                            bm.Save(fullPath, System.Drawing.Imaging.ImageFormat.Jpeg);
                         }
 
                         _debug.Add("... output saved successfully");
