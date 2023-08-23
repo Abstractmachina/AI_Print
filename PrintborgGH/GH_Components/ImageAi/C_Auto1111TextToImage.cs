@@ -19,6 +19,7 @@ using GH_IO.Serialization;
 using System.Drawing;
 using Sprache;
 using System.IO;
+using Grasshopper.Kernel.Types;
 
 namespace PrintborgGH.Components.AI {
     public class C_Auto1111TextToImage : GH_AsyncComponent {
@@ -188,9 +189,10 @@ namespace PrintborgGH.Components.AI {
                     DA.SetData(0, $"No data");
                 } else {
                     DA.SetDataList(0, _outputImages.Select(img => new GH_Image(img)));
+                    DA.SetDataList(1, _outputImages.Select(img => new GH_String(img)));
 
                 }
-                DA.SetDataList(1, _debug);
+                DA.SetDataList(2, _debug);
 
             }
         }
@@ -206,6 +208,7 @@ namespace PrintborgGH.Components.AI {
 
         protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
             pManager.AddGenericParameter("Images", "I", "Images generated from Auto1111", GH_ParamAccess.list);
+            pManager.AddGenericParameter("Strings", "S", "Base64 strings for the images", GH_ParamAccess.list);
             pManager.AddTextParameter("Debug", "D", "Debug Log", GH_ParamAccess.list);
         }
 

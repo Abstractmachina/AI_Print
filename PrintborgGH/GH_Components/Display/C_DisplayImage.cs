@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using Grasshopper.Kernel;
+using Printborg.GH_Types;
 using Rhino.Geometry;
 
 namespace PrintborgGH.Components.Display {
@@ -37,7 +38,7 @@ namespace PrintborgGH.Components.Display {
         /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
         protected override void SolveInstance(IGH_DataAccess DA) {
 
-            Image img = null;
+            GH_Image img = new GH_Image();
             Plane plane = Plane.Unset;
             double scale = 1d;
             if (!DA.GetData(0, ref img)) {
@@ -51,13 +52,13 @@ namespace PrintborgGH.Components.Display {
 
             Mesh m = new Mesh();
             // iterate through pixels
-            for (int x = 0; x < img.Width; x++) {
-                for (int y = 0; y < img.Height; y++) {
-                    // get argb color of pixel
-                    // for each pixel, build mesh face with sampled color
-                    // add face to mesh
-                }
-            }
+            //for (int x = 0; x < img.Width; x++) {
+            //    for (int y = 0; y < img.Height; y++) {
+            //        // get argb color of pixel
+            //        // for each pixel, build mesh face with sampled color
+            //        // add face to mesh
+            //    }
+            //}
 
             DA.SetData(0, m);
 

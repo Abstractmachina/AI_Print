@@ -9,7 +9,10 @@ using System.Threading.Tasks;
 
 namespace Printborg.GH_Types {
     public class GH_Image : GH_Goo<Image> {
-        public override bool IsValid => true;
+        public override bool IsValid {
+            get { if (this.Value == null) return false; else return true; }
+        
+        }
 
         public override string TypeName { get { return "Image"; } }
 
@@ -17,7 +20,9 @@ namespace Printborg.GH_Types {
 
 
         #region Constructors
-        public GH_Image() { }
+        public GH_Image() {
+            this.Value = null;
+        }
 
         public GH_Image(Image image) {
             this.Value = image;
@@ -42,14 +47,23 @@ namespace Printborg.GH_Types {
             return Value.ToString();
         }
 
+        public override object ScriptVariable() {
+            return this.Value;
+        }
+
         public override bool CastTo<Q>(ref Q target) {
 
             //cast to string = base64
+            if (typeof(Q).IsAssignableFrom(typeof(string))) {
+                var rawString = Util.ToBase64String(this.Value);
+                object ptr = new GH_String(rawString);
+                target = (Q)ptr;
+                return true;
+            }
 
             //cast to mesh
 
-
-            return base.CastTo(ref target);
+            return false;
         }
 
         public override bool CastFrom(object source) {
@@ -60,10 +74,14 @@ namespace Printborg.GH_Types {
             }
             if (source.GetType() == typeof (string)) { 
                 // possibly a base64 encoded image 
-            
+                var img = Printborg.Util.FromBase64String((string)source);
+                this.Value = img;
+                return true;
             }
-            return base.CastFrom(source);
+            return false;
 
         }
+
+
     }
 }

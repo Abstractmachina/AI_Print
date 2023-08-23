@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -31,6 +32,14 @@ namespace Printborg {
 			//image.Save(@"C:\Users\taole\source\repos\Printborg\user_sketch\output\test3.jpg");
 			return (Image)image.Clone();
 		}
+
+		public static string ToBase64String(Image image) {
+            var imageStream = new MemoryStream();
+            image.Save(imageStream, ImageFormat.Png);
+            imageStream.Position = 0;
+            var imageBytes = imageStream.ToArray();
+            return Convert.ToBase64String(imageBytes);
+        }
 
 
 		
