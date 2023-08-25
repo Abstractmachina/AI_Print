@@ -16,9 +16,9 @@ using Printborg.Json;
 using System.Net;
 using System.Runtime.CompilerServices;
 
-namespace Printborg.API
+namespace Printborg.Controllers
 {
-    static public class Auto1111Controller
+    public static class Auto1111Controller
     {
 
         /// <summary>
@@ -43,13 +43,13 @@ namespace Printborg.API
         {
             if (baseAddress == null || baseAddress == "") throw new ArgumentException(baseAddress, nameof(baseAddress));
 
-            return await Auto1111Controller.Get(baseAddress, "/controlnet/module_list", ReportProgress, 30);
+            return await Get(baseAddress, "/controlnet/module_list", ReportProgress, 30);
         }
         public static async Task<string> GetControlnetModels(string baseAddress, Action<string, double> ReportProgress)
         {
             if (baseAddress == null || baseAddress == "") throw new ArgumentException(baseAddress, nameof(baseAddress));
 
-            return await Auto1111Controller.Get(baseAddress, "/controlnet/model_list", ReportProgress, 30);
+            return await Get(baseAddress, "/controlnet/model_list", ReportProgress, 30);
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace Printborg.API
 
                 // prep payload
                 var json = JsonConvert.SerializeObject(payload);
-                var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 // send post request
                 var rawResponse = client.PostAsync(textToImageUri, content);
@@ -153,7 +153,7 @@ namespace Printborg.API
                 // requestMsg.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
                 Console.WriteLine("test");
-                var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 var response = client.PostAsync("/sdapi/v1/txt2img", content);
 

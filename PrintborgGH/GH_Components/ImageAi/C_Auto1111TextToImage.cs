@@ -13,15 +13,16 @@ using GrasshopperAsyncComponent;
 using Newtonsoft.Json;
 using Printborg;
 using System.Net.Http;
-using Printborg.API;
 using System.Diagnostics;
 using GH_IO.Serialization;
 using System.Drawing;
 using Sprache;
 using System.IO;
 using Grasshopper.Kernel.Types;
+using Printborg.Controllers;
 
-namespace PrintborgGH.Components.AI {
+namespace PrintborgGH.Components.AI
+{
     public class C_Auto1111TextToImage : GH_AsyncComponent {
         public C_Auto1111TextToImage()
             : base("A1111 Text-To-Image Generation", "A1111T2I",

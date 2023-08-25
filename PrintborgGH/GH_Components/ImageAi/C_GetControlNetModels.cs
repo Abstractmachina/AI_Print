@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using Grasshopper.Kernel;
 using GrasshopperAsyncComponent;
 using Newtonsoft.Json;
-using Printborg.API;
+using Printborg.Controllers;
 using Printborg.Types;
 using PrintborgGH.GH_Types;
 using Rhino.Geometry;

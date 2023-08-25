@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using Grasshopper.Kernel;
 using GrasshopperAsyncComponent;
 using Newtonsoft.Json;
-using Printborg.API;
+using Printborg.Controllers;
 using Rhino.Geometry;
 
 namespace PrintborgGH.GH_Components.ImageAi
