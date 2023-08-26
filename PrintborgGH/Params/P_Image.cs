@@ -81,37 +81,37 @@ namespace PrintborgGH.Params {
 
 
                     GH_Image castImage = null;
-                    if
+                    //if
 
 
 
                     //GH_Curve castCurve = null;
-                    if (GH_Convert.ToGHCurve(goo, GH_Conversion.Both, ref castCurve)) {
-                            //  //Yay, the data could be converted. Put the new curve back into our volatile data.
-                            //  branch[i] = castCurve;
-                            //  continue;
-                            //}
+                    //if (GH_Convert.ToGHCurve(goo, GH_Conversion.Both, ref castCurve)) {
+                    //  //Yay, the data could be converted. Put the new curve back into our volatile data.
+                    //  branch[i] = castCurve;
+                    //  continue;
+                    //}
 
-                            //GH_Colour castColour = null;
-                            //if (GH_Convert.ToGHColour(goo, GH_Conversion.Both, ref castColour)) {
-                            //  //Yay, the data could be converted. Put the new colour back into our volatile data.
-                            //  branch[i] = castColour;
-                            //  continue;
-                            //}
+                    //GH_Colour castColour = null;
+                    //if (GH_Convert.ToGHColour(goo, GH_Conversion.Both, ref castColour)) {
+                    //  //Yay, the data could be converted. Put the new colour back into our volatile data.
+                    //  branch[i] = castColour;
+                    //  continue;
+                    //}
 
-                            ////Tough luck, the data is beyond repair. We'll set a runtime error and insert a null.
-                            //AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-                            //  string.Format("Data of type {0} could not be converted into either a colour or a curve", goo.TypeName));
-                            //branch[i] = null;
+                    ////Tough luck, the data is beyond repair. We'll set a runtime error and insert a null.
+                    //AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
+                    //  string.Format("Data of type {0} could not be converted into either a colour or a curve", goo.TypeName));
+                    //branch[i] = null;
 
-                            //As a side-note, we are not using the CastTo methods here on goo. If goo is of some unknown 3rd party type
-                            //which knows how to convert itself into a curve then this parameter will not work with that. 
-                            //If you want to know how to do this, ask.
-                            //    }
-                            //  }
-                        }
+                    //As a side-note, we are not using the CastTo methods here on goo. If goo is of some unknown 3rd party type
+                    //which knows how to convert itself into a curve then this parameter will not work with that. 
+                    //If you want to know how to do this, ask.
+                    //    }
+                    //  }
+                }
             }
         }
         #endregion
     } // end P_Image
-} // end namespace
+}// end namespace

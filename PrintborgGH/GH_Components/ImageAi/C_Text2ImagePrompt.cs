@@ -10,7 +10,6 @@ using System.Drawing.Imaging;
 using System.IO;
 
 using Printborg;
-using Printborg.API;
 
 namespace PrintborgGH.Components.AI {
 	public class C_Text2ImagePrompt : GH_Component {
@@ -58,7 +57,7 @@ namespace PrintborgGH.Components.AI {
 		/// </summary>
 		/// <param name="DA">The DA object can be used to retrieve data from input parameters and 
 		/// to store data in output parameters.</param>
-		protected override async void SolveInstance(IGH_DataAccess DA) {
+		protected override void SolveInstance(IGH_DataAccess DA) {
 
 			string apiKey = "";
 			string prompt = "";

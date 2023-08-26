@@ -8,6 +8,6 @@ using System.Threading.Tasks;
 namespace PrintborgGH.libs {
     internal static class GH_Conversion {
         //if (GH_Convert.ToGHCurve(goo, GH_Conversion.Both, ref castCurve)) {
-        ToGHImage(IGH_Goo goo, )
+        //ToGHImage(IGH_Goo goo, )
     }
 }
