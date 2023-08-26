@@ -15,6 +15,7 @@ namespace Printborg.Interfaces
         Task GET_Job(string id);
         Task GET_allJobs();
         Task DELETE_allJobs();
+        Task<string> GET_Batch(string id);
 
     }
 }

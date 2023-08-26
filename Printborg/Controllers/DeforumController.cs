@@ -14,8 +14,6 @@ namespace Printborg.Controllers
 {
     public class DeforumController : IApiController
     {
-
-
         private string _baseAddress = "";
         private int _timeout = 0;
 
@@ -66,10 +64,9 @@ namespace Printborg.Controllers
 
         public async Task<string> POST_Job(string payload)
         {
+            const string endpoint = "deforum_api/batches";
 
-            string endpoint = "deforum_api/batches";
-
-            if (_baseAddress == null || _baseAddress == "") throw new ArgumentException(_baseAddress, "Invalid baseAddress");
+            ValidateBaseAddress();
 
 
             using (HttpClient client = new HttpClient())
@@ -96,6 +93,53 @@ namespace Printborg.Controllers
                 //    ]
                 //}
             }
+        }
+
+        public async Task<string> GET_Batch(string id) {
+            // example response:
+            // [
+            //    {
+            //      "id": "batch(948023533)-0",
+            //      "status": "SUCCEEDED",
+            //      "phase": "DONE",
+            //      "error_type": "NONE",
+            //      "phase_progress": 1.0,
+            //      "started_at": 1693060416.648067,
+            //      "last_updated": 1693061418.838495,
+            //      "execution_time": 1002.19042801857,
+            //      "update_interval_time": 1.8368990421295166,
+            //      "updates": 35,
+            //      "message": null,
+            //      "outdir": "D:\\Repos\\stable-diffusion-webui\\outputs\\img2img-images\\Deforum_01",
+            //      "timestring": "20230826163336",
+            //      "deforum_settings": {
+            //      ...
+            //      },
+            //      "options_overrides": null
+            //    }
+            // ]
+
+            string endpoint = $"deforum_api/batches/{id}";
+
+            ValidateBaseAddress();
+
+            using (HttpClient client = new HttpClient()) {
+                Setup(client);
+               
+                // send post request
+                var rawResponse = await client.GetAsync(endpoint);
+                return await rawResponse.Content.ReadAsStringAsync();
+            }
+        }
+
+        private void Setup(HttpClient client) {
+            client.BaseAddress = new Uri(_baseAddress);
+            if (_timeout == 0) client.Timeout = Timeout.InfiniteTimeSpan;
+            else client.Timeout = TimeSpan.FromSeconds(_timeout);
+        }
+
+        private void ValidateBaseAddress() {
+            if (_baseAddress == null || _baseAddress == "") throw new ArgumentException(_baseAddress, "Invalid baseAddress");
         }
     }
 

@@ -11,13 +11,13 @@ using Rhino.Geometry;
 
 namespace PrintborgGH.GH_Components.ImageAi
 {
-    public class C_SendDeforumJob : GH_AsyncComponent {
+    public class C_SubmitDeforumJob : GH_AsyncComponent {
         /// <summary>
         /// Initializes a new instance of the C_SendDeforumJob class.
         /// </summary>
-        public C_SendDeforumJob()
-          : base("Send Deforum Job", "Deforum",
-              "Send a video generation job to Deforum server",
+        public C_SubmitDeforumJob()
+          : base("Submit Deforum Job", "Go Deforum",
+              "Submit job to Deforum server",
               Labels.PluginName, Labels.Category_AI)
         {
             BaseWorker = new InitJobWorker(this);
@@ -138,8 +138,8 @@ namespace PrintborgGH.GH_Components.ImageAi
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
             pManager.AddTextParameter("Success Status", "S", "Message whether Batch was submitted successfully.", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Batch ID", "B", "Batch ID", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Job IDs", "J", "Job IDs", GH_ParamAccess.list);
+            pManager.AddTextParameter("Batch ID", "B", "Batch ID", GH_ParamAccess.item);
+            pManager.AddTextParameter("Job IDs", "J", "Job IDs", GH_ParamAccess.list);
             pManager.AddTextParameter("Debug", "D", "Debug Log", GH_ParamAccess.list);
         }
 
