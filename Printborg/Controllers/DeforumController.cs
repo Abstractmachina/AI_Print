@@ -41,10 +41,16 @@ namespace Printborg.Controllers
             _timeout = timeout;
 
         }
+
+        
         #endregion
 
         public Task DELETE_Job(string id)
         {
+            throw new NotImplementedException();
+        }
+
+        public Task DELETE_allJobs() {
             throw new NotImplementedException();
         }
 
