@@ -11,10 +11,10 @@ namespace Printborg.Interfaces
         //Task<string> Get(string baseAddress, string endpoint, Action<string, double> ReportProgress, int timeout = 30);
 
         Task<string> POST_Job(string payload);
-        Task DELETE_Job(string id);
+        Task<string> DELETE_Job(string id);
         Task GET_Job(string id);
         Task<string> GET_Jobs();
-        Task DELETE_allJobs();
+        Task<List<string>> DELETE_Jobs();
         Task<string> GET_Batch(string id);
         Task<string> GET_Batches();
 

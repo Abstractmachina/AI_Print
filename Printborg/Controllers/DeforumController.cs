@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using static System.Net.WebRequestMethods;
 using Newtonsoft.Json;
+using Printborg.Types;
 
 namespace Printborg.Controllers {
     public class DeforumController : IApiController {
@@ -37,12 +38,27 @@ namespace Printborg.Controllers {
 
         #endregion
 
-        public Task DELETE_Job(string id) {
-            throw new NotImplementedException();
+        public async Task<string> DELETE_Job(string id) {
+            string endpoint = $"deforum_api/jobs/{id}";
+            using (var client = new HttpClient()) {
+                Setup(client);
+
+                var response = await client.DeleteAsync(endpoint);
+
+                return await response.Content.ReadAsStringAsync();
+            }
         }
 
-        public Task DELETE_allJobs() {
-            throw new NotImplementedException();
+        public async Task<List<string>> DELETE_Jobs() {
+            var jobIds = JsonConvert.DeserializeObject<Dictionary<string, DeforumJob>>(await this.GET_Jobs()).Select(j => j.Value.Id);
+
+            var outList = new List<string>();
+            foreach (var id in jobIds) {
+                var response = await this.DELETE_Job(id);
+                var status = JsonConvert.DeserializeObject<Dictionary<string, string>>(response);
+                outList.Add($"{status["id"]} : {status["message"]}");
+            }
+            return outList;
         }
 
         public async Task<string> GET_Jobs() {
