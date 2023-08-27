@@ -6,6 +6,7 @@ using GrasshopperAsyncComponent;
 using Newtonsoft.Json;
 using Printborg.Controllers;
 using Printborg.Interfaces;
+using Printborg.Types;
 using Rhino.Geometry;
 
 namespace PrintborgGH.GH_Components.ImageAi {
@@ -29,7 +30,7 @@ namespace PrintborgGH.GH_Components.ImageAi {
             private bool _isDone = false;
             private bool _isOn = false;
             private List<string> _runtimeMessages = new List<string>();
-            private List<Job> _jobStatusList = new List<Job>();
+            private List<DeforumJob> _jobStatusList = new List<DeforumJob>();
 
             public CheckStatusWorker() : base(null) { }
             public CheckStatusWorker(GH_AsyncComponent parent2) : base(parent2) {
@@ -64,7 +65,7 @@ namespace PrintborgGH.GH_Components.ImageAi {
 
 
 
-                    _jobStatusList = JsonConvert.DeserializeObject<List<Job>>(rawResponse);
+                    _jobStatusList = JsonConvert.DeserializeObject<List<DeforumJob>>(rawResponse);
                     _debug.Add(_jobStatusList[0].ToString());
 
                 }
@@ -159,57 +160,6 @@ namespace PrintborgGH.GH_Components.ImageAi {
         }
 
         public override GH_Exposure Exposure => GH_Exposure.primary;
-
-        private class Job {
-            //[
-            //    {
-            //        "id": "batch(948023533)-0",
-            //        "status": "SUCCEEDED",
-            //        "phase": "DONE",
-            //        "error_type": "NONE",
-            //        "phase_progress": 1.0,
-            //        "started_at": 1693060416.648067,
-            //        "last_updated": 1693061418.838495,
-            //        "execution_time": 1002.19042801857,
-            //        "update_interval_time": 1.8368990421295166,
-            //        "updates": 35,
-            //        "message": null,
-            //        "outdir": "D:\\Repos\\stable-diffusion-webui\\outputs\\img2img-images\\Deforum_01",
-            //        "timestring": "20230826163336",
-            //        "options_overrides": null
-            //    }
-            //]
-
-            [JsonProperty("id")]
-            public string Id { get; set; }
-            [JsonProperty("status")]
-            public string Status { get; set; }
-            [JsonProperty("phase")]
-            public string Phase { get; set; }
-            [JsonProperty("error_type")]
-            public string ErrorType { get; set; }
-            [JsonProperty("phase_progress")]
-            public double PhaseProgress { get; set; }
-            [JsonProperty("started_at")]
-            public double StartedAt { get; set; }
-            [JsonProperty("last_updated")]
-            public double LastUpdated { get; set; }
-            [JsonProperty("execution_time")]
-            public double ExecutionTime { get; set; }
-            [JsonProperty("update_interval_time")]
-            public double UpdateIntervalTime { get; set; }
-            [JsonProperty("updates")]
-            public int Updates { get; set; }
-            [JsonProperty("message")]
-            public string Message { get; set; }
-            [JsonProperty("outdir")]
-            public string Outdir { get; set; }
-            [JsonProperty("timestring")]
-            public string Timestring { get; set; }
-
-            public Job() { }
-
-        }
     }
 
 

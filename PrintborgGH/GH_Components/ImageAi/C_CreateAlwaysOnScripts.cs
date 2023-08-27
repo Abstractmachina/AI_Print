@@ -79,5 +79,8 @@ namespace PrintborgGH.GH_Components.ImageAi
         {
             get { return new Guid("A117F547-E782-46A3-B61D-32093754CDF0"); }
         }
+
+        public override GH_Exposure Exposure => GH_Exposure.secondary;
+
     }
 }

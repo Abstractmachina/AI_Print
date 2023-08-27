@@ -150,7 +150,7 @@ namespace PrintborgGH.GH_Components.ImageAi
             get { return new Guid("AE287DCB-200F-448C-9BE1-F75E2F203E7B"); }
         }
 
-        public override GH_Exposure Exposure => GH_Exposure.primary;
+        public override GH_Exposure Exposure => GH_Exposure.secondary;
 
 
         private class ModuleList

@@ -151,7 +151,7 @@ namespace PrintborgGH.Components.AI
             get { return new Guid("BBA0CCBB-78DD-4301-A21A-6FA31D9D5012"); }
         }
 
-        public override GH_Exposure Exposure => GH_Exposure.primary;
+        public override GH_Exposure Exposure => GH_Exposure.secondary;
 
 
         private class ModelList

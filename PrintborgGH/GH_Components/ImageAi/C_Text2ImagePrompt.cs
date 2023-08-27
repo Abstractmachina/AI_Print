@@ -12,6 +12,10 @@ using System.IO;
 using Printborg;
 
 namespace PrintborgGH.Components.AI {
+
+	/// <summary>
+	/// OBSOLETE
+	/// </summary>
 	public class C_Text2ImagePrompt : GH_Component {
 		/// <summary>
 		/// Each implementation of GH_Component must provide a public 
@@ -130,7 +134,7 @@ namespace PrintborgGH.Components.AI {
 		/// each of which can be combined with the GH_Exposure.obscure flag, which 
 		/// ensures the component will only be visible on panel dropdowns.
 		/// </summary>
-		public override GH_Exposure Exposure => GH_Exposure.primary;
+		public override GH_Exposure Exposure => GH_Exposure.hidden;
 
 		/// <summary>
 		/// Provides an Icon for every component that will be visible in the User Interface.

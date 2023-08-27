@@ -225,6 +225,6 @@ namespace PrintborgGH.Components.AI
 
         protected override System.Drawing.Bitmap Icon => null;
 
-        public override GH_Exposure Exposure => GH_Exposure.primary;
+        public override GH_Exposure Exposure => GH_Exposure.secondary;
     }
 }

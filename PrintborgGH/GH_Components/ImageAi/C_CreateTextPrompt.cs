@@ -5,6 +5,9 @@ using Grasshopper.Kernel;
 using Rhino.Geometry;
 
 namespace PrintborgGH.Components.AI {
+	/// <summary>
+	/// OBSOLETE
+	/// </summary>
 	public class C_CreateTextPrompt : GH_Component {
 		/// <summary>
 		/// Initializes a new instance of the C_CreateTextPrompt class.
@@ -54,5 +57,8 @@ namespace PrintborgGH.Components.AI {
 		public override Guid ComponentGuid {
 			get { return new Guid("B7F6B172-055C-42F9-ACF3-D478A59D78FE"); }
 		}
-	}
+
+        public override GH_Exposure Exposure => GH_Exposure.hidden;
+
+    }
 }

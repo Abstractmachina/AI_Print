@@ -10,10 +10,8 @@ using System.Threading.Tasks;
 using static System.Net.WebRequestMethods;
 using Newtonsoft.Json;
 
-namespace Printborg.Controllers
-{
-    public class DeforumController : IApiController
-    {
+namespace Printborg.Controllers {
+    public class DeforumController : IApiController {
         private string _baseAddress = "";
         private int _timeout = 0;
 
@@ -22,29 +20,24 @@ namespace Printborg.Controllers
         /// <summary>
         /// Instantiates controller with default stable diffusion local address http://127.0.0.1:7860/
         /// </summary>
-        public DeforumController()
-        {
+        public DeforumController() {
             _baseAddress = "http://127.0.0.1:7860/";
         }
-        public DeforumController(string baseAddress)
-        {
+        public DeforumController(string baseAddress) {
             _baseAddress = baseAddress;
         }
-        public DeforumController(int timeout) : this()
-        {
+        public DeforumController(int timeout) : this() {
             _timeout = timeout;
         }
-        public DeforumController(string baseAddress, int timeout) : this(baseAddress)
-        {
+        public DeforumController(string baseAddress, int timeout) : this(baseAddress) {
             _timeout = timeout;
 
         }
 
-        
+
         #endregion
 
-        public Task DELETE_Job(string id)
-        {
+        public Task DELETE_Job(string id) {
             throw new NotImplementedException();
         }
 
@@ -52,25 +45,28 @@ namespace Printborg.Controllers
             throw new NotImplementedException();
         }
 
-        public Task GET_allJobs()
-        {
+        public async Task<string> GET_Jobs() {
+            string endpoint = "deforum_api/jobs";
+
+            using (var client = new HttpClient()) {
+                Setup(client);
+
+                var response = await client.GetAsync(endpoint);
+                return await response.Content.ReadAsStringAsync();
+            }
+        }
+
+        public Task GET_Job(string id) {
             throw new NotImplementedException();
         }
 
-        public Task GET_Job(string id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<string> POST_Job(string payload)
-        {
+        public async Task<string> POST_Job(string payload) {
             const string endpoint = "deforum_api/batches";
 
             ValidateBaseAddress();
 
 
-            using (HttpClient client = new HttpClient())
-            {
+            using (HttpClient client = new HttpClient()) {
                 client.BaseAddress = new Uri(_baseAddress);
                 if (_timeout == 0) client.Timeout = Timeout.InfiniteTimeSpan;
                 else client.Timeout = TimeSpan.FromSeconds(_timeout);
@@ -125,10 +121,25 @@ namespace Printborg.Controllers
 
             using (HttpClient client = new HttpClient()) {
                 Setup(client);
-               
+
                 // send post request
                 var rawResponse = await client.GetAsync(endpoint);
                 return await rawResponse.Content.ReadAsStringAsync();
+            }
+        }
+
+        /// <summary>
+        /// Not implemented in the deforum API currently
+        /// </summary>
+        /// <returns></returns>
+        public async Task<string> GET_Batches() {
+            string endpoint = "deforum_api/batches";
+
+            using (var client = new HttpClient()) {
+                Setup(client);
+
+                var response = await client.GetAsync(endpoint);
+                return await response.Content.ReadAsStringAsync();
             }
         }
 
@@ -143,5 +154,6 @@ namespace Printborg.Controllers
         }
     }
 
-    
+
+
 }

@@ -104,5 +104,8 @@ namespace PrintborgGH.Components.AI
         {
             get { return new Guid("D387CDA1-8280-42E7-8B61-B212CA6114A6"); }
         }
+
+        public override GH_Exposure Exposure => GH_Exposure.secondary;
+
     }
 }

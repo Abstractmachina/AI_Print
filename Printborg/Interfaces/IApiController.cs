@@ -13,9 +13,10 @@ namespace Printborg.Interfaces
         Task<string> POST_Job(string payload);
         Task DELETE_Job(string id);
         Task GET_Job(string id);
-        Task GET_allJobs();
+        Task<string> GET_Jobs();
         Task DELETE_allJobs();
         Task<string> GET_Batch(string id);
+        Task<string> GET_Batches();
 
     }
 }

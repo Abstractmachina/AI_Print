@@ -15,10 +15,11 @@ using Printborg.Types;
 using Printborg.Json;
 using System.Net;
 using System.Runtime.CompilerServices;
+using Printborg.Interfaces;
 
 namespace Printborg.Controllers
 {
-    public static class Auto1111Controller
+    public class Auto1111Controller : IApiController
     {
 
         /// <summary>
@@ -218,6 +219,34 @@ namespace Printborg.Controllers
 
                 return result;
             }
+        }
+
+        public Task<string> POST_Job(string payload) {
+            throw new NotImplementedException();
+        }
+
+        public Task DELETE_Job(string id) {
+            throw new NotImplementedException();
+        }
+
+        public Task GET_Job(string id) {
+            throw new NotImplementedException();
+        }
+
+        public Task<string> GET_Jobs() {
+            throw new NotImplementedException();
+        }
+
+        public Task DELETE_allJobs() {
+            throw new NotImplementedException();
+        }
+
+        public Task<string> GET_Batch(string id) {
+            throw new NotImplementedException();
+        }
+
+        public Task<string> GET_Batches() {
+            throw new NotImplementedException();
         }
     }
 }
