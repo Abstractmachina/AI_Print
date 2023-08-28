@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Printborg.Controllers;
 using Printborg.Interfaces;
 using Printborg.Types;
+using PrintborgGH.GH_Types;
 using Rhino.Geometry;
 
 namespace PrintborgGH.GH_Components.ImageAi {
@@ -61,11 +62,13 @@ namespace PrintborgGH.GH_Components.ImageAi {
                     if (CancellationToken.IsCancellationRequested) { return; }
 
 
-
                     _jobs = JsonConvert.DeserializeObject<Dictionary<string, DeforumJob>>(rawResponse);
-                    foreach (KeyValuePair<string, DeforumJob> entry in _jobs) {
-                        //_debug.Add($"{entry.Key} : {entry.Value.Status}, {entry.Value.PhaseProgress}");
-                    }
+
+
+
+                    //foreach (KeyValuePair<string, DeforumJob> entry in _jobs) {
+                    //    //_debug.Add($"{entry.Key} : {entry.Value.Status}, {entry.Value.PhaseProgress}");
+                    //}
 
 
                 }
@@ -104,15 +107,16 @@ namespace PrintborgGH.GH_Components.ImageAi {
                 if (CancellationToken.IsCancellationRequested) return;
 
                 if (_jobs != null && _jobs.Count != 0) {
-                    DA.SetDataList("Job ID", _jobs.Select(j => j.Value.Id));
-                    DA.SetDataList("Status", _jobs.Select(j => j.Value.Status));
-                    DA.SetDataList("Phase", _jobs.Select(j => j.Value.Phase));
-                    DA.SetDataList("Phase Progress", _jobs.Select(j => j.Value.PhaseProgress));
-                    DA.SetDataList("Started At", _jobs.Select(j => j.Value.StartedAt));
-                    DA.SetDataList("Last Updated", _jobs.Select(j => j.Value.LastUpdated));
-                    DA.SetDataList("Execution Time", _jobs.Select(j => j.Value.ExecutionTime));
-                    DA.SetDataList("Updates", _jobs.Select(j => j.Value.Updates));
-                    DA.SetDataList("Outdir", _jobs.Select(j => j.Value.Outdir));
+                    //DA.SetDataList("Job ID", _jobs.Select(j => j.Value.Id));
+                    //DA.SetDataList("Status", _jobs.Select(j => j.Value.Status));
+                    //DA.SetDataList("Phase", _jobs.Select(j => j.Value.Phase));
+                    //DA.SetDataList("Phase Progress", _jobs.Select(j => j.Value.PhaseProgress));
+                    //DA.SetDataList("Started At", _jobs.Select(j => j.Value.StartedAt));
+                    //DA.SetDataList("Last Updated", _jobs.Select(j => j.Value.LastUpdated));
+                    //DA.SetDataList("Execution Time", _jobs.Select(j => j.Value.ExecutionTime));
+                    //DA.SetDataList("Updates", _jobs.Select(j => j.Value.Updates));
+                    //DA.SetDataList("Outdir", _jobs.Select(j => j.Value.Outdir));
+                    DA.SetDataList("Jobs", _jobs.Select(j => new GH_DeforumJob(j.Value)));
 
                 }
                 DA.SetDataList("Debug", _debug);
@@ -140,15 +144,16 @@ namespace PrintborgGH.GH_Components.ImageAi {
             //        "outdir": "D:\\Repos\\stable-diffusion-webui\\outputs\\img2img-images\\Deforum_01",
             //        "timestring": "20230826163336",
             //        "options_overrides": null
-            pManager.AddTextParameter("Job ID", "ID", "Job ID", GH_ParamAccess.list);
-            pManager.AddTextParameter("Status", "St", "Status", GH_ParamAccess.list);
-            pManager.AddTextParameter("Phase", "Ph", "Current Job Phase", GH_ParamAccess.list);
-            pManager.AddTextParameter("Phase Progress", "PP", "Progress (1.0 -> complete)", GH_ParamAccess.list);
-            pManager.AddNumberParameter("Started At", "SA", "Time", GH_ParamAccess.list);
-            pManager.AddNumberParameter("Last Updated", "LU", "Last updated", GH_ParamAccess.list);
-            pManager.AddNumberParameter("Execution Time", "Ex", "Execution Time", GH_ParamAccess.list);
-            pManager.AddNumberParameter("Updates", "Up", "Updates", GH_ParamAccess.list);
-            pManager.AddTextParameter("Outdir", "Out", "Outdir", GH_ParamAccess.list);
+            //pManager.AddTextParameter("Job ID", "ID", "Job ID", GH_ParamAccess.list);
+            //pManager.AddTextParameter("Status", "St", "Status", GH_ParamAccess.list);
+            //pManager.AddTextParameter("Phase", "Ph", "Current Job Phase", GH_ParamAccess.list);
+            //pManager.AddTextParameter("Phase Progress", "PP", "Progress (1.0 -> complete)", GH_ParamAccess.list);
+            //pManager.AddNumberParameter("Started At", "SA", "Time", GH_ParamAccess.list);
+            //pManager.AddNumberParameter("Last Updated", "LU", "Last updated", GH_ParamAccess.list);
+            //pManager.AddNumberParameter("Execution Time", "Ex", "Execution Time", GH_ParamAccess.list);
+            //pManager.AddNumberParameter("Updates", "Up", "Updates", GH_ParamAccess.list);
+            //pManager.AddTextParameter("Outdir", "Out", "Outdir", GH_ParamAccess.list);
+            pManager.AddGenericParameter("Jobs", "Jo", "Deforum Jobs", GH_ParamAccess.list);
             pManager.AddTextParameter("Debug", "De", "Debug", GH_ParamAccess.list);
         }
 

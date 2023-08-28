@@ -27,7 +27,6 @@ namespace PrintborgGH.GH_Components.ImageAi {
 
             private string _batchId = "";
             private int _queryInterVal = 2;
-            private bool _isDone = false;
             private bool _isOn = false;
             private List<string> _runtimeMessages = new List<string>();
             private List<DeforumJob> _jobStatusList = new List<DeforumJob>();
