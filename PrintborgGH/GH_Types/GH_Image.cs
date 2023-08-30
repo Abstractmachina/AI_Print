@@ -44,7 +44,8 @@ namespace Printborg.GH_Types {
         }
 
         public override string ToString() {
-            return Value.ToString();
+            string output = $"img: {{{this.Value.Width}; {this.Value.Height}; {this.Value.RawFormat}}}";
+            return output;
         }
 
         public override object ScriptVariable() {
