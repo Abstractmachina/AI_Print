@@ -41,7 +41,9 @@ namespace Printborg {
             return Convert.ToBase64String(imageBytes);
         }
 
-
+		public static Image LoadFromFile() {
+			throw new NotImplementedException();
+		}
 		
 	}
 }

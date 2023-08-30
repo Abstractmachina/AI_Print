@@ -61,16 +61,7 @@ namespace PrintborgGH.GH_Components.ImageAi {
 
                     if (CancellationToken.IsCancellationRequested) { return; }
 
-
                     _jobs = JsonConvert.DeserializeObject<Dictionary<string, DeforumJob>>(rawResponse);
-
-
-
-                    //foreach (KeyValuePair<string, DeforumJob> entry in _jobs) {
-                    //    //_debug.Add($"{entry.Key} : {entry.Value.Status}, {entry.Value.PhaseProgress}");
-                    //}
-
-
                 }
                 catch (Exception ex) {
                     _debug.Add(ex.ToString());
@@ -107,17 +98,7 @@ namespace PrintborgGH.GH_Components.ImageAi {
                 if (CancellationToken.IsCancellationRequested) return;
 
                 if (_jobs != null && _jobs.Count != 0) {
-                    //DA.SetDataList("Job ID", _jobs.Select(j => j.Value.Id));
-                    //DA.SetDataList("Status", _jobs.Select(j => j.Value.Status));
-                    //DA.SetDataList("Phase", _jobs.Select(j => j.Value.Phase));
-                    //DA.SetDataList("Phase Progress", _jobs.Select(j => j.Value.PhaseProgress));
-                    //DA.SetDataList("Started At", _jobs.Select(j => j.Value.StartedAt));
-                    //DA.SetDataList("Last Updated", _jobs.Select(j => j.Value.LastUpdated));
-                    //DA.SetDataList("Execution Time", _jobs.Select(j => j.Value.ExecutionTime));
-                    //DA.SetDataList("Updates", _jobs.Select(j => j.Value.Updates));
-                    //DA.SetDataList("Outdir", _jobs.Select(j => j.Value.Outdir));
                     DA.SetDataList("Jobs", _jobs.Select(j => new GH_DeforumJob(j.Value)));
-
                 }
                 DA.SetDataList("Debug", _debug);
 
@@ -130,29 +111,6 @@ namespace PrintborgGH.GH_Components.ImageAi {
         }
 
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager) {
-            //        "id": "batch(948023533)-0",
-            //        "status": "SUCCEEDED",
-            //        "phase": "DONE",
-            //        "error_type": "NONE",
-            //        "phase_progress": 1.0,
-            //        "started_at": 1693060416.648067,
-            //        "last_updated": 1693061418.838495,
-            //        "execution_time": 1002.19042801857,
-            //        "update_interval_time": 1.8368990421295166,
-            //        "updates": 35,
-            //        "message": null,
-            //        "outdir": "D:\\Repos\\stable-diffusion-webui\\outputs\\img2img-images\\Deforum_01",
-            //        "timestring": "20230826163336",
-            //        "options_overrides": null
-            //pManager.AddTextParameter("Job ID", "ID", "Job ID", GH_ParamAccess.list);
-            //pManager.AddTextParameter("Status", "St", "Status", GH_ParamAccess.list);
-            //pManager.AddTextParameter("Phase", "Ph", "Current Job Phase", GH_ParamAccess.list);
-            //pManager.AddTextParameter("Phase Progress", "PP", "Progress (1.0 -> complete)", GH_ParamAccess.list);
-            //pManager.AddNumberParameter("Started At", "SA", "Time", GH_ParamAccess.list);
-            //pManager.AddNumberParameter("Last Updated", "LU", "Last updated", GH_ParamAccess.list);
-            //pManager.AddNumberParameter("Execution Time", "Ex", "Execution Time", GH_ParamAccess.list);
-            //pManager.AddNumberParameter("Updates", "Up", "Updates", GH_ParamAccess.list);
-            //pManager.AddTextParameter("Outdir", "Out", "Outdir", GH_ParamAccess.list);
             pManager.AddGenericParameter("Jobs", "Jo", "Deforum Jobs", GH_ParamAccess.list);
             pManager.AddTextParameter("Debug", "De", "Debug", GH_ParamAccess.list);
         }

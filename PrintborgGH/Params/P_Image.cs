@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace PrintborgGH.Params {
     public class P_Image : GH_Param<GH_Image> {
         public P_Image()
-          : base("Image", "Img", "Raster Image", Labels.PluginName, Labels.Category_Param, GH_ParamAccess.item) { }
+          : base("Image", "Img", "Raster Image (bitmap)", Labels.PluginName, Labels.Category_Param, GH_ParamAccess.item) { }
 
         #region properties
         public override GH_Exposure Exposure {
@@ -66,9 +66,6 @@ namespace PrintborgGH.Params {
                     IGH_Goo goo = branch[i];
 
                     //if (goo.GetType() != typeof(GH_Classifier)) AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Input is not a Classifier.");
-
-
-
 
                     //We accept existing nulls.
                     if (goo == null) continue;

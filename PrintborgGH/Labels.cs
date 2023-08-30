@@ -10,7 +10,6 @@ namespace PrintborgGH {
 		public static string Category_AI = "AI";
 		public static string Category_Param = "Params";
 		public static string Category_Fields = "Fields";
-		public static string Category_Display = "Display";
-		public static string Category_Operations = "Operations";
-	}
+		public static string Category_Images = "Images";
+    }
 }
