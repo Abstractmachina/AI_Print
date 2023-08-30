@@ -1,27 +1,30 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Grasshopper.Kernel;
 using Rhino.Geometry;
 using SpatialSlur.SlurField;
 using SpatialSlur.SlurRhino;
 
-namespace PrintborgGH.Fields {
-    public class PlaneTrimComponent : GH_Component
+namespace PrintborgGH.GH_Components.Fields.Operations
+{
+    public class PlaneTrimMultiComponent : GH_Component
     {
         /// <summary>
         /// Initializes a new instance of the PlaneTrimComponent class.
         /// </summary>
-        public PlaneTrimComponent()
-          : base("Plane Trim", "PTrim",
+        public PlaneTrimMultiComponent()
+          : base("Plane Trim Multi-Threaded", "PTrimMult",
               "Trim field with plane.",
-              Labels.PluginName, Labels.Category_Operations)
+              Labels.PluginName, Labels.Category_Fields)
         {
         }
 
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>
-        protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
+        protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
             pManager.AddMeshParameter("Base Mesh", "M", "Base Mesh.", GH_ParamAccess.item);
             pManager.AddGenericParameter("Field", "F", "Field to be trimmed.", GH_ParamAccess.item);
@@ -32,7 +35,7 @@ namespace PrintborgGH.Fields {
         /// <summary>
         /// Registers all the output parameters for this component.
         /// </summary>
-        protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
+        protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
             pManager.AddGenericParameter("Trimmed Field", "F", "Trimmed Field.", GH_ParamAccess.item);
         }
@@ -53,22 +56,23 @@ namespace PrintborgGH.Fields {
             if (!DA.GetData(2, ref plane)) return;
             if (!DA.GetData(3, ref val)) return;
 
-            var hem = mesh.ToHeMesh();
-            var fn = MeshField3d.Double.Create(hem);
+            Point3d[] pts = mesh.Vertices.ToPoint3dArray();
+            double[] vals = new double[pts.Length];
 
-            List<double> vals = new List<double>();
-
-            foreach (Point3d p in mesh.Vertices)
+            Parallel.ForEach(Partitioner.Create(0, pts.Length), range =>
             {
-                Vector3d vec = plane.Origin - p;
-                double proj = vec * plane.Normal; //dot product
+                for (int i = range.Item1; i < range.Item2; i++)
+                {
+                    Vector3d vec = plane.Origin - pts[i];
+                    double proj = vec * plane.Normal; //dot product
 
-                if (proj > 0) vals.Add(val);
+                    if (proj > 0) vals[i] = val;
 
-                else vals.Add(f.ValueAt(p));
-            }
-            fn.Set(vals);
+                    else vals[i] = f.ValueAt(pts[i]);
+                }
+            });
 
+            MeshField3d<double> fn = Util.SpatialSlur.CreateMeshField(mesh, vals);
 
             DA.SetData(0, fn);
 
@@ -97,7 +101,7 @@ namespace PrintborgGH.Fields {
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("2aac0dc6-9de9-41e2-a6d7-853fb5ee550b"); }
+            get { return new Guid("2aac0dc6-9de9-41e2-a6d7-853fb5ee550c"); }
         }
     }
 }

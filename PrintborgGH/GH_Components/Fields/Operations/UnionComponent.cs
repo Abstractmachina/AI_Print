@@ -8,7 +8,8 @@ using SpatialSlur.SlurField;
 // folder in Grasshopper.
 // You can use the _GrasshopperDeveloperSettings Rhino command for that.
 
-namespace PrintborgGH.Fields {
+namespace PrintborgGH.GH_Components.Fields.Operations
+{
     public class UnionComponent : GH_Component
     {
         /// <summary>
@@ -21,14 +22,14 @@ namespace PrintborgGH.Fields {
         public UnionComponent()
           : base("Union", "Uni",
               "Perform a boolean union on two fields.",
-              Labels.PluginName, Labels.Category_Operations)
+              Labels.PluginName, Labels.Category_Fields)
         {
         }
 
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>
-        protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
+        protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
             pManager.AddGenericParameter("Field 0", "F0", "First Field for Union Operation", GH_ParamAccess.item);
             pManager.AddGenericParameter("Field 1", "F1", "Second Field for Union Operation", GH_ParamAccess.item);
@@ -41,7 +42,7 @@ namespace PrintborgGH.Fields {
         /// <summary>
         /// Registers all the output parameters for this component.
         /// </summary>
-        protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
+        protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
             pManager.AddGenericParameter("Union Result", "F", "Union field", GH_ParamAccess.item);
 
@@ -87,7 +88,7 @@ namespace PrintborgGH.Fields {
         /// </summary>
         public override GH_Exposure Exposure
         {
-            get { return GH_Exposure.primary; }
+            get { return GH_Exposure.secondary; }
         }
 
         /// <summary>
@@ -98,10 +99,10 @@ namespace PrintborgGH.Fields {
         {
             get
             {
-				// You can add image files to your project resources and access them like this:
-				//return Resources.union;
-				return null;
-			}
+                // You can add image files to your project resources and access them like this:
+                //return Resources.union;
+                return null;
+            }
         }
 
         /// <summary>

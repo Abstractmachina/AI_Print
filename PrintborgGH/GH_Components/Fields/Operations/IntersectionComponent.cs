@@ -4,34 +4,34 @@ using Grasshopper.Kernel;
 using Rhino.Geometry;
 using SpatialSlur.SlurField;
 
-namespace PrintborgGH.Fields {
-    public class DifferenceComponent : GH_Component
+namespace PrintborgGH.GH_Components.Fields.Operations { 
+    public class IntersectionComponent : GH_Component
     {
         /// <summary>
-        /// Initializes a new instance of the component class.
+        /// Initializes a new instance of the IntersectionComponent class.
         /// </summary>
-        public DifferenceComponent()
-          : base("Difference", "Dif",
-              "Perform a boolean difference on two fields.",
-              Labels.PluginName, Labels.Category_Display)
+        public IntersectionComponent()
+          : base("Intersection", "Int",
+              "Perform a boolean intersection on two fields.",
+              Labels.PluginName, Labels.Category_Fields)
         {
         }
 
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>
-        protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
+        protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
-            pManager.AddGenericParameter("Field 0", "F0", "First Field for Difference Operation", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Field 1", "F1", "Second Field for Difference Operation", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Field 0", "F0", "First Field for Intersection Operation", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Field 1", "F1", "Second Field for Intersection Operation", GH_ParamAccess.item);
         }
 
         /// <summary>
         /// Registers all the output parameters for this component.
         /// </summary>
-        protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
+        protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
-            pManager.AddGenericParameter("Difference Result", "F", "Difference field", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Intersection Result", "F", "Intersection field", GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -47,14 +47,13 @@ namespace PrintborgGH.Fields {
             if (!DA.GetData(1, ref f1)) return;
 
 
-            DA.SetData(0, FuncField3d.CreateDifference(f1, f0));
+            DA.SetData(0, FuncField3d.CreateIntersection(f0, f1));
         }
 
         public override GH_Exposure Exposure
         {
-            get { return GH_Exposure.primary; }
+            get { return GH_Exposure.secondary; }
         }
-
         /// <summary>
         /// Provides an Icon for the component.
         /// </summary>
@@ -62,11 +61,10 @@ namespace PrintborgGH.Fields {
         {
             get
             {
-				//You can add image files to your project resources and access them like this:
-				//return Resources.difference;
-				//return Properties.Resources.difference;
-				return null;
-			}
+                //You can add image files to your project resources and access them like this:
+                //return Resources.intersect;
+                return null;
+            }
         }
 
         /// <summary>
@@ -74,7 +72,7 @@ namespace PrintborgGH.Fields {
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("303e16a8-6770-49fb-8f04-79cd4cbed3bb"); }
+            get { return new Guid("11797900-2118-4f76-8879-2213f83255e2"); }
         }
     }
 }
