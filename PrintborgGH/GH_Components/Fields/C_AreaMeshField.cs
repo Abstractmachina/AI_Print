@@ -45,7 +45,7 @@ namespace PrintborgGH.Components.Fields {
 		/// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
 		protected override void SolveInstance(IGH_DataAccess DA) {
 			debug.Add("DEBUG");
-			Mesh m = null;
+			Mesh? m = null;
 			double iso = 0d;
 			double tolerance = 1d;
 
@@ -91,7 +91,7 @@ namespace PrintborgGH.Components.Fields {
 
 					double dist = Util.SpatialSlur.GetDistanceToCrv(c, p);
 
-					if (c.Contains(p) == PointContainment.Inside) {
+					if (c.Contains(p, Plane.WorldXY, 0.1d) == PointContainment.Inside) {
 						vals[i] = dist * -1;
 						inside = true;
 

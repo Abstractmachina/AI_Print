@@ -27,7 +27,7 @@ namespace PrintborgGH.GH_Components.ImageAi
             private bool _startRequest = false;
             public List<string> _debug = new List<string>();
             private string _payload = "";
-            private JobStatus _jobStatus = null;
+            private JobStatus? _jobStatus = null;
             private string _baseAddress = "";
 
             public InitJobWorker() : base(null) { }
@@ -175,11 +175,11 @@ namespace PrintborgGH.GH_Components.ImageAi
 
         private class JobStatus {
             [JsonProperty("message")]
-            public string Message { get; set; }
+            public string? Message { get; set; }
             [JsonProperty("batch_id")]
-            public string BatchId { get; set; }
+            public string? BatchId { get; set; }
             [JsonProperty("job_ids")]
-            public List<string> JobIds { get; set; }
+            public List<string>? JobIds { get; set; }
         }
 
     }

@@ -37,7 +37,7 @@ namespace Printborg.GH_Types {
         #endregion
 
 
-        public override Image Value { get => base.Value; set => base.Value = value; }
+        public override Image? Value { get => base.Value; set => base.Value = value; }
 
         public override IGH_Goo Duplicate() {
             return new GH_Image(this);

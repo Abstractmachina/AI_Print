@@ -64,7 +64,7 @@ namespace PrintborgGH.Params {
             for (int p = 0; p < m_data.PathCount; p++) {
                 var branch = m_data.Branches[p];
                 for (int i = 0; i < branch.Count; i++) {
-                    IGH_Goo goo = branch[i];
+                    IGH_Goo? goo = branch[i];
 
                     //if (goo.GetType() != typeof(GH_Classifier)) AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Input is not a Classifier.");
 
@@ -80,7 +80,7 @@ namespace PrintborgGH.Params {
                     ////to be nice to the user, let's try and convert the data into a curve, then into a colour.
 
 
-                    GH_String castString = null;
+                    GH_String? castString = null;
                     if (GH_Convert.ToGHString(goo, GH_Conversion.Both, ref castString)) {
                         var img = Printborg.Util.FromBase64String(castString.Value);
                         branch[i] = new GH_Image(img);

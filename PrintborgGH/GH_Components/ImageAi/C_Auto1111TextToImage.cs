@@ -29,7 +29,7 @@ namespace PrintborgGH.Components.AI
                   "Generate image from a text prompt in Automatic1111.",
                     Labels.PluginName, Labels.Category_AI) {
             BaseWorker = new FetchImageWorker(this);
-            BaseWorker.Parent2 = this;
+            BaseWorker.ParentAsync = this;
 
 
         }
@@ -52,7 +52,7 @@ namespace PrintborgGH.Components.AI
                 _debug.Add("parent: ");
                 _debug.Add(Parent == null ? "null" : Parent.ToString());
                 _debug.Add("parent2: ");
-                _debug.Add(Parent2 == null ? "null" : Parent2.ToString());
+                _debug.Add(ParentAsync == null ? "null" : ParentAsync.ToString());
 
                 // Checking for cancellation
                 if (CancellationToken.IsCancellationRequested) { return; }
@@ -223,7 +223,7 @@ namespace PrintborgGH.Components.AI
             get => new Guid("F1E5F78F-242D-44E3-AAD6-AB0257D69256");
         }
 
-        protected override System.Drawing.Bitmap Icon => null;
+        protected override System.Drawing.Bitmap? Icon => null;
 
         public override GH_Exposure Exposure => GH_Exposure.secondary;
     }

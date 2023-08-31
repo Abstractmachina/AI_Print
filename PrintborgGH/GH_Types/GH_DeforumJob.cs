@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace PrintborgGH.GH_Types {
-    public class GH_DeforumJob : GH_Goo<DeforumJob> {
+    public class GH_DeforumJob : GH_Goo<DeforumJob?> {
 
         #region PROPERTIES
         public override bool IsValid {
@@ -34,7 +34,7 @@ namespace PrintborgGH.GH_Types {
         #endregion
 
 
-        public override DeforumJob Value { get => base.Value; set => base.Value = value; }
+        public override DeforumJob? Value { get => base.Value; set => base.Value = value; }
 
         public override IGH_Goo Duplicate() {
             return new GH_DeforumJob(this);

@@ -18,8 +18,8 @@ namespace GrasshopperAsyncComponent
         /// <summary>
         /// The parent component. Useful for passing state back to the host component.
         /// </summary>
-        public GH_Component Parent { get; set; }
-        public GH_AsyncComponent Parent2 { get; set; }
+        public GH_Component? Parent { get; set; }
+        public GH_AsyncComponent? ParentAsync { get; set; }
 
         /// <summary>
         /// This token is set by the parent <see cref="GH_AsyncComponent"/>. 
@@ -29,16 +29,16 @@ namespace GrasshopperAsyncComponent
         /// <summary>
         /// This is set by the parent <see cref="GH_AsyncComponent"/>. You can set it yourself, but it's not really worth it.
         /// </summary>
-        public string Id { get; set; }
+        public string? Id { get; set; }
 
         //protected WorkerInstance(GH_Component _parent)
         //{
         //    Parent = _parent;
         //}
-        protected WorkerInstance(GH_AsyncComponent parent2)
+        protected WorkerInstance(GH_AsyncComponent? parentAsync)
         {
-            Parent = parent2;
-            Parent2 = parent2;
+            Parent = parentAsync;
+            ParentAsync = parentAsync; 
         }
 
         /// <summary>
