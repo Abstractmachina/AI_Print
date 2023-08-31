@@ -57,13 +57,14 @@ namespace Printborg.GH_Types {
             //cast to string = base64
             if (typeof(Q).IsAssignableFrom(typeof(string))) {
                 var rawString = Util.ToBase64String(this.Value);
-                object ptr = new GH_String(rawString);
+                object ptr = rawString;
                 target = (Q)ptr;
                 return true;
             }
 
             //cast to mesh
 
+            target = default(Q);
             return false;
         }
 

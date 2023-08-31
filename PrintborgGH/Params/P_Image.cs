@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Printborg;
 
 namespace PrintborgGH.Params {
     public class P_Image : GH_Param<GH_Image> {
@@ -70,6 +71,8 @@ namespace PrintborgGH.Params {
                     //We accept existing nulls.
                     if (goo == null) continue;
 
+                    if (goo is GH_Image) { continue; }
+
                     ////We accept colours.
                     //if (goo is GH_Colour) continue;
 
@@ -77,8 +80,12 @@ namespace PrintborgGH.Params {
                     ////to be nice to the user, let's try and convert the data into a curve, then into a colour.
 
 
-                    GH_Image castImage = null;
-                    //if
+                    GH_String castString = null;
+                    if (GH_Convert.ToGHString(goo, GH_Conversion.Both, ref castString)) {
+                        var img = Printborg.Util.FromBase64String(castString.Value);
+                        branch[i] = new GH_Image(img);
+                        continue;
+                    }
 
 
 
@@ -96,10 +103,10 @@ namespace PrintborgGH.Params {
                     //  continue;
                     //}
 
-                    ////Tough luck, the data is beyond repair. We'll set a runtime error and insert a null.
-                    //AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-                    //  string.Format("Data of type {0} could not be converted into either a colour or a curve", goo.TypeName));
-                    //branch[i] = null;
+                    //Tough luck, the data is beyond repair. We'll set a runtime error and insert a null.
+                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
+                      string.Format("Data of type {0} could not be converted into either a colour or a curve", goo.TypeName));
+                    branch[i] = null;
 
                     //As a side-note, we are not using the CastTo methods here on goo. If goo is of some unknown 3rd party type
                     //which knows how to convert itself into a curve then this parameter will not work with that. 
@@ -107,8 +114,10 @@ namespace PrintborgGH.Params {
                     //    }
                     //  }
                 }
+
             }
         }
-        #endregion
+
     } // end P_Image
+    #endregion
 }// end namespace

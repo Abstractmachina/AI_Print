@@ -58,15 +58,37 @@ namespace PrintborgGH.GH_Components.Images
             }
             DA.GetData(2, ref scale);
 
+            var meshList = new List<Mesh>();
             Mesh m = new Mesh();
+            Bitmap i = new Bitmap(img.Value);
             // iterate through pixels
-            //for (int x = 0; x < img.Width; x++) {
-            //    for (int y = 0; y < img.Height; y++) {
-            //        // get argb color of pixel
-            //        // for each pixel, build mesh face with sampled color
-            //        // add face to mesh
-            //    }
-            //}
+            for (int y = 0; y < img.Value.Height; y++) {
+                for (int x = 0; x < img.Value.Width; x++) {
+                    // get argb color of pixel
+                    // for each pixel, build mesh face with sampled color
+                    // add face to mesh
+                    var pixel = i.GetPixel(x,y);
+
+                    var mesh = new Mesh();
+
+                    double xs = x * scale;
+                    double ys = y * -scale;
+
+                    mesh.Vertices.Add(xs, ys, 0);
+                    mesh.Vertices.Add(xs + scale, ys, 0);
+                    mesh.Vertices.Add(xs + scale, ys - scale, 0);
+                    mesh.Vertices.Add(xs, ys - scale, 0);
+
+                    for (int c = 0; c < 4; c++) {
+                        mesh.VertexColors.Add(pixel);
+                    }
+
+                    var face = new MeshFace(0, 1, 2, 3);
+                    mesh.Faces.AddFace(face);
+                    m.Append(mesh);
+
+                }
+            }
 
             DA.SetData(0, m);
 
@@ -92,5 +114,6 @@ namespace PrintborgGH.GH_Components.Images
         {
             get { return new Guid("C6F82EA5-88FB-4D8E-87F6-F4F2744780AA"); }
         }
+        public override GH_Exposure Exposure => GH_Exposure.secondary;
     }
 }
