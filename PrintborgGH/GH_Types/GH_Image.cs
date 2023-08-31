@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Printborg.GH_Types {
-    public class GH_Image : GH_Goo<Image> {
+    public class GH_Image : GH_Goo<Bitmap> {
         public override bool IsValid {
             get { if (this.Value == null) return false; else return true; }
         
@@ -24,20 +24,20 @@ namespace Printborg.GH_Types {
             this.Value = null;
         }
 
-        public GH_Image(Image image) {
-            this.Value = image;
+        public GH_Image(Bitmap bmp) {
+            this.Value = bmp;
         }
 
         public GH_Image(GH_Image source) {
             this.Value = source.Value;
         }
         public GH_Image(string base64String) {
-            this.Value = Util.FromBase64String(base64String);
+            this.Value = (Bitmap) Util.FromBase64String(base64String);
         }
         #endregion
 
 
-        public override Image? Value { get => base.Value; set => base.Value = value; }
+        public override Bitmap? Value { get => base.Value; set => base.Value = value; }
 
         public override IGH_Goo Duplicate() {
             return new GH_Image(this);
@@ -77,7 +77,7 @@ namespace Printborg.GH_Types {
             if (source.GetType() == typeof (string)) { 
                 // possibly a base64 encoded image 
                 var img = Printborg.Util.FromBase64String((string)source);
-                this.Value = img;
+                this.Value = (Bitmap)img;
                 return true;
             }
             return false;

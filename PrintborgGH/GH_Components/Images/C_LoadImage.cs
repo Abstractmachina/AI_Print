@@ -49,7 +49,7 @@ namespace PrintborgGH.GH_Components.Images
             DA.GetData("Scale", ref scale);
 
 
-            var image = Image.FromFile(path);
+            var image = new Bitmap(path);
 
             DA.SetData("Image", new GH_Image(image));
 

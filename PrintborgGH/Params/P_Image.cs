@@ -83,7 +83,7 @@ namespace PrintborgGH.Params {
                     GH_String? castString = null;
                     if (GH_Convert.ToGHString(goo, GH_Conversion.Both, ref castString)) {
                         var img = Printborg.Util.FromBase64String(castString.Value);
-                        branch[i] = new GH_Image(img);
+                        branch[i] = new GH_Image((Bitmap)img);
                         continue;
                     }
 

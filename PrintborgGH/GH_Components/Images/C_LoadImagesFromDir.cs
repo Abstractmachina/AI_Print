@@ -60,7 +60,7 @@ namespace PrintborgGH.GH_Components.Images
                 );
 
             // convert file paths to GH_Image and set to output
-            DA.SetDataList("Images", allFiles.Select(f => new GH_Image(Image.FromFile(f))));
+            DA.SetDataList("Images", allFiles.Select(f => new GH_Image(new Bitmap(f))));
         }
 
         /// <summary>

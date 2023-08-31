@@ -6,6 +6,7 @@
     <Title>PrintborgGH</Title>
     <Description>Grasshopper implementation of Printborg</Description>
     <TargetExt>.gha</TargetExt>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   
   <ItemGroup>
