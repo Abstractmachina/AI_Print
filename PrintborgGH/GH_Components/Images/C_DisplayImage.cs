@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading.Tasks;
 using Grasshopper.Kernel;
 using Printborg.GH_Types;
 using Rhino.Geometry;
@@ -59,14 +61,13 @@ namespace PrintborgGH.GH_Components.Images {
             int h = bmp.Height;
 
 
+
             BitmapData bData = bmp.LockBits(new Rectangle(0, 0, w, h), ImageLockMode.ReadOnly, bmp.PixelFormat);
-
-            //byte bitsPerPixel = GetBitsPerPixel(bData.PixelFormat);
             var bitsPerPixel = (byte)System.Drawing.Image.GetPixelFormatSize(bData.PixelFormat);
-
             unsafe {
                 /*This time we convert the IntPtr to a ptr*/
-                byte* scan0 = (byte*)bData.Scan0.ToPointer();
+                byte* scan0 = (byte*) bData.Scan0.ToPointer();
+
 
                 for (int y = 0; y < h; ++y) {
                     for (int x = 0; x < w; ++x) {
@@ -84,10 +85,9 @@ namespace PrintborgGH.GH_Components.Images {
                         m.VertexColors.Add(col);
 
                     }
+
                 }
-
             }
-
             bmp.UnlockBits(bData);
 
             for (int i = w; i < m.Vertices.Count; i++) {
@@ -99,8 +99,17 @@ namespace PrintborgGH.GH_Components.Images {
 
             }
 
-            m.RebuildNormals();
+            // throws access violation error
+            //Parallel.ForEach(Partitioner.Create(w, m.Vertices.Count), range => {
+            //    for (int i = range.Item1; i < range.Item2; i++) {
+            //        if ((i + 1) % w == 0) continue;
 
+            //        var face = new MeshFace(i - w, i - w + 1, i + 1, i);
+            //        m.Faces.AddFace(face);
+            //    }
+            //});
+
+            m.RebuildNormals();
             DA.SetData(0, m);
 
         }
