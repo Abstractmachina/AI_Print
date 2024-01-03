@@ -99,7 +99,7 @@ namespace PrintborgGH.GH_Components.Images {
 
             }
 
-            // throws access violation error
+            // throws access violation error 
             //Parallel.ForEach(Partitioner.Create(w, m.Vertices.Count), range => {
             //    for (int i = range.Item1; i < range.Item2; i++) {
             //        if ((i + 1) % w == 0) continue;

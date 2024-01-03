@@ -8,48 +8,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Printborg.Json
+namespace Printborg.Utilities
 {
-    internal class CustomContractResolver : DefaultContractResolver {
-		protected override string ResolvePropertyName(string propertyName) {
-			return propertyName.ToLower();
-		}
+    /// <summary>
+    /// Conversion object for response messages received from stable diffusion deforum
+    /// </summary>
+    public class DeforumJobResponseConverter {
+        [JsonProperty("message")]
+        public string Message { get; set; }
+        [JsonProperty("batch_id")]
+        public string BatchId { get; set; }
+        [JsonProperty("job_ids")]
+        public List<string> JobIds { get; set; }
+    }
 
-	}
 
-	internal class T2IJsonConverter : JsonConverter {
-		public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
-			var prompt = (TextToImagePrompt)value;
-			var jsonObject = new JObject();
-			var contractResolver = serializer.ContractResolver as DefaultContractResolver;
-
-			// Serialize properties
-			foreach (var property in value.GetType().GetProperties()) {
-				var propertyName = contractResolver != null ? contractResolver.GetResolvedPropertyName(property.Name) : property.Name;
-				var propertyValue = property.GetValue(value);
-				if (propertyValue == null) {
-					jsonObject.Add(propertyName.ToLower(), JValue.CreateNull());
-				}
-				else if (propertyValue is bool) {
-					jsonObject.Add(propertyName.ToLower(),
-					((bool)propertyValue == true) ? "yes" : "no");
-
-				}
-				else {
-					jsonObject.Add(propertyName.ToLower(), JToken.FromObject(propertyValue));
-				}
-			}
-			jsonObject.WriteTo(writer);
-		}
-
-		public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer) {
-			throw new NotImplementedException();
-		}
-
-		public override bool CanRead => false;
-
-		public override bool CanConvert(Type objectType) {
-			return objectType == typeof(TextToImagePrompt);
-		}
-	}
 }

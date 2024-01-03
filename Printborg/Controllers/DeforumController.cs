@@ -13,9 +13,22 @@ using Printborg.Types;
 
 namespace Printborg.Controllers {
     public class DeforumController : IApiController {
+
+        // MEMBERS
         private string _baseAddress = "";
         private int _timeout = 0;
 
+        #region PROPERTIES
+        public string BaseAddress {
+            get { return _baseAddress; }
+            set { _baseAddress = value; }
+        }
+
+        public int Timeout {
+            get { return _timeout; }
+            set { _timeout = value; }
+        }
+        #endregion //PROPERTIES
 
         #region CONSTRUCTORS
         /// <summary>
@@ -84,7 +97,7 @@ namespace Printborg.Controllers {
 
             using (HttpClient client = new HttpClient()) {
                 client.BaseAddress = new Uri(_baseAddress);
-                if (_timeout == 0) client.Timeout = Timeout.InfiniteTimeSpan;
+                if (_timeout == 0) client.Timeout = System.Threading.Timeout.InfiniteTimeSpan;
                 else client.Timeout = TimeSpan.FromSeconds(_timeout);
 
                 // prep payload
@@ -161,7 +174,7 @@ namespace Printborg.Controllers {
 
         private void Setup(HttpClient client) {
             client.BaseAddress = new Uri(_baseAddress);
-            if (_timeout == 0) client.Timeout = Timeout.InfiniteTimeSpan;
+            if (_timeout == 0) client.Timeout = System.Threading.Timeout.InfiniteTimeSpan;
             else client.Timeout = TimeSpan.FromSeconds(_timeout);
         }
 

@@ -12,7 +12,6 @@ using Newtonsoft.Json.Linq;
 
 using System.Threading;
 using Printborg.Types;
-using Printborg.Json;
 using System.Net;
 using System.Runtime.CompilerServices;
 using Printborg.Interfaces;
@@ -21,6 +20,21 @@ namespace Printborg.Controllers
 {
     public class Auto1111Controller : IApiController
     {
+        // MEMBERS
+        private string _baseAddress = "";
+        private int _timeout = 0;
+
+        #region PROPERTIES
+        public string BaseAddress {
+            get { return _baseAddress; }
+            set { _baseAddress = value; }
+        }
+
+        public int Timeout {
+            get { return _timeout; }
+            set { _timeout = value; }
+        }
+        #endregion //PROPERTIES
 
         /// <summary>
         /// Skip any previously started jobs
@@ -70,7 +84,7 @@ namespace Printborg.Controllers
             using (HttpClient client = new HttpClient())
             {
                 client.BaseAddress = new Uri(baseAddress);
-                if (timeout == 0) client.Timeout = Timeout.InfiniteTimeSpan;
+                if (timeout == 0) client.Timeout = System.Threading.Timeout.InfiniteTimeSpan;
                 else client.Timeout = TimeSpan.FromSeconds(timeout);
 
                 var rawResponse = client.GetAsync(endpoint);
@@ -97,7 +111,7 @@ namespace Printborg.Controllers
                 if (payload == null) throw new ArgumentNullException(nameof(payload));
 
                 client.BaseAddress = new Uri(baseAddress);
-                client.Timeout = Timeout.InfiniteTimeSpan;
+                client.Timeout = System.Threading.Timeout.InfiniteTimeSpan;
                 string textToImageUri = "/sdapi/v1/txt2img";
 
                 // prep payload
@@ -138,7 +152,7 @@ namespace Printborg.Controllers
             {
 
                 client.BaseAddress = new Uri(baseAddress);
-                client.Timeout = Timeout.InfiniteTimeSpan;
+                client.Timeout = System.Threading.Timeout.InfiniteTimeSpan;
 
                 // IApiHandler handler = new Auto1111Handler(client);
 

@@ -14,7 +14,7 @@ namespace PrintborgGH.GH_Components.Fields.Display
         /// </summary>
         public C_DisplayIsoContour()
           : base("Iso Contour", "IsoConMulti",
-              "Draws Iso contour at 0.",
+              "Draws Iso contour of a 2D field.",
               Labels.PluginName, Labels.Category_Fields)
         {
         }
