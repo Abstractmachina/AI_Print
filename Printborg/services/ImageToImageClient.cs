@@ -1,10 +1,12 @@
 ﻿using Newtonsoft.Json;
 using Printborg.Controllers;
 using Printborg.Interfaces;
+using Printborg.Types.Deforum;
 using Printborg.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -60,19 +62,6 @@ namespace Printborg.Services {
 
             return null;
 
-        }
-
-        public struct JobResponse {
-            public Status Status;
-            public string BatchId;
-            public List<string> JobIds;
-        }
-
-      
-        public enum Status {
-            ACCEPTED,
-            SUCCESS,
-            FAILURE
         }
     }
 }
