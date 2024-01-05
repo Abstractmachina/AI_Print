@@ -22,5 +22,4 @@ namespace Printborg.Utilities
         public List<string> JobIds { get; set; }
     }
 
-
 }

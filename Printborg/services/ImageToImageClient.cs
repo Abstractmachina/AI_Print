@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace Printborg.Services {
 
     /// <summary>
-    /// The ImageToImageClient ensures that responses received from APIs are processed into standardized objects
+    /// The ImageToImageClient ensures that responses received from APIs are processed into standardized objects. 
     /// </summary>
     public class ImageToImageClient {
 
@@ -28,18 +28,24 @@ namespace Printborg.Services {
         }
 
         /// <summary>
-        /// 
+        /// Sends job via API POST endpoint to server. Note that the payload has to match the requirements of the API, it is currently not validated. 
         /// </summary>
         /// <returns></returns>
-        public async Task<JobResponse?> CreateJob(string payload) {
+        public async Task<JobResponse> CreateJob(string payload) {
             string response = await _controller.POST_Job(payload);
 
             // response gets processed and returns a standardized return statement (accepted, failed)
-            JobResponse? processedResponse = processCreateJobResponse(response);
+            JobResponse processedResponse = processCreateJobResponse(response);
             return processedResponse;
         }
 
-        private JobResponse? processCreateJobResponse(string rawResponse) {
+
+        /// <summary>
+        /// converts raw string response into a standardized object for ease of data passing.
+        /// </summary>
+        /// <param name="rawResponse"></param>
+        /// <returns></returns>
+        private JobResponse processCreateJobResponse(string rawResponse) {
            if (_controller.GetType() == typeof(DeforumController)) {
                 // response format example
                 //{

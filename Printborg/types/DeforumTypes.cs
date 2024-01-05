@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Printborg.Types.Deforum {
-    public struct JobResponse {
+    public class JobResponse {
         public Status Status;
         public string BatchId;
         public List<string> JobIds;

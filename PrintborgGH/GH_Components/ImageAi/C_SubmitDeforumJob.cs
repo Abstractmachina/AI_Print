@@ -6,7 +6,9 @@ using GrasshopperAsyncComponent;
 using Newtonsoft.Json;
 using Printborg.Controllers;
 using Printborg.Interfaces;
+using Printborg.Services;
 using Printborg.Types;
+using Printborg.Types.Deforum;
 using Rhino.Geometry;
 
 namespace PrintborgGH.GH_Components.ImageAi
@@ -27,8 +29,9 @@ namespace PrintborgGH.GH_Components.ImageAi
             private bool _startRequest = false;
             public List<string> _debug = new List<string>();
             private string _payload = "";
-            private JobStatus? _jobStatus = null;
+            private JobResponse _jobReponse = null;
             private string _baseAddress = "";
+            private ImageToImageClient _client = null;
 
             public InitJobWorker() : base(null) { }
             public InitJobWorker(GH_AsyncComponent parent2) : base(parent2) {
@@ -46,7 +49,7 @@ namespace PrintborgGH.GH_Components.ImageAi
                 }
 
                 _debug.Clear();
-                _jobStatus = null;
+                _jobReponse = null;
 
                 try {
 
@@ -54,20 +57,25 @@ namespace PrintborgGH.GH_Components.ImageAi
                     if (_baseAddress == "") throw new Exception("base address is empty");
                     if (_payload == null) throw new Exception("invalid payload");
 
-                    IApiController controller = new DeforumController(_baseAddress, 30);
 
                     _debug.Add("baseAddress: " + _baseAddress);
                     _debug.Add("... sending post request");
-                    var rawResponse = await controller.POST_Job(_payload);
-                    _debug.Add(rawResponse);
+
+
+                    IApiController controller = new DeforumController(_baseAddress, 30);
+                    _client = new ImageToImageClient(controller);
+                    var response = await _client.CreateJob(_payload);
+
+                    //var rawResponse = await controller.POST_Job(_payload);
+                    //_debug.Add(rawResponse);
 
                     if (CancellationToken.IsCancellationRequested) { return; }
 
 
 
-                    _jobStatus = JsonConvert.DeserializeObject<JobStatus>(rawResponse);
+                    //_jobStatus = JsonConvert.DeserializeObject<JobStatus>(response);
                     _debug.Add("> response received");
-                    _debug.Add(_jobStatus.ToString());
+                    _debug.Add(response.ToString());
                     
                     // response format example
                     //{
@@ -112,12 +120,10 @@ namespace PrintborgGH.GH_Components.ImageAi
             public override void SetData(IGH_DataAccess DA) {
                 if (CancellationToken.IsCancellationRequested) return;
 
-                if (_jobStatus != null) {
-                    DA.SetData(0, _jobStatus.Message);
-                    DA.SetData(1, _jobStatus.BatchId);
-                    DA.SetDataList(2, _jobStatus.JobIds);
+                if (_jobReponse != null) {
+                    DA.SetData(0, _jobReponse);
                 }
-                DA.SetDataList(3, _debug);
+                DA.SetDataList(1, _debug);
 
             }
         }
@@ -137,9 +143,7 @@ namespace PrintborgGH.GH_Components.ImageAi
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddTextParameter("Success Status", "S", "Message whether Batch was submitted successfully.", GH_ParamAccess.item);
-            pManager.AddTextParameter("Batch ID", "B", "Batch ID", GH_ParamAccess.item);
-            pManager.AddTextParameter("Job IDs", "J", "Job IDs", GH_ParamAccess.list);
+            pManager.AddGenericParameter("Success Status", "S", "Message whether Batch was submitted successfully.", GH_ParamAccess.item);
             pManager.AddTextParameter("Debug", "D", "Debug Log", GH_ParamAccess.list);
         }
 
@@ -172,15 +176,5 @@ namespace PrintborgGH.GH_Components.ImageAi
         }
 
         public override GH_Exposure Exposure => GH_Exposure.primary;
-
-        private class JobStatus {
-            [JsonProperty("message")]
-            public string? Message { get; set; }
-            [JsonProperty("batch_id")]
-            public string? BatchId { get; set; }
-            [JsonProperty("job_ids")]
-            public List<string>? JobIds { get; set; }
-        }
-
     }
 }
