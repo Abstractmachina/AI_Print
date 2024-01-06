@@ -27,6 +27,7 @@ namespace Printborg.Services {
             _controller = controller;
         }
 
+
         /// <summary>
         /// Sends job via API POST endpoint to server. Note that the payload has to match the requirements of the API, it is currently not validated. 
         /// </summary>
@@ -38,6 +39,14 @@ namespace Printborg.Services {
             JobResponse processedResponse = processCreateJobResponse(response);
             return processedResponse;
         }
+
+
+
+        public async Task<string> GetJobs() {
+            var rawResponse = await _controller.GET_Jobs();
+            return rawResponse;
+        }
+
 
 
         /// <summary>

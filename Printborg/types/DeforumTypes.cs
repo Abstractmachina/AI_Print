@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json.Converters;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,7 +23,7 @@ namespace Printborg.Types.Deforum {
         }
     }
 
-
+    [JsonConverter(typeof(StatusConverter))]
     public enum Status {
         ACCEPTED,
         SUCCESS,

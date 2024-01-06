@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Printborg.Controllers;
 using Printborg.Interfaces;
 using Printborg.Types;
+using Printborg.Types.Deforum;
 using PrintborgGH.GH_Types;
 using Rhino.Geometry;
 

@@ -1,11 +1,12 @@
 ﻿using Newtonsoft.Json;
+using Printborg.Types.Deforum;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Printborg.Types {
+namespace Printborg.Types.Deforum {
     public class DeforumJob {
         //[
         //    {
@@ -29,7 +30,7 @@ namespace Printborg.Types {
         [JsonProperty("id")]
         public string Id { get; set; }
         [JsonProperty("status")]
-        public string Status { get; set; }
+        public Status Status { get; set; }
         [JsonProperty("phase")]
         public string Phase { get; set; }
         [JsonProperty("error_type")]

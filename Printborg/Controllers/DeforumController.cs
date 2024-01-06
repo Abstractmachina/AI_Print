@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using static System.Net.WebRequestMethods;
 using Newtonsoft.Json;
 using Printborg.Types;
+using Printborg.Types.Deforum;
 
 namespace Printborg.Controllers {
     public class DeforumController : IApiController {
@@ -74,6 +75,10 @@ namespace Printborg.Controllers {
             return outList;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public async Task<string> GET_Jobs() {
             string endpoint = "deforum_api/jobs";
 

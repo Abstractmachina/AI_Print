@@ -1,6 +1,7 @@
 ﻿using Grasshopper.Kernel.Types;
 using Printborg.GH_Types;
 using Printborg.Types;
+using Printborg.Types.Deforum;
 using System;
 using System.Collections.Generic;
 using System.Linq;

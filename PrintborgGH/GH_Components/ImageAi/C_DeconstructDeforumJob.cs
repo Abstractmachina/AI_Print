@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using Grasshopper.Kernel;
 using Printborg.Types;
+using Printborg.Types.Deforum;
 using PrintborgGH.GH_Types;
 using Rhino.Geometry;
 

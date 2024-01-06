@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Printborg.Controllers;
 using Printborg.Interfaces;
 using Printborg.Types;
+using Printborg.Types.Deforum;
 using Rhino.Geometry;
 
 namespace PrintborgGH.GH_Components.ImageAi {
