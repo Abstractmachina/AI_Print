@@ -52,6 +52,16 @@ namespace Printborg.Controllers {
 
         #endregion
 
+
+        public async Task<string> GetAppId() {
+            string endpoint = $"/app_id";
+
+            using (var client = new HttpClient()) {
+                Setup(client);
+                var response = await client.GetAsync(endpoint);
+                return await response.Content.ReadAsStringAsync();
+            }
+        }
         public async Task<string> DELETE_Job(string id) {
             string endpoint = $"deforum_api/jobs/{id}";
             using (var client = new HttpClient()) {
