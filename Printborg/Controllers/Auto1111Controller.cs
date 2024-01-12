@@ -243,7 +243,7 @@ namespace Printborg.Controllers
             throw new NotImplementedException();
         }
 
-        public Task GET_Job(string id) {
+        public Task<string> GET_Job(string id) {
             throw new NotImplementedException();
         }
 
