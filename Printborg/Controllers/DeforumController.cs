@@ -90,7 +90,7 @@ namespace Printborg.Controllers {
             }
         }
 
-        public Task GET_Job(string id) {
+        public Task<string> GET_Job(string id) {
             throw new NotImplementedException();
         }
 
@@ -177,6 +177,11 @@ namespace Printborg.Controllers {
             }
         }
 
+
+        /// <summary>
+        /// Set up client with default settings (base address, timeout, etc.)
+        /// </summary>
+        /// <param name="client"></param>
         private void Setup(HttpClient client) {
             client.BaseAddress = new Uri(_baseAddress);
             if (_timeout == 0) client.Timeout = System.Threading.Timeout.InfiniteTimeSpan;
