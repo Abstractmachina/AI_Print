@@ -5,13 +5,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Printborg.Interfaces;
+using Printborg.interfaces;
+using Printborg.Utilities;
 
 namespace Printborg.Types.Deforum {
 
     /// <summary>
     /// 
     /// </summary>
-    public class DeforumJob {
+    public class DeforumJob : IJob {
         //[
         //    {
         //        "id": "batch(948023533)-0",
@@ -40,7 +43,7 @@ namespace Printborg.Types.Deforum {
         [JsonProperty("error_type")]
         public string ErrorType { get; set; }
         [JsonProperty("phase_progress")]
-        public double PhaseProgress { get; set; }
+        public double Progress { get; set; }
         [JsonProperty("started_at")]
         public double StartedAt { get; set; }
         [JsonProperty("last_updated")]
@@ -62,23 +65,27 @@ namespace Printborg.Types.Deforum {
 
     }
 
-    public class DeforumBatch {
-        public DeforumBatch() { }
-
-
-    }
-
-
     /// <summary>
     /// 
     /// </summary>
-    public class DeforumJobResponse {
-        public Status Status;
-        public string BatchId;
-        public List<string> JobIds;
+    public class DeforumJobReceipt : IJobReceipt {
+        // response format example
+        //{
+        //    "message": "Job(s) accepted",
+        //    "batch_id": "batch(843362695)",
+        //    "job_ids": [
+        //        "batch(843362695)-0"
+        //    ]
+        //}
+        [JsonProperty("message")]
+        public Status Status { get; set; }
+        [JsonProperty("batch_id")]
+        public string Id { get; set; }
+        [JsonProperty("job_ids")]
+        public List<string> JobIds { get; set; }
 
         public override string ToString() {
-            string output = $"{{ \nStatus: ({Status.ToString()})\nBatch Id: ({BatchId}) \n" +
+            string output = $"{{ \nStatus: ({Status.ToString()})\nBatch Id: ({Id}) \n" +
             "Job IDs: ({ \n";
             foreach (var i in JobIds) {
                 output += $"\t{i.ToString()}\n";
@@ -88,6 +95,9 @@ namespace Printborg.Types.Deforum {
         }
     }
 
+    /// <summary>
+    /// standardized status object to check job state.
+    /// </summary>
     [JsonConverter(typeof(StatusConverter))]
     public enum Status {
         ACCEPTED,

@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Printborg.Controllers;
+using Printborg.interfaces;
 using Printborg.Interfaces;
 using Printborg.Types.Deforum;
 using Printborg.Utilities;
@@ -32,19 +33,36 @@ namespace Printborg.Services {
         /// Sends job via API POST endpoint to server. Note that the payload has to match the requirements of the API, it is currently not validated. 
         /// </summary>
         /// <returns></returns>
-        public async Task<JobResponse> CreateJob(string payload) {
+        public async Task<IJobReceipt> CreateJob(string payload) {
             string response = await _controller.POST_Job(payload);
 
             // response gets processed and returns a standardized return statement (accepted, failed)
-            JobResponse processedResponse = processCreateJobResponse(response);
+            IJobReceipt processedResponse = processCreateJobResponse(response);
             return processedResponse;
         }
 
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public async Task<string> GetJobs() {
             var rawResponse = await _controller.GET_Jobs();
             return rawResponse;
+        }
+
+
+        /// <summary>
+        /// Get all jobs matching id.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Dictionary with id as key, and IJob as value</returns>
+        public async Task<Dictionary<string, IJob>> GetJob(string id) {
+            var rawResponse = await _controller.GET_Batch(id);
+
+            var jobs = JsonConvert.DeserializeObject<Dictionary<string, IJob>>(rawResponse);
+
+            return jobs;
         }
 
 
@@ -54,25 +72,11 @@ namespace Printborg.Services {
         /// </summary>
         /// <param name="rawResponse"></param>
         /// <returns></returns>
-        private JobResponse processCreateJobResponse(string rawResponse) {
+        private IJobReceipt processCreateJobResponse(string rawResponse) {
            if (_controller.GetType() == typeof(DeforumController)) {
-                // response format example
-                //{
-                //    "message": "Job(s) accepted",
-                //    "batch_id": "batch(843362695)",
-                //    "job_ids": [
-                //        "batch(843362695)-0"
-                //    ]
-                //}
-                JobResponse response = new JobResponse();
-                var json = JsonConvert.DeserializeObject<DeforumJobResponseConverter>(rawResponse);
-                if (json.Message.Contains("accepted")) {
-                    response.Status = Status.ACCEPTED;
-                    response.BatchId = json.BatchId;
-                    response.JobIds = json.JobIds;
-                }
+                var deforumReceipt = JsonConvert.DeserializeObject<DeforumJobReceipt>(rawResponse);
 
-                return response;
+                return deforumReceipt;
             }
 
             return null;
