@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace Printborg.Services {
 
     /// <summary>
-    /// The ImageToImageClient ensures that responses received from APIs are processed into standardized objects. 
+    /// The ImageToImageClient ensures a unified interface with user-defined API controllers. 
     /// </summary>
     public class ImageToImageClient {
 
@@ -28,12 +28,28 @@ namespace Printborg.Services {
             _controller = controller;
         }
 
+        public async Task<bool> CheckOnlineStatus() {
+            try {
+                if (_controller.GetType() == typeof(DeforumController)) {
+                    var id = await ((DeforumController)_controller).GetAppId();
+                    Console.WriteLine(id);
+                    if (id != null || id != "") return true;
+                }
+            }
+            catch (Exception exception) {
+                return false;
+            }
+            
+
+            return false;
+        }
+
 
         /// <summary>
         /// Sends job via API POST endpoint to server. Note that the payload has to match the requirements of the API, it is currently not validated. 
         /// </summary>
-        /// <returns></returns>
-        public async Task<IJobReceipt> CreateJob(string payload) {
+        /// <returns>Job receipt informing user of status and job id</returns>
+        public async Task<IJobReceipt> SubmitJob(string payload) {
             string response = await _controller.POST_Job(payload);
 
             // response gets processed and returns a standardized return statement (accepted, failed)
