@@ -108,7 +108,7 @@ namespace PrintborgGH.GH_Components.ImageAi {
                 if (_jobStatusList != null && _jobStatusList.Count != 0) {
                     DA.SetData(0, _jobStatusList[0].Status);
                     DA.SetData(1, _jobStatusList[0].Phase);
-                    DA.SetData(2, _jobStatusList[0].PhaseProgress);
+                    DA.SetData(2, _jobStatusList[0].Progress);
                     DA.SetData(3, _jobStatusList[0].Updates);
                 }
                 DA.SetDataList(4, _debug);

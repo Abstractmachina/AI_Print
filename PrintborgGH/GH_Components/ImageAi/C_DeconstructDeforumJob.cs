@@ -76,7 +76,7 @@ namespace PrintborgGH.GH_Components.ImageAi
             DA.SetData("Status", job.Status);
             DA.SetData("Phase", job.Phase);
             DA.SetData("Error", job.ErrorType);
-            DA.SetData("Progress", job.PhaseProgress);
+            DA.SetData("Progress", job.Progress);
             DA.SetData("Started At", job.StartedAt);
             DA.SetData("Last Updated", job.LastUpdated);
             DA.SetData("Execution Time", job.ExecutionTime);
