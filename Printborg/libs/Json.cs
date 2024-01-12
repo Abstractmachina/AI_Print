@@ -42,10 +42,10 @@ namespace Printborg.Utilities {
 
             if (raw != "") {
                 raw = raw.ToLower();
-                if (raw == "succeeded") {
+                if (raw.Contains( "succeeded")) {
                     return Status.SUCCESS;
                 }
-                else if (raw == "accepted") {
+                else if (raw.Contains("accepted")) {
                     return Status.ACCEPTED;
                 }
                 else {
