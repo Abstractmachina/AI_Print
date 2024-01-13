@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Linq;
 using System.Windows.Forms;
 using Grasshopper.Kernel;
 using GrasshopperAsyncComponent;
@@ -29,9 +31,11 @@ namespace PrintborgGH.GH_Components.ImageAi
             private bool _startRequest = false;
             public List<string> _debug = new List<string>();
             private string _payload = "";
-            private JobResponse _jobReponse = null;
+            private DeforumJobReceipt _jobReponse = null;
             private string _baseAddress = "";
             private ImageToImageClient _client = null;
+            private bool _isFinished = false;
+            private string _currentJobId = "";
 
             public InitJobWorker() : base(null) { }
             public InitJobWorker(GH_AsyncComponent parent2) : base(parent2) {
@@ -57,15 +61,18 @@ namespace PrintborgGH.GH_Components.ImageAi
                     if (_baseAddress == "") throw new Exception("base address is empty");
                     if (_payload == null) throw new Exception("invalid payload");
 
-
                     _debug.Add("baseAddress: " + _baseAddress);
                     _debug.Add("... sending post request");
 
 
                     IApiController controller = new DeforumController(_baseAddress, 30);
                     _client = new ImageToImageClient(controller);
-                    var response = await _client.CreateJob(_payload);
 
+                    // TODO: cancel previous jobs if server allows multiple jobs concurrently
+
+                    var response = await _client.SubmitJob(_payload);
+                    _currentJobId = response.Id;
+                    ReportProgress(_currentJobId, 0.01);
                     //var rawResponse = await controller.POST_Job(_payload);
                     //_debug.Add(rawResponse);
 
@@ -86,6 +93,26 @@ namespace PrintborgGH.GH_Components.ImageAi
                     //    ]
                     //}
 
+
+                    // start loop. for each loop query server. update progress bar and update output object. 
+
+                    while (!_isFinished) {
+                        var job = await _client.GetJob(_currentJobId);
+                        //check status. if status is SUCCESS, it means job is finished. 
+                        var batch = job.First().Value;
+                        if (batch.Status == Status.SUCCESS) {
+                            ReportProgress(_currentJobId, 1.0d);
+                            _isFinished = true;
+                            break;
+                        }
+                        //get progress
+                        ReportProgress(_currentJobId, batch.Progress);
+                        Thread.Sleep(1000); // check every 1sec
+                    }
+
+                    // set output object
+
+                    Done();
                 }
                 catch (Exception ex) {
                     _debug.Add(ex.ToString());

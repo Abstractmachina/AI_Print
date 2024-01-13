@@ -62,7 +62,7 @@ namespace Printborg.Services {
         /// 
         /// </summary>
         /// <returns></returns>
-        public async Task<string> GetJobs() {
+        public async Task<string> GetAllJobs() {
             var rawResponse = await _controller.GET_Jobs();
             return rawResponse;
         }
