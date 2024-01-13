@@ -68,51 +68,51 @@ namespace PrintBorgTests {
             Assert.True(containsId);
         }
 
-        //[Fact]
-        //private async Task SubmitJobWithProgressReporting() {
+        [Fact]
+        private async Task ClientCanCheckProgressReport() {
 
-        //    var client = new ImageToImageClient(new DeforumController());
-
-        //    IApiController controller = new DeforumController();
-
-        //    string payload = File.ReadAllText(@"D:\Repos\csstablediffusiontest\assets\deforum_testSettings.txt");
+            string payload = File.ReadAllText(@"D:\Repos\csstablediffusiontest\assets\deforum_testSettings.txt");
 
 
-        //    // string response = await controller.POST_Job(payload);
 
 
-        //    var response = await client.SubmitJob(payload);
-        //    Console.WriteLine(response);
 
-        //    string currentId = response.Id;
-        //    Console.WriteLine("Current Id is: " + currentId);
+            Assert.NotNull(null);
+            // string response = await controller.POST_Job(payload);
 
-        //    bool _isFinished = false;
 
-        //    var rawResponse = await controller.GET_Batch(currentId);
+            //var response = await client.SubmitJob(payload);
+            //Console.WriteLine(response);
 
-        //    var job2 = JsonConvert.DeserializeObject<DeforumJob[]>(rawResponse);
-        //    _output.WriteLine("/n/nnumber of batches in job: " + job2.Length);
-        //    foreach (var j in job2) {
-        //        Console.WriteLine($"Id: {j.Id}, Status: {j.Status}, Progress: {j.Progress}, Phase: {j.Phase}, message: {j.Message}");
-        //    }
-        //    return;
-        //    while (!_isFinished) {
-        //        var job = await client.GetJob(currentId);
-        //        //check status. if status is SUCCESS, it means job is finished. 
-        //        var batch = job.First().Value;
-        //        if (batch.Status == Status.SUCCESS) {
-        //            Console.WriteLine($"Done");
-        //            _isFinished = true;
-        //            break;
-        //        }
-        //        //get progress
-        //        Console.WriteLine($"Generating ... [{batch.Progress}]");
-        //        Thread.Sleep(1000); // check every 1sec
-        //    }
+            //string currentId = response.Id;
+            //Console.WriteLine("Current Id is: " + currentId);
 
-        //    Console.WriteLine("Job Complete. Exiting.");
-        //}
+            //bool _isFinished = false;
+
+            //var rawResponse = await controller.GET_Batch(currentId);
+
+            //var job2 = JsonConvert.DeserializeObject<DeforumJob[]>(rawResponse);
+            //_output.WriteLine("/n/nnumber of batches in job: " + job2.Length);
+            //foreach (var j in job2) {
+            //    Console.WriteLine($"Id: {j.Id}, Status: {j.Status}, Progress: {j.Progress}, Phase: {j.Phase}, message: {j.Message}");
+            //}
+            //return;
+            //while (!_isFinished) {
+            //    var job = await client.GetJob(currentId);
+            //    //check status. if status is SUCCESS, it means job is finished. 
+            //    var batch = job.First().Value;
+            //    if (batch.Status == Status.SUCCESS) {
+            //        Console.WriteLine($"Done");
+            //        _isFinished = true;
+            //        break;
+            //    }
+            //    //get progress
+            //    Console.WriteLine($"Generating ... [{batch.Progress}]");
+            //    Thread.Sleep(1000); // check every 1sec
+            //}
+
+            //Console.WriteLine("Job Complete. Exiting.");
+        }
 
     }
 }
