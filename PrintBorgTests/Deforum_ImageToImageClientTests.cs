@@ -7,11 +7,13 @@ namespace PrintBorgTests {
 
     public class Deforum_ImageToImageClientTests {
 
+        private readonly ITestOutputHelper _output;
         private readonly ImageToImageClient _client;
 
-        public Deforum_ImageToImageClientTests() {
+        public Deforum_ImageToImageClientTests(ITestOutputHelper output) {
             var controller = new DeforumController();
             _client = new ImageToImageClient(controller);
+            _output = output;
         }
 
         [Fact]
