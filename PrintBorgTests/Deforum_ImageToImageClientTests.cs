@@ -17,7 +17,7 @@ namespace PrintBorgTests {
         }
 
         [Fact]
-        public async Task CheckIfServerIsOnline() {
+        private async Task CheckIfServerIsOnline() {
             bool isOnline = await _client.CheckOnlineStatus();
             Assert.True(isOnline);
         }
