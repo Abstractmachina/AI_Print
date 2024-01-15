@@ -79,7 +79,6 @@ namespace PrintBorgTests {
 
             _output.WriteLine($"{currentId} progress: {progress}");
             Assert.True(progress >= 0d);
-            // string response = await controller.POST_Job(payload);
 
         }
 
