@@ -69,7 +69,7 @@ namespace PrintBorgTests {
         }
 
         [Fact]
-        private async Task ClientCanCheckProgressReport() {
+        private async Task ClientCanCheckProgress() {
 
             string payload = File.ReadAllText(@"D:\Repos\csstablediffusiontest\assets\deforum_testSettings.txt");
             var receipt = await _client.SubmitJob(payload);
@@ -81,6 +81,7 @@ namespace PrintBorgTests {
             Assert.True(progress >= 0d);
             // string response = await controller.POST_Job(payload);
 
+        }
 
         [Fact]
         private async Task ClientCanCancelAllJobs() {
