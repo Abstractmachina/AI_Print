@@ -42,8 +42,6 @@ namespace Printborg.Services {
             catch (Exception exception) {
                 return false;
             }
-            
-
             return false;
         }
 
