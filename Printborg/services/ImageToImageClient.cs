@@ -76,12 +76,14 @@ namespace Printborg.Services {
         /// </summary>
         /// <param name="id"></param>
         /// <returns>Dictionary with id as key, and IJob as value</returns>
-        public async Task<Dictionary<string, IJob>> GetJob(string id) {
+        public async Task<IJob[]> GetJob(string id) {
             var rawResponse = await _controller.GET_Batch(id);
 
-            var jobs = JsonConvert.DeserializeObject<Dictionary<string, IJob>>(rawResponse);
+            if (_controller.GetType() == typeof(DeforumController)) {
+                return JsonConvert.DeserializeObject<DeforumJob[]>(rawResponse);
+            }
 
-            return jobs;
+            return null;
         }
 
 
