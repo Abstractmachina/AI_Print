@@ -159,9 +159,8 @@ namespace Printborg.Controllers {
             //    }
             // ]
 
-            string endpoint = $"deforum_api/batches/{id}";
-
             ValidateBaseAddress();
+            string endpoint = $"deforum_api/batches/{id}";
 
             using (HttpClient client = new HttpClient()) {
                 Setup(client);
