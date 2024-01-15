@@ -17,5 +17,6 @@ namespace Printborg.Interfaces
         Task<List<string>> DELETE_Jobs();
         Task<string> GET_Batch(string id);
         Task<string> GET_Batches();
+        Task<double> GET_Progress(string id);
     }
 }

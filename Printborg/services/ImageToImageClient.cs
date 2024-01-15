@@ -18,8 +18,9 @@ namespace Printborg.Services {
     /// </summary>
     public class ImageToImageClient {
 
-        private IApiController _controller = null;
+        private readonly IApiController _controller = null;
 
+        #region CONSTRUCTORS
         public ImageToImageClient() {
 
         }
@@ -27,6 +28,8 @@ namespace Printborg.Services {
         public ImageToImageClient(IApiController controller) {
             _controller = controller;
         }
+
+        #endregion
 
         public async Task<bool> CheckOnlineStatus() {
             try {
@@ -82,7 +85,25 @@ namespace Printborg.Services {
         }
 
 
+        /// <summary>
+        /// Get progress of specified job as a double (0 - 1). If invalid, will return a negative value.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>progress as decimal value</returns>
+        public async Task<double> GetProgress(string id) {
+            double progress = await _controller.GET_Progress(id);
 
+            try {
+                return Convert.ToDouble(progress);
+
+            } catch (Exception exception) {
+                Console.WriteLine($"Error ImageToImageClient.GetProgress(id): {exception.Message}");
+                return -1d;
+            }
+        }
+
+
+        //========================  UTILITY ===============================
         /// <summary>
         /// converts raw string response into a standardized object for ease of data passing.
         /// </summary>

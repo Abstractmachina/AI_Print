@@ -263,5 +263,9 @@ namespace Printborg.Controllers
         public Task<List<string>> DELETE_Jobs() {
             throw new NotImplementedException();
         }
+
+        public Task<double> GET_Progress(string id) {
+            throw new NotImplementedException();
+        }
     }
 }

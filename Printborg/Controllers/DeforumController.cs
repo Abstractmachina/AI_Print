@@ -188,6 +188,21 @@ namespace Printborg.Controllers {
         }
 
 
+        public async Task<double> GET_Progress(string id) {
+
+            //get batch based on id
+            var job = await this.GET_Batch(id);
+
+            //deserialize json string to a generic dictionary
+            var dic = JsonConvert.DeserializeObject<DeforumJob[]>(job); 
+            double progress = dic[0].Progress;
+
+            return progress;
+        }
+
+
+        //==============    UTILITY ========================
+
         /// <summary>
         /// Set up client with default settings (base address, timeout, etc.)
         /// </summary>

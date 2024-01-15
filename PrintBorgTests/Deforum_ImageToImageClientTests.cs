@@ -72,12 +72,13 @@ namespace PrintBorgTests {
         private async Task ClientCanCheckProgressReport() {
 
             string payload = File.ReadAllText(@"D:\Repos\csstablediffusiontest\assets\deforum_testSettings.txt");
+            var receipt = await _client.SubmitJob(payload);
+            string currentId = receipt.Id;
 
+            double progress = await _client.GetProgress(receipt.Id);
 
-
-
-
-            Assert.NotNull(null);
+            _output.WriteLine($"{currentId} progress: {progress}");
+            Assert.True(progress >= 0d);
             // string response = await controller.POST_Job(payload);
 
 
