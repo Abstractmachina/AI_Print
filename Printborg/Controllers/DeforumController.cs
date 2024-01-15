@@ -187,6 +187,17 @@ namespace Printborg.Controllers {
             }
         }
 
+        public async Task<string> DELETE_Batch(string id) {
+            ValidateBaseAddress();
+            string endpoint = $"deforum_api/batches/{id}";
+
+            using (var client = new HttpClient()) {
+                Setup(client);
+
+                var response = await client.DeleteAsync(endpoint);
+                return await response.Content.ReadAsStringAsync();
+            }
+        }
 
         public async Task<double> GET_Progress(string id) {
 
