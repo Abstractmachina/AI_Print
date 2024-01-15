@@ -104,6 +104,14 @@ namespace Printborg.Services {
             }
         }
 
+        public async Task CancelJob(string id) {
+
+        }
+        public async Task CancelAllJobs() { 
+            
+
+        }
+
 
         //========================  UTILITY ===============================
         /// <summary>
