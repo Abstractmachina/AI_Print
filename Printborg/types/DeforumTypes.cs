@@ -102,6 +102,7 @@ namespace Printborg.Types.Deforum {
     public enum Status {
         ACCEPTED,
         SUCCESS,
-        FAILURE
+        FAILURE,
+        CANCELLED
     }
 }
