@@ -48,6 +48,9 @@ namespace Printborg.Utilities {
                 else if (raw.Contains("accepted")) {
                     return Status.ACCEPTED;
                 }
+                else if (raw.Contains("cancel")) {
+                    return Status.CANCELLED;
+                }
                 else {
                     return Status.FAILURE;
                 }
