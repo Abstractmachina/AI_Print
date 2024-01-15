@@ -82,37 +82,9 @@ namespace PrintBorgTests {
             // string response = await controller.POST_Job(payload);
 
 
-            //var response = await client.SubmitJob(payload);
-            //Console.WriteLine(response);
-
-            //string currentId = response.Id;
-            //Console.WriteLine("Current Id is: " + currentId);
-
-            //bool _isFinished = false;
-
-            //var rawResponse = await controller.GET_Batch(currentId);
-
-            //var job2 = JsonConvert.DeserializeObject<DeforumJob[]>(rawResponse);
-            //_output.WriteLine("/n/nnumber of batches in job: " + job2.Length);
-            //foreach (var j in job2) {
-            //    Console.WriteLine($"Id: {j.Id}, Status: {j.Status}, Progress: {j.Progress}, Phase: {j.Phase}, message: {j.Message}");
-            //}
-            //return;
-            //while (!_isFinished) {
-            //    var job = await client.GetJob(currentId);
-            //    //check status. if status is SUCCESS, it means job is finished. 
-            //    var batch = job.First().Value;
-            //    if (batch.Status == Status.SUCCESS) {
-            //        Console.WriteLine($"Done");
-            //        _isFinished = true;
-            //        break;
-            //    }
-            //    //get progress
-            //    Console.WriteLine($"Generating ... [{batch.Progress}]");
-            //    Thread.Sleep(1000); // check every 1sec
-            //}
-
-            //Console.WriteLine("Job Complete. Exiting.");
+        [Fact]
+        private async Task ClientCanCancelAllJobs() {
+            Assert.True(false);
         }
 
     }
