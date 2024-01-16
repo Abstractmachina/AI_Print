@@ -62,28 +62,8 @@ namespace Printborg.Controllers {
                 return await response.Content.ReadAsStringAsync();
             }
         }
-        public async Task<string> DELETE_Job(string id) {
-            string endpoint = $"deforum_api/jobs/{id}";
-            using (var client = new HttpClient()) {
-                Setup(client);
 
-                var response = await client.DeleteAsync(endpoint);
 
-                return await response.Content.ReadAsStringAsync();
-            }
-        }
-
-        public async Task<List<string>> DELETE_Jobs() {
-            var jobIds = JsonConvert.DeserializeObject<Dictionary<string, DeforumJob>>(await this.GET_Jobs()).Select(j => j.Value.Id);
-
-            var outList = new List<string>();
-            foreach (var id in jobIds) {
-                var response = await this.DELETE_Job(id);
-                var status = JsonConvert.DeserializeObject<Dictionary<string, string>>(response);
-                outList.Add($"{status["id"]} : {status["message"]}");
-            }
-            return outList;
-        }
 
         /// <summary>
         /// 
@@ -186,7 +166,7 @@ namespace Printborg.Controllers {
             }
         }
 
-        public async Task<string> DELETE_Batch(string id) {
+        public async Task<string> DELETE_Job(string id) {
             ValidateBaseAddress();
             string endpoint = $"deforum_api/batches/{id}";
 
@@ -195,7 +175,26 @@ namespace Printborg.Controllers {
 
                 var response = await client.DeleteAsync(endpoint);
                 return await response.Content.ReadAsStringAsync();
+
+//              {
+    //              "ids": [
+    //                  "batch(273370305)-0"
+    //              ],
+    //              "message:": "1 job(s) cancelled."
+//              }
+                }
+        }
+
+        public async Task<List<string>> DELETE_Jobs() {
+            var jobIds = JsonConvert.DeserializeObject<Dictionary<string, DeforumJob>>(await this.GET_Jobs()).Select(j => j.Value.Id);
+
+            var outList = new List<string>();
+            foreach (var id in jobIds) {
+                var response = await this.DELETE_Job(id);
+                var status = JsonConvert.DeserializeObject<Dictionary<string, string>>(response);
+                outList.Add($"{status["id"]} : {status["message"]}");
             }
+            return outList;
         }
 
         public async Task<double> GET_Progress(string id) {
