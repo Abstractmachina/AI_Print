@@ -104,6 +104,13 @@ namespace Printborg.Services {
 
         public async Task<IBatchReceipt> CancelJob(string id) {
 
+            var response = await _controller.DELETE_Job(id);
+            if (_controller.GetType() == typeof (DeforumController)) {
+                return JsonConvert.DeserializeObject<DeforumBatchReceipt>(response);
+
+            }
+            return null;
+
         }
         public async Task CancelAllJobs() { 
             
@@ -111,13 +118,13 @@ namespace Printborg.Services {
         }
 
 
-        //========================  UTILITY ===============================
-        /// <summary>
-        /// converts raw string response into a standardized object for ease of data passing.
-        /// </summary>
-        /// <param name="rawResponse"></param>
-        /// <returns></returns>
-        private IJobReceipt processCreateJobResponse(string rawResponse) {
+            //========================  UTILITY ===============================
+            /// <summary>
+            /// converts raw string response into a standardized object for ease of data passing.
+            /// </summary>
+            /// <param name="rawResponse"></param>
+            /// <returns></returns>
+            private IJobReceipt processCreateJobResponse(string rawResponse) {
            if (_controller.GetType() == typeof(DeforumController)) {
                 var deforumReceipt = JsonConvert.DeserializeObject<DeforumJobReceipt>(rawResponse);
 
