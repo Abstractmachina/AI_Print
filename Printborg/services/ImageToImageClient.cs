@@ -102,7 +102,7 @@ namespace Printborg.Services {
             }
         }
 
-        public async Task CancelJob(string id) {
+        public async Task<IBatchReceipt> CancelJob(string id) {
 
         }
         public async Task CancelAllJobs() { 

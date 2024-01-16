@@ -96,11 +96,22 @@ namespace Printborg.Types.Deforum {
     }
 
     /// <summary>
+    /// Testing to replace DeforumJobReceipt class. This way could simplify.
+    /// </summary>
+    public class DeforumBatchReceipt : IBatchReceipt {
+        // note the extra colon in the property!! >:((
+        [JsonProperty("message:")]
+        public Status Status { get; set; }
+        [JsonProperty("ids")]
+        public List<string> Ids { get; set; }
+    }
+
+    /// <summary>
     /// standardized status object to check job state.
     /// </summary>
     [JsonConverter(typeof(StatusConverter))]
     public enum Status {
-        ACCEPTED,
+        ACCEPTED, 
         SUCCESS,
         FAILURE,
         CANCELLED

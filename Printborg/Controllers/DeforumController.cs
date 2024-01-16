@@ -169,7 +169,6 @@ namespace Printborg.Controllers {
         public async Task<string> DELETE_Job(string id) {
             ValidateBaseAddress();
             string endpoint = $"deforum_api/batches/{id}";
-
             using (var client = new HttpClient()) {
                 Setup(client);
 
