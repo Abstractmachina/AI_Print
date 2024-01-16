@@ -14,6 +14,7 @@ namespace PrintBorgTests {
 
         private readonly ITestOutputHelper _output;
         private readonly ImageToImageClient _client;
+        private readonly string _payload = File.ReadAllText(@"D:\Repos\csstablediffusiontest\assets\deforum_testSettings.txt");
 
         public Deforum_ImageToImageClientTests(ITestOutputHelper output) {
             var controller = new DeforumController();
@@ -80,6 +81,20 @@ namespace PrintBorgTests {
             _output.WriteLine($"{currentId} progress: {progress}");
             Assert.True(progress >= 0d);
 
+        }
+
+        [Fact]
+        private async Task ClientCanCancelJob() {
+            _output.WriteLine("... Submitting test payload ...");
+            var receipt = await _client.SubmitJob(_payload);
+            _output.WriteLine($"Job Receipt: {receipt.Id}, {receipt.Status}");
+            string currentId = receipt.Id;
+            Thread.Sleep(1000);
+
+            _output.WriteLine("... Canceling Job ...");
+            var cancelReceipt = await _client.CancelJob(currentId);
+            _output.WriteLine($"Job Receipt: {cancelReceipt.Ids}, {cancelReceipt.Status}");
+            Assert.True(cancelReceipt.Status == Status.CANCELLED);
         }
 
         [Fact]
