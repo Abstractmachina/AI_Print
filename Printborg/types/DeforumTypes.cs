@@ -66,7 +66,7 @@ namespace Printborg.Types.Deforum {
     }
 
     /// <summary>
-    /// 
+    /// simple receipt object of job submission result.
     /// </summary>
     public class DeforumJobReceipt : IJobReceipt {
         // response format example
@@ -96,7 +96,7 @@ namespace Printborg.Types.Deforum {
     }
 
     /// <summary>
-    /// Testing to replace DeforumJobReceipt class. This way could simplify.
+    /// alternative receipt object with multiple ids.
     /// </summary>
     public class DeforumBatchReceipt : IBatchReceipt {
         // note the extra colon in the property!! >:((
