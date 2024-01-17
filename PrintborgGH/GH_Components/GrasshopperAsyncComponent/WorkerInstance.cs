@@ -31,15 +31,14 @@ namespace GrasshopperAsyncComponent
         /// </summary>
         public string? Id { get; set; }
 
-        //protected WorkerInstance(GH_Component _parent)
-        //{
-        //    Parent = _parent;
-        //}
-        protected WorkerInstance(GH_AsyncComponent? parentAsync)
-        {
-            Parent = parentAsync;
-            ParentAsync = parentAsync; 
+        protected WorkerInstance(GH_Component _parent) {
+            Parent = _parent;
         }
+        //protected WorkerInstance(GH_AsyncComponent? parentAsync)
+        //{
+        //    Parent = parentAsync;
+        //    ParentAsync = parentAsync; 
+        //}
 
         /// <summary>
         /// This is a "factory" method. It should return a fresh instance of this class, but with all the necessary state that you might have passed on directly from your component.
