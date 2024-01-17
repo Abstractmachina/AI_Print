@@ -12,162 +12,28 @@ using Printborg.Services;
 using Printborg.Types;
 using Printborg.Types.Deforum;
 using Rhino.Geometry;
+using PrintborgGH.GH_Types;
 
 namespace PrintborgGH.GH_Components.ImageAi
 {
     public class C_SubmitDeforumJob : GH_AsyncComponent {
-        /// <summary>
-        /// Initializes a new instance of the C_SendDeforumJob class.
-        /// </summary>
+
+        #region COMPONENTDEFINITION
         public C_SubmitDeforumJob()
           : base("Submit Deforum Job", "Go Deforum",
               "Submit job to Deforum server",
               Labels.PluginName, Labels.Category_AI)
         {
-            BaseWorker = new InitJobWorker(this);
+            BaseWorker = new SubmitJobWorker(this);
         }
 
-        private class InitJobWorker : WorkerInstance {
-            private bool _startRequest = false;
-            public List<string> _debug = new List<string>();
-            private string _payload = "";
-            private DeforumJobReceipt _jobReponse = null;
-            private string _baseAddress = "";
-            private ImageToImageClient _client = null;
-            private bool _isFinished = false;
-            private string _currentJobId = "";
-
-            public InitJobWorker() : base(null) { }
-            public InitJobWorker(GH_AsyncComponent parent2) : base(parent2) {
-
-            }
-
-            public override async void DoWork(Action<string, double> ReportProgress, Action Done) {
-
-                // Checking for cancellation
-                if (CancellationToken.IsCancellationRequested) { return; }
-                if (!_startRequest) {
-                    //Parent2.RequestCancellation();
-                    ReportProgress("", 0d);
-                    return;
-                }
-
-                _debug.Clear();
-                _jobReponse = null;
-
-                try {
-
-                    // error checking
-                    if (_baseAddress == "") throw new Exception("base address is empty");
-                    if (_payload == null) throw new Exception("invalid payload");
-
-                    _debug.Add("baseAddress: " + _baseAddress);
-                    _debug.Add("... sending post request");
-
-
-                    IApiController controller = new DeforumController(_baseAddress, 30);
-                    _client = new ImageToImageClient(controller);
-
-                    // TODO: cancel previous jobs if server allows multiple jobs concurrently
-
-                    var response = await _client.SubmitJob(_payload);
-                    _currentJobId = response.Id;
-                    ReportProgress(_currentJobId, 0.01);
-                    //var rawResponse = await controller.POST_Job(_payload);
-                    //_debug.Add(rawResponse);
-
-                    if (CancellationToken.IsCancellationRequested) { return; }
-
-
-
-                    //_jobStatus = JsonConvert.DeserializeObject<JobStatus>(response);
-                    _debug.Add("> response received");
-                    _debug.Add(response.ToString());
-                    
-                    // response format example
-                    //{
-                    //    "message": "Job(s) accepted",
-                    //    "batch_id": "batch(843362695)",
-                    //    "job_ids": [
-                    //        "batch(843362695)-0"
-                    //    ]
-                    //}
-
-
-                    // start loop. for each loop query server. update progress bar and update output object. 
-
-                    while (!_isFinished) {
-                        var job = await _client.GetJob(_currentJobId);
-                        //check status. if status is SUCCESS, it means job is finished. 
-                        var batch = job.First().Value;
-                        if (batch.Status == Status.SUCCESS) {
-                            ReportProgress(_currentJobId, 1.0d);
-                            _isFinished = true;
-                            break;
-                        }
-                        //get progress
-                        ReportProgress(_currentJobId, batch.Progress);
-                        Thread.Sleep(1000); // check every 1sec
-                    }
-
-                    // set output object
-
-                    Done();
-                }
-                catch (Exception ex) {
-                    _debug.Add(ex.ToString());
-                }
-
-                _startRequest = false; //set boolean gate to false
-                Done();
-            }
-
-            public override WorkerInstance Duplicate() => new InitJobWorker();
-
-
-            public override void GetData(IGH_DataAccess DA, GH_ComponentParamServer Params) {
-                if (CancellationToken.IsCancellationRequested) return;
-
-                if (!_startRequest) {
-                    if (!DA.GetData(0, ref _startRequest)) {
-                        Parent.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Input required");
-                        return;
-                    }
-                    if (!DA.GetData(1, ref _baseAddress)) {
-                        Parent.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "API base address required.");
-                        return;
-                    }
-                    if (!DA.GetData(2, ref _payload)) {
-                        Parent.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Deforum Payload required. Please refer to official documentation for further details.");
-                        return;
-                    }
-                }
-            }
-
-            public override void SetData(IGH_DataAccess DA) {
-                if (CancellationToken.IsCancellationRequested) return;
-
-                if (_jobReponse != null) {
-                    DA.SetData(0, _jobReponse);
-                }
-                DA.SetDataList(1, _debug);
-
-            }
-        }
-
-        /// <summary>
-        /// Registers all the input parameters for this component.
-        /// </summary>
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
             pManager.AddBooleanParameter("Generate", "G", "Start Image generation request. (Hint: use boolean button)", GH_ParamAccess.item);
-            pManager.AddTextParameter("API Address", "A", "API address of hosted or local Auto1111 server", GH_ParamAccess.item, "");
+            pManager.AddTextParameter("API Address", "A", "API address of hosted or local Auto1111 server", GH_ParamAccess.item);
             pManager.AddGenericParameter("Payload", "P", "Auto1111 Payload", GH_ParamAccess.item);
         }
 
-        /// <summary>
-        /// Registers all the output parameters for this component.
-        /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
             pManager.AddGenericParameter("Success Status", "S", "Message whether Batch was submitted successfully.", GH_ParamAccess.item);
@@ -181,9 +47,6 @@ namespace PrintborgGH.GH_Components.ImageAi
             });
         }
 
-        /// <summary>
-        /// Provides an Icon for the component.
-        /// </summary>
         protected override System.Drawing.Bitmap Icon
         {
             get
@@ -194,14 +57,158 @@ namespace PrintborgGH.GH_Components.ImageAi
             }
         }
 
-        /// <summary>
-        /// Gets the unique ID for this component. Do not change this ID after release.
-        /// </summary>
         public override Guid ComponentGuid
         {
             get { return new Guid("9AD2EF4F-E0F3-49E2-939C-808627460D1F"); }
         }
 
         public override GH_Exposure Exposure => GH_Exposure.primary;
+
+        #endregion
+
+        //======================================================
+        //======================================================
+        //======================================================
+
+        #region WORKER_DEFINITION
+        /// <summary>
+        /// Worker Definition
+        /// </summary>
+        private class SubmitJobWorker : WorkerInstance {
+            private bool _startRequest = false;
+            public List<string> _debug = new List<string>();
+            private string _payload = "";
+            private string _baseAddress = "";
+            private ImageToImageClient _client = null;
+            private IJob _output = null;
+            private bool _inProgress = false;
+            private List<(GH_RuntimeMessageLevel, string)> _runtimeMessages { get; set; }
+
+            //public SubmitJobWorker() : base(null) {
+            //    _runtimeMessages = new List<(GH_RuntimeMessageLevel, string)>();
+            //}
+
+            public SubmitJobWorker(GH_Component parent) : base(parent) {
+                _runtimeMessages = new List<(GH_RuntimeMessageLevel, string)>();
+            }
+
+
+            public override async void DoWork(Action<string, double> ReportProgress, Action Done) {
+
+                // Checking for cancellation
+                if (CancellationToken.IsCancellationRequested) { return; }
+
+                if (!_startRequest) {
+                    return;
+                }
+
+                try {
+                    _debug.Clear();
+
+                    // error checking
+                    if (_baseAddress == "") throw new Exception("base address is empty");
+                    if (_payload == null) throw new Exception("invalid payload");
+
+                    //_debug.Add("baseAddress: " + _baseAddress);
+                    _runtimeMessages.Add((GH_RuntimeMessageLevel.Remark, "baseAddress: " + _baseAddress));
+                    //_debug.Add("... sending post request");
+                    _runtimeMessages.Add((GH_RuntimeMessageLevel.Remark, "... sending post request"));
+                    _runtimeMessages.Add((GH_RuntimeMessageLevel.Remark, "... Submitting Job ..."));
+
+                    _client = new ImageToImageClient(new DeforumController(_baseAddress, 30));
+
+                    // TODO: cancel previous jobs if server allows multiple jobs concurrently
+
+                    var response = await _client.SubmitJob(_payload);
+
+                    string jobId = response.Id;
+                    ReportProgress(Id, 0.01);
+
+                    if (CancellationToken.IsCancellationRequested) { return; }
+
+                    _debug.Add("> response received");
+                    _debug.Add(response.ToString());
+
+                    // response format example
+                    //{
+                    //    "message": "Job(s) accepted",
+                    //    "batch_id": "batch(843362695)",
+                    //    "job_ids": [
+                    //        "batch(843362695)-0"
+                    //    ]
+                    //}
+
+
+                    // start loop. for each loop query server. update progress bar and update output object. 
+                    bool isFinished = false;
+
+                    DeforumJob job = new DeforumJob();
+
+
+                    while (!isFinished) {
+                        if (CancellationToken.IsCancellationRequested) { return; }
+
+                        job = (DeforumJob) (await _client.GetJob(jobId))[0];
+                        //check status. if status is SUCCESS, it means job is finished. 
+                        if (job.Status != Status.ACCEPTED) {
+                            ReportProgress(Id, 1.0d);
+                            isFinished = true;
+                            break;
+                        }
+                        //get progress
+                        ReportProgress(Id, job.Progress);
+                        Thread.Sleep(2000); // check every 2sec
+                    }
+
+                    // set output object
+                    _runtimeMessages.Add((GH_RuntimeMessageLevel.Remark, $"Job finished with status({job.Status})"));
+                    _output = job;
+                    _inProgress = false; //set boolean gate to false
+                    Done();
+                    return;
+                }
+                catch (Exception ex) {
+                    //_debug.Add(ex.ToString());
+                    _runtimeMessages.Add((GH_RuntimeMessageLevel.Error, ex.ToString()));
+                    Done();
+                }
+
+                Done();
+            }
+
+
+
+            public override void GetData(IGH_DataAccess DA, GH_ComponentParamServer Params) {
+                if (CancellationToken.IsCancellationRequested) return;
+
+                    if (!DA.GetData(0, ref _startRequest)) {
+                        _runtimeMessages.Add((GH_RuntimeMessageLevel.Error, "Input required"));
+                        return;
+                    }
+
+                if (!DA.GetData(1, ref _baseAddress)) {
+                    _runtimeMessages.Add((GH_RuntimeMessageLevel.Error, "API base address required."));
+                    return;
+                }
+                if (!DA.GetData(2, ref _payload)) {
+                    _runtimeMessages.Add((GH_RuntimeMessageLevel.Error, "Deforum Payload required. Please refer to official documentation for further details."));
+                    return;
+                }
+            }
+
+            public override void SetData(IGH_DataAccess DA) {
+                if (CancellationToken.IsCancellationRequested) return;
+
+                foreach (var (level, message) in _runtimeMessages)
+                    Parent.AddRuntimeMessage(level, message);
+
+                DA.SetData(0, new GH_Img2ImgJob(_output));
+                DA.SetDataList(1, _debug);
+            }
+
+            public override WorkerInstance Duplicate() => new SubmitJobWorker(this.Parent);
+
+        }
+        #endregion
     }
 }
