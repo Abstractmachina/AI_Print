@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using Grasshopper.Kernel;
+using Printborg.Interfaces;
 using Printborg.Types;
 using Printborg.Types.Deforum;
 using PrintborgGH.GH_Types;
@@ -62,16 +63,17 @@ namespace PrintborgGH.GH_Components.ImageAi
             pManager.AddTextParameter("Outdir", "Out", "Outdir", GH_ParamAccess.item);
         }
 
-        /// <summary>
-        /// This is the method that actually does the work.
-        /// </summary>
-        /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
+
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-            var input = new GH_DeforumJob();
+            var input = new GH_Img2ImgJob();
             if (!DA.GetData(0, ref input)) return;
 
-            DeforumJob job = input.Value;
+
+            if (input.Value == null) {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid Input");
+            }
+            IJob job = input.Value;
             DA.SetData("ID", job.Id);
             DA.SetData("Status", job.Status);
             DA.SetData("Phase", job.Phase);
