@@ -15,7 +15,7 @@ namespace PrintborgGH.Components.AI
         public C_CreateA1111Payload()
           : base("Create Auto1111 Payload", "A1111Payload",
               "Create a payload for Auto1111 API",
-              Labels.PluginName, Labels.Category_AI)
+              Labels.PluginName, Labels.Category_ImageAI)
         {
         }
 

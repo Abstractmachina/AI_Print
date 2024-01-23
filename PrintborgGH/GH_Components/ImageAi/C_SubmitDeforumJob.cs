@@ -12,7 +12,7 @@ using Printborg.Services;
 using Printborg.Types;
 using Printborg.Types.Deforum;
 using Rhino.Geometry;
-using PrintborgGH.GH_Types;
+using PrintborgGH.Types;
 
 namespace PrintborgGH.GH_Components.ImageAi
 {
@@ -22,7 +22,7 @@ namespace PrintborgGH.GH_Components.ImageAi
         public C_SubmitDeforumJob()
           : base("Submit Deforum Job", "Go Deforum",
               "Submit job to Deforum server",
-              Labels.PluginName, Labels.Category_AI)
+              Labels.PluginName, Labels.Category_ImageAI)
         {
             BaseWorker = new SubmitJobWorker(this);
         }
@@ -63,7 +63,6 @@ namespace PrintborgGH.GH_Components.ImageAi
         }
 
         public override GH_Exposure Exposure => GH_Exposure.primary;
-
         #endregion
 
         //======================================================

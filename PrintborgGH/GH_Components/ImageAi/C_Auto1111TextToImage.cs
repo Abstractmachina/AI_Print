@@ -27,7 +27,7 @@ namespace PrintborgGH.Components.AI
         public C_Auto1111TextToImage()
             : base("A1111 Text-To-Image Generation", "A1111T2I",
                   "Generate image from a text prompt in Automatic1111.",
-                    Labels.PluginName, Labels.Category_AI) {
+                    Labels.PluginName, Labels.Category_ImageAI) {
             BaseWorker = new FetchImageWorker(this);
             BaseWorker.ParentAsync = this;
 

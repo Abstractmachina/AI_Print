@@ -9,7 +9,7 @@ using GrasshopperAsyncComponent;
 using Newtonsoft.Json;
 using Printborg.Controllers;
 using Printborg.Types;
-using PrintborgGH.GH_Types;
+using PrintborgGH.Types;
 using Rhino.Geometry;
 
 namespace PrintborgGH.Components.AI
@@ -19,7 +19,7 @@ namespace PrintborgGH.Components.AI
         public C_GetControlNetModels()
           : base("Get Controlnet Models", "Models",
               "Get currently installed models from server",
-              Labels.PluginName, Labels.Category_AI)
+              Labels.PluginName, Labels.Category_ImageAI)
         {
             BaseWorker = new fetchAuto1111ModelWorker();
         }

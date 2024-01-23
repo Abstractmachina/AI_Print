@@ -18,7 +18,7 @@ namespace PrintborgGH.GH_Components.ImageAi {
         public C_CheckDeforumProgress()
           : base("Check Deforum Progress", "Check Deforum",
               "Request status update from server on current Deforum job.",
-              Labels.PluginName, Labels.Category_AI) {
+              Labels.PluginName, Labels.Category_ImageAI) {
             BaseWorker = new CheckStatusWorker(this);
         }
 

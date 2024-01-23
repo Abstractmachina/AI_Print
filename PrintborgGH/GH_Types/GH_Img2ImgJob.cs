@@ -6,7 +6,7 @@ using Grasshopper.Kernel.Types;
 using Printborg.Interfaces;
 using Rhino.Geometry;
 
-namespace PrintborgGH.GH_Types
+namespace PrintborgGH.Types
 {
     public class GH_Img2ImgJob : GH_Goo<IJob>
     {

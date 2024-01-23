@@ -5,7 +5,7 @@ using Grasshopper.Kernel;
 using Printborg.Interfaces;
 using Printborg.Types;
 using Printborg.Types.Deforum;
-using PrintborgGH.GH_Types;
+using PrintborgGH.Types;
 using Rhino.Geometry;
 
 namespace PrintborgGH.GH_Components.ImageAi
@@ -18,7 +18,7 @@ namespace PrintborgGH.GH_Components.ImageAi
         public C_DeconstructDeforumJob()
           : base("Deconstruct Deforum Job", "Decon DJob",
               "Deconstruct a Deforum Job into its individual properties.",
-              Labels.PluginName, Labels.Category_AI)
+              Labels.PluginName, Labels.Category_ImageAI)
         {
         }
 
