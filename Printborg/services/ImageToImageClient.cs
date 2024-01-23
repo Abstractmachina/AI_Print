@@ -60,12 +60,22 @@ namespace Printborg.Services {
 
 
         /// <summary>
-        /// 
+        /// Get all jobs in queue (including cancelled, finished and failed)
         /// </summary>
         /// <returns></returns>
-        public async Task<string> GetAllJobs() {
-            var rawResponse = await _controller.GET_Jobs();
-            return rawResponse;
+        public async Task<Dictionary<string, IJob>> GetAllJobs() {
+
+            if (_controller.GetType() == typeof(DeforumController)) {
+                var rawResponse = JsonConvert.DeserializeObject<Dictionary<string, DeforumJob>> (await _controller.GET_Jobs());
+
+                var Idict = new Dictionary<string, IJob>();
+                foreach (KeyValuePair<string, DeforumJob> entry in rawResponse) {
+                    Idict.Add(entry.Key, entry.Value);
+                }
+                return Idict;
+            }
+
+            return null;
         }
 
 
@@ -114,6 +124,7 @@ namespace Printborg.Services {
         }
         public async Task CancelAllJobs() { 
             
+
 
         }
 
