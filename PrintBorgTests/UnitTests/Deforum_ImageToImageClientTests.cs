@@ -59,11 +59,11 @@ namespace PrintBorgTests.UnitTests
             _output.WriteLine($"Submitted JobId: {currentId}");
             _output.WriteLine("... getting queued jobs ...");
 
-            var jobsJson = await _client.GetAllJobs();
-            var jobs = JsonConvert.DeserializeObject<Dictionary<string, DeforumJob>>(jobsJson);
+            var jobs = await _client.GetAllJobs();
+            /*var jobs = JsonConvert.DeserializeObject<Dictionary<string, DeforumJob>>(jobsJson);*/
 
             bool containsId = false;
-            foreach (KeyValuePair<string, DeforumJob> entry in jobs)
+            foreach (KeyValuePair<string, IJob> entry in jobs)
             {
                 _output.WriteLine($"Checking {entry.Key}");
                 if (entry.Key.Contains(currentId))
@@ -110,6 +110,15 @@ namespace PrintBorgTests.UnitTests
         [Fact]
         private async Task ClientCanCancelAllJobs()
         {
+
+            var receipts = new List<IJobReceipt>();
+
+            for (int i = 0; i < 3; i++) {
+                receipts.Add(await _client.SubmitJob(_payload));
+            }
+
+
+
             Assert.True(false);
         }
 
