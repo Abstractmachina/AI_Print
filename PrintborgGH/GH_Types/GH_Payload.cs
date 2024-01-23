@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Printborg.Types;
 
-namespace PrintborgGH.GH_Types
+namespace PrintborgGH.Types
 {
     public class GH_Payload : GH_Goo<Auto1111Payload>
     {
