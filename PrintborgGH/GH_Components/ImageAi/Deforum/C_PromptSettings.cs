@@ -53,14 +53,29 @@ namespace PrintborgGH.GH_Components.ImageAi.Deforum
             var positivePromptsWrapper = new GH_Dict();
             var negativePromptsWrapper = new GH_Dict();
 
-            if (!DA.GetData(0, ref promptsWrapper)) return;
-            if (!DA.GetData(1, ref positivePromptsWrapper)) return;
-            if (!DA.GetData(2, ref negativePromptsWrapper)) return;
-        
+
+
+            if (!DA.GetData(0, ref promptsWrapper)) {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "No data input for prompts. Using default values.");
+            }
+            if (!DA.GetData(1, ref positivePromptsWrapper)) {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "No data input for positive prompts. Using default values.");
+            }
+            if (!DA.GetData(2, ref negativePromptsWrapper)) {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "No data input for negative prompts. Using default values.");
+            }
+
             try {
                 var prompts = libs.GH_Convert.ToDictionary<int, string>(promptsWrapper);
                 var positivePrompt = libs.GH_Convert.ToDictionary<int, string>(positivePromptsWrapper);
                 var negativePrompts = libs.GH_Convert.ToDictionary<int, string>(negativePromptsWrapper);
+
+                if (prompts.Count == 0) {
+                    prompts.Add(0, "None  tiny cute bunny, vibrant diffraction, highly detailed, intricate, ultra hd, sharp photo, crepuscular rays, in focus --neg nsfw, nude  ");
+                    prompts.Add(30, "None  anthropomorphic clean cat, surrounded by fractals, epic angle and pose, symmetrical, 3d, depth of field --neg nsfw, nude  ");
+                    prompts.Add(60, "None  a beautiful coconut --neg photo, realistic  nsfw, nude  ");
+                    prompts.Add(90, "None  a beautiful durian, award winning photography --neg nsfw, nude  ");
+                }
 
                 DA.SetData(0, new PromptSettings(prompts, positivePrompt, negativePrompts));
                 return;
