@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Printborg.Types {
+namespace Printborg.Types.Deforum {
     public class DeforumSettings {
 
         public RunSettings Run { get; set; }
@@ -45,7 +45,7 @@ namespace Printborg.Types {
             H = h;
             Seed = seed;
             BatchName = batchname;
-    }
+        }
     }
 
     public struct KeyFramesSettings {
@@ -59,7 +59,7 @@ namespace Printborg.Types {
             DiffusionCadence = diffusionCadence;
             MaxFrames = maxFrames;
             Fps = fps;
-    }
+        }
     }
 
     public struct GuidedImagesSettings {
@@ -95,8 +95,7 @@ namespace Printborg.Types {
         public List<string> StrengthSchedule;
     }
 
-    public struct  CfgSettings
-    {
+    public struct CfgSettings {
         public List<string> CfgScaleSchedule;
     }
 
@@ -106,7 +105,7 @@ namespace Printborg.Types {
     }
 
     public struct MotionSettings {
-        public string Angle;      
+        public string Angle;
         public string Zoom;
         public string TranslationX;
         public string TranslationY;
