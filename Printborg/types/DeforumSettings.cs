@@ -54,6 +54,12 @@ namespace Printborg.Types {
         public int MaxFrames;
         public int Fps;
 
+        public KeyFramesSettings(string animationMode, int diffusionCadence, int maxFrames, int fps) {
+            AnimationMode = animationMode;
+            DiffusionCadence = diffusionCadence;
+            MaxFrames = maxFrames;
+            Fps = fps;
+    }
     }
 
     public struct GuidedImagesSettings {
