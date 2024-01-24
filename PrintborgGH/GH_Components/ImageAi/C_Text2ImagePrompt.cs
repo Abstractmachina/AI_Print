@@ -27,7 +27,7 @@ namespace PrintborgGH.Components.AI {
 		public C_Text2ImagePrompt()
 		  : base("Text-to-Image", "T2I",
 			"Generate images from a text prompt",
-			Labels.PluginName, Labels.Category_AI) { }
+			Labels.PluginName, Labels.Category_ImageAI) { }
 
 		protected override void RegisterInputParams(GH_InputParamManager pManager) {
 			pManager.AddBooleanParameter("Generate", "G", "Send prompt to generate image from text prompt", GH_ParamAccess.item);

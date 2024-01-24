@@ -19,7 +19,7 @@ namespace PrintborgGH.GH_Components.ImageAi
         public C_GetControlnetModules()
           : base("Get Controlnet Modules", "Modules",
               "Get currently installed modules from server" ,
-              Labels.PluginName, Labels.Category_AI)
+              Labels.PluginName, Labels.Category_ImageAI)
         {
             BaseWorker = new fetchAuto1111ModuleWorker();
         }

@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 
 using Grasshopper.Kernel;
-using Printborg.Types;
+using Printborg.Types.Deforum;
 using PrintborgGH.Types;
-using Rhino.Geometry;
 
 namespace PrintborgGH.GH_Components.ImageAi
 {

@@ -1,11 +1,5 @@
 ﻿using Grasshopper.Kernel.Types;
-using Printborg.Interfaces;
-using Printborg.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Printborg.Types.Deforum;
 
 namespace PrintborgGH.Types {
     public class GH_DeforumSettings :GH_Goo<DeforumSettings> {
