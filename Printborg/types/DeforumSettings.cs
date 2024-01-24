@@ -98,7 +98,11 @@ namespace Printborg.Types.Deforum {
     }
 
     public struct StrengthSettings {
-        public List<string> StrengthSchedule;
+        public string StrengthSchedule;
+
+        public StrengthSettings(string strengthSchedule) {
+            StrengthSchedule = strengthSchedule;
+        }
     }
 
     public struct CfgSettings {
