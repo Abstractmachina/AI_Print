@@ -76,6 +76,13 @@ namespace Printborg.Types {
         public string BlendFactorSlope;
         public string TweeningFramesSchedule;
 
+        public GuidedImagesSettings(Dictionary<string, string> initImages, string imageStrengthSchedule, string blendFactorMax, string blendFactorSlope, string tweeningFramesSchedule) {
+            InitImages = initImages;
+            ImageStrengthSchedule = imageStrengthSchedule;
+            BlendFactorMax = blendFactorMax;
+            BlendFactorSlope = blendFactorSlope;
+            TweeningFramesSchedule = tweeningFramesSchedule;
+        }
     }
 
     public struct PromptSettings {
