@@ -37,6 +37,15 @@ namespace Printborg.Types {
         public int H;
         public int Seed;
         public string BatchName;
+
+        public RunSettings(string sampler, int steps, int w, int h, int seed, string batchname) {
+            Sampler = sampler;
+            Steps = steps;
+            W = w;
+            H = h;
+            Seed = seed;
+            BatchName = batchname;
+    }
     }
 
     public struct KeyFramesSettings {
