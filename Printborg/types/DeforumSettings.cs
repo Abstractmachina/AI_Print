@@ -89,6 +89,12 @@ namespace Printborg.Types.Deforum {
         public Dictionary<int, string> Prompts;
         public Dictionary<int, string> PositivePrompts;
         public Dictionary<int, string> NegativePrompt;
+
+        public PromptSettings(Dictionary<int, string> prompts, Dictionary<int, string> positivePrompts,  Dictionary<int, string> negativePrompts) {
+            Prompts = prompts;
+            PositivePrompts = positivePrompts;
+            NegativePrompt = negativePrompts;
+        }
     }
 
     public struct StrengthSettings {
