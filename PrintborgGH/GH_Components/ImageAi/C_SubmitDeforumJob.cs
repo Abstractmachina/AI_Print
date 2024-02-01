@@ -31,7 +31,8 @@ namespace PrintborgGH.GH_Components.ImageAi
         {
             pManager.AddBooleanParameter("Generate", "G", "Start Image generation request. (Hint: use boolean button)", GH_ParamAccess.item);
             pManager.AddTextParameter("API Address", "A", "API address of hosted or local Auto1111 server", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Payload", "P", "Auto1111 Payload", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Payload String", "P", "Deforum Payload String", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Settings", "S", "Deforum Settings Objects", GH_ParamAccess.item);
         }
 
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
@@ -76,11 +77,14 @@ namespace PrintborgGH.GH_Components.ImageAi
         private class SubmitJobWorker : WorkerInstance {
             private bool _startRequest = false;
             public List<string> _debug = new List<string>();
-            private string _payload = "";
+            private string _payloadString = "";
             private string _baseAddress = "";
             private ImageToImageClient _client = null;
             private IJob _output = null;
             private bool _inProgress = false;
+
+            private DeforumSettings _deforumSettings = null;
+
             private List<(GH_RuntimeMessageLevel, string)> _runtimeMessages { get; set; }
 
             //public SubmitJobWorker() : base(null) {
@@ -94,19 +98,15 @@ namespace PrintborgGH.GH_Components.ImageAi
 
             public override async void DoWork(Action<string, double> ReportProgress, Action Done) {
 
-                // Checking for cancellation
                 if (CancellationToken.IsCancellationRequested) { return; }
-
-                if (!_startRequest) {
-                    return;
-                }
 
                 try {
                     _debug.Clear();
 
                     // error checking
                     if (_baseAddress == "") throw new Exception("base address is empty");
-                    if (_payload == null) throw new Exception("invalid payload");
+                    if (_payloadString == null) throw new Exception("invalid payload");
+                    if (_deforumSettings == null) throw new Exception("invalid settings");
 
                     //_debug.Add("baseAddress: " + _baseAddress);
                     _runtimeMessages.Add((GH_RuntimeMessageLevel.Remark, "baseAddress: " + _baseAddress));
@@ -114,35 +114,29 @@ namespace PrintborgGH.GH_Components.ImageAi
                     _runtimeMessages.Add((GH_RuntimeMessageLevel.Remark, "... sending post request"));
                     _runtimeMessages.Add((GH_RuntimeMessageLevel.Remark, "... Submitting Job ..."));
 
+                    _runtimeMessages.Add((GH_RuntimeMessageLevel.Remark, _deforumSettings.ToJson()));
+
+                    if (!_startRequest) {
+                        return;
+                    }
+
                     _client = new ImageToImageClient(new DeforumController(_baseAddress, 30));
 
                     // TODO: cancel previous jobs if server allows multiple jobs concurrently
-
-                    var response = await _client.SubmitJob(_payload);
-
+                    var response = await _client.SubmitJob(_payloadString);
                     string jobId = response.Id;
-                    ReportProgress(Id, 0.01);
+
 
                     if (CancellationToken.IsCancellationRequested) { return; }
 
                     _debug.Add("> response received");
                     _debug.Add(response.ToString());
 
-                    // response format example
-                    //{
-                    //    "message": "Job(s) accepted",
-                    //    "batch_id": "batch(843362695)",
-                    //    "job_ids": [
-                    //        "batch(843362695)-0"
-                    //    ]
-                    //}
-
 
                     // start loop. for each loop query server. update progress bar and update output object. 
                     bool isFinished = false;
 
                     DeforumJob job = new DeforumJob();
-
 
                     while (!isFinished) {
                         if (CancellationToken.IsCancellationRequested) { return; }
@@ -163,15 +157,11 @@ namespace PrintborgGH.GH_Components.ImageAi
                     _runtimeMessages.Add((GH_RuntimeMessageLevel.Remark, $"Job finished with status({job.Status})"));
                     _output = job;
                     _inProgress = false; //set boolean gate to false
-                    Done();
-                    return;
                 }
                 catch (Exception ex) {
                     //_debug.Add(ex.ToString());
-                    _runtimeMessages.Add((GH_RuntimeMessageLevel.Error, ex.ToString()));
-                    Done();
+                    _runtimeMessages.Add((GH_RuntimeMessageLevel.Error, ex.Message));
                 }
-
                 Done();
             }
 
@@ -189,10 +179,17 @@ namespace PrintborgGH.GH_Components.ImageAi
                     _runtimeMessages.Add((GH_RuntimeMessageLevel.Error, "API base address required."));
                     return;
                 }
-                if (!DA.GetData(2, ref _payload)) {
+                if (!DA.GetData(2, ref _payloadString)) {
                     _runtimeMessages.Add((GH_RuntimeMessageLevel.Error, "Deforum Payload required. Please refer to official documentation for further details."));
                     return;
                 }
+                GH_DeforumSettings settings = new GH_DeforumSettings();
+
+                if (!DA.GetData(3, ref settings)) {
+                    _runtimeMessages.Add((GH_RuntimeMessageLevel.Error, "Deforum Settings required. Please refer to official documentation for further details."));
+                    return;
+                }
+                _deforumSettings = settings.Value;
             }
 
             public override void SetData(IGH_DataAccess DA) {
