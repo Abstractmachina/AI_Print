@@ -9,9 +9,6 @@ namespace PrintborgGH.GH_Components.ImageAi.Deforum
 {
     public class C_StrengthSettings : GH_Component
     {
-        /// <summary>
-        /// Initializes a new instance of the C_StrengthSettings class.
-        /// </summary>
         public C_StrengthSettings()
           : base("Deforum Settings > Strength", "Str",
               "Strength Settings Tab in Deforum",
@@ -19,26 +16,16 @@ namespace PrintborgGH.GH_Components.ImageAi.Deforum
         {
         }
 
-        /// <summary>
-        /// Registers all the input parameters for this component.
-        /// </summary>
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
             pManager.AddTextParameter("Strengt Schedule", "Str", "Strength Schedule", GH_ParamAccess.item, "");
         }
 
-        /// <summary>
-        /// Registers all the output parameters for this component.
-        /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
             pManager.AddGenericParameter("Strength Settings", "Str", "Printborg.Types.StrengthSettings object", GH_ParamAccess.item);
         }
 
-        /// <summary>
-        /// This is the method that actually does the work.
-        /// </summary>
-        /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
         protected override void SolveInstance(IGH_DataAccess DA)
         {
             var strengthSchedule = string.Empty;
