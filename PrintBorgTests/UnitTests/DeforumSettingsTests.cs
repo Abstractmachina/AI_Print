@@ -1,18 +1,20 @@
-﻿using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Printborg.Types.Deforum;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
+using Xunit.Abstractions;
 
 namespace PrintBorgTests.UnitTests {
+
     public class DeforumSettingsTests {
 
+        private readonly ITestOutputHelper _output;
+
+        public DeforumSettingsTests(ITestOutputHelper output) {
+            _output = output;
+        }
 
         [Fact]
-        public static void RunSettingsCanConvertToJSon() {
+        public void RunSettingsCanConvertToJSon() {
             var settings = new RunSettings("samplerTest", 10, 120, 120, 0, "batchNametest");
 
             var json = JsonConvert.SerializeObject(settings);
@@ -22,7 +24,7 @@ namespace PrintBorgTests.UnitTests {
         }
 
         [Fact]
-        public static void GuidedImagesSettingsConvertToJSonCorrectly() {
+        public void GuidedImagesSettingsConvertToJSonCorrectly() {
 
             var initImages = new Dictionary<string, string>();
             initImages.Add("0", "test0");
@@ -37,7 +39,7 @@ namespace PrintBorgTests.UnitTests {
         }
 
         [Fact]
-        public static void PromptSettingsConvertToJSonCorrectly() {
+        public void PromptSettingsConvertToJSonCorrectly() {
             var prompts = new Dictionary<int, string>();
             prompts.Add(0, "test0");
             prompts.Add(1, "test1");
@@ -51,23 +53,23 @@ namespace PrintBorgTests.UnitTests {
         }
 
         [Fact]
-        public static void CanMergeJsonObjectsCorrectly() {
-            var settings1 = new RunSettings("samplerTest", 10, 120, 120, 0, "batchNametest");
-            var initImages = new Dictionary<string, string>();
-            initImages.Add("0", "test0");
-            initImages.Add("1", "test1");
-            initImages.Add("2", "test2");
-            var settings2 = new GuidedImagesSettings(initImages, "imageStrengthScheduleTest", "0:0", "0:0", "0:0");
+        private void OutputsToJsonCorrectly() {
 
-            var jObject1 = JObject.Parse(JsonConvert.SerializeObject(settings1));
-            var jObject2 = JObject.Parse(JsonConvert.SerializeObject(settings2));
+            var settings = new DeforumSettings();
+            _output.WriteLine(settings.ToJson());
 
-            var result = new JObject();
 
-            result.Merge(jObject1);
-            result.Merge(jObject2);
+            string filePath = Path.Combine(
+               Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+               "\\\\deforum_config_standard.json"
+           );
 
-            Console.WriteLine(result);
+            _output.WriteLine(filePath);
+            //string configFile = Path.Combine(Environment.CurrentDirectory, "/Config/config_deforum_hiddenSettings.json");
+            var hiddenSettings = File.ReadAllText(filePath);
+
+
+
             Assert.True(false);
 
         }
