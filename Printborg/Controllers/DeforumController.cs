@@ -101,6 +101,9 @@ namespace Printborg.Controllers {
 
                 // send post request
                 var rawResponse = await client.PostAsync(endpoint, content);
+
+                if (!rawResponse.IsSuccessStatusCode) throw new Exception("Job submission unsuccessful");
+ 
                 return await rawResponse.Content.ReadAsStringAsync();
 
                 //var myDict = JsonConvert.DeserializeObject<Dictionary<string, string>>(await rawResponse.Content.ReadAsStringAsync());
