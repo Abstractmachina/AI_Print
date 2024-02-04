@@ -81,10 +81,7 @@ namespace Printborg.Types.Deforum {
             JObject defaultSettings = JObject.Parse(hiddenSettings);
             result.Merge(defaultSettings);
 
-
-            string output = $"\"deforum_settings\" {{{result.ToString()}}}";
-
-            return output;
+            return $"{{\"deforum_settings\": {result.ToString()}}}";
         }
 
     }

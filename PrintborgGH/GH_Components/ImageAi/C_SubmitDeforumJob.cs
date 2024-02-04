@@ -18,7 +18,7 @@ namespace PrintborgGH.GH_Components.ImageAi
 {
     public class C_SubmitDeforumJob : GH_AsyncComponent {
 
-        #region COMPONENTDEFINITION
+        #region COMPONENT_DEFINITION
         public C_SubmitDeforumJob()
           : base("Submit Deforum Job", "Go Deforum",
               "Submit job to Deforum server",
@@ -105,8 +105,7 @@ namespace PrintborgGH.GH_Components.ImageAi
                     if (_deforumSettings == null) throw new Exception("invalid settings");
 
                     _runtimeMessages.Add((GH_RuntimeMessageLevel.Remark, "baseAddress: " + _baseAddress));
-                    _runtimeMessages.Add((GH_RuntimeMessageLevel.Remark, "... sending post request"));
-                    _runtimeMessages.Add((GH_RuntimeMessageLevel.Remark, "... Submitting Job ..."));
+                   
 
                     _debug.Add( _deforumSettings.ToJson());
 
@@ -116,6 +115,9 @@ namespace PrintborgGH.GH_Components.ImageAi
                         return;
                     }
 
+                    _runtimeMessages.Add((GH_RuntimeMessageLevel.Remark, "... sending post request"));
+                    _runtimeMessages.Add((GH_RuntimeMessageLevel.Remark, "... Submitting Job ..."));
+
                     _client = new ImageToImageClient(new DeforumController(_baseAddress, 30));
 
                     var payload = _deforumSettings.ToJson();
@@ -123,7 +125,9 @@ namespace PrintborgGH.GH_Components.ImageAi
 
                     //TODO strength_schedule, cfg_scale_schedule value in generated payload incorrect
                     // "deforum_settings" {}
-                    var response = await _client.SubmitJob(_payloadString);
+                    _runtimeMessages.Add((GH_RuntimeMessageLevel.Remark, "submitting through payload"));
+                    //_runtimeMessages.Add((GH_RuntimeMessageLevel.Remark, "submitting through string"));
+                    var response = await _client.SubmitJob(payload);
                     string jobId = response.Id;
 
 
