@@ -102,7 +102,7 @@ namespace Printborg.Controllers {
                 // send post request
                 var rawResponse = await client.PostAsync(endpoint, content);
 
-                if (!rawResponse.IsSuccessStatusCode) throw new Exception("Job submission unsuccessful");
+                if (!rawResponse.IsSuccessStatusCode) throw new Exception($"Job submission unsuccessful: {(int) rawResponse.StatusCode} {rawResponse.StatusCode.ToString()}");
  
                 return await rawResponse.Content.ReadAsStringAsync();
 
