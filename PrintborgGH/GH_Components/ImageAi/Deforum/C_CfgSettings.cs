@@ -41,7 +41,9 @@ namespace PrintborgGH.GH_Components.ImageAi.Deforum
 
             if (!DA.GetData(0, ref cfgScaleSchedule)) { return; }
 
-            DA.SetData(0, new CfgSettings(cfgScaleSchedule));
+            var output = (cfgScaleSchedule == "") ? new CfgSettings() : new CfgSettings(cfgScaleSchedule);
+
+            DA.SetData(0, output);
 
         }
 

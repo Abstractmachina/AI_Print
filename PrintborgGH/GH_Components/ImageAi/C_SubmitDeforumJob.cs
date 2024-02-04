@@ -87,10 +87,6 @@ namespace PrintborgGH.GH_Components.ImageAi
 
             private List<(GH_RuntimeMessageLevel, string)> _runtimeMessages { get; set; }
 
-            //public SubmitJobWorker() : base(null) {
-            //    _runtimeMessages = new List<(GH_RuntimeMessageLevel, string)>();
-            //}
-
             public SubmitJobWorker(GH_Component parent) : base(parent) {
                 _runtimeMessages = new List<(GH_RuntimeMessageLevel, string)>();
             }
@@ -104,25 +100,29 @@ namespace PrintborgGH.GH_Components.ImageAi
                     _debug.Clear();
 
                     // error checking
-                    if (_baseAddress == "") throw new Exception("base address is empty");
-                    if (_payloadString == null) throw new Exception("invalid payload");
+                    if (_baseAddress == "") throw new Exception("No base address specified.");
+                    if (_payloadString == null) throw new Exception("Empty or invalid payload");
                     if (_deforumSettings == null) throw new Exception("invalid settings");
 
-                    //_debug.Add("baseAddress: " + _baseAddress);
                     _runtimeMessages.Add((GH_RuntimeMessageLevel.Remark, "baseAddress: " + _baseAddress));
-                    //_debug.Add("... sending post request");
                     _runtimeMessages.Add((GH_RuntimeMessageLevel.Remark, "... sending post request"));
                     _runtimeMessages.Add((GH_RuntimeMessageLevel.Remark, "... Submitting Job ..."));
 
-                    _runtimeMessages.Add((GH_RuntimeMessageLevel.Remark, _deforumSettings.ToJson()));
+                    _debug.Add( _deforumSettings.ToJson());
 
                     if (!_startRequest) {
+                        _runtimeMessages.Add((GH_RuntimeMessageLevel.Warning, "Process not started."));
+                        Done();
                         return;
                     }
 
                     _client = new ImageToImageClient(new DeforumController(_baseAddress, 30));
 
+                    var payload = _deforumSettings.ToJson();
                     // TODO: cancel previous jobs if server allows multiple jobs concurrently
+
+                    //TODO strength_schedule, cfg_scale_schedule value in generated payload incorrect
+                    // "deforum_settings" {}
                     var response = await _client.SubmitJob(_payloadString);
                     string jobId = response.Id;
 

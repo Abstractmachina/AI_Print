@@ -27,12 +27,12 @@ namespace PrintborgGH.GH_Components.ImageAi.Deforum
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
             pManager.AddGenericParameter("Prompts", "Pro", "Text Prompts definable for specific frames (Input must be a GH_Dict type)", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Positive Prompts", "Pos", "Positive Prompts", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Negative Prompts", "Neg", "Negative Prompts", GH_ParamAccess.item);
+            pManager.AddTextParameter("Positive Prompts", "Pos", "Positive Prompts", GH_ParamAccess.item, "");
+            pManager.AddTextParameter("Negative Prompts", "Neg", "Negative Prompts", GH_ParamAccess.item, "");
 
             pManager[0].Optional = true;
-            pManager[1].Optional = true;
-            pManager[2].Optional = true; 
+            //pManager[1].Optional = true;
+            //pManager[2].Optional = true; 
         }
 
         /// <summary>
@@ -50,25 +50,20 @@ namespace PrintborgGH.GH_Components.ImageAi.Deforum
         protected override void SolveInstance(IGH_DataAccess DA)
         {
             var promptsWrapper = new GH_Dict();
-            var positivePromptsWrapper = new GH_Dict();
-            var negativePromptsWrapper = new GH_Dict();
-
+            var positivePromptsWrapper = string.Empty;
+            var negativePromptsWrapper = string.Empty;
 
 
             if (!DA.GetData(0, ref promptsWrapper)) {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "No data input for prompts. Using default values.");
             }
-            if (!DA.GetData(1, ref positivePromptsWrapper)) {
-                AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "No data input for positive prompts. Using default values.");
-            }
-            if (!DA.GetData(2, ref negativePromptsWrapper)) {
-                AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "No data input for negative prompts. Using default values.");
-            }
+            if (!DA.GetData(1, ref positivePromptsWrapper)) return;
+            if (!DA.GetData(2, ref negativePromptsWrapper)) return;
 
             try {
                 var prompts = libs.GH_Convert.ToDictionary<int, string>(promptsWrapper);
-                var positivePrompt = libs.GH_Convert.ToDictionary<int, string>(positivePromptsWrapper);
-                var negativePrompts = libs.GH_Convert.ToDictionary<int, string>(negativePromptsWrapper);
+                //var positivePrompt = libs.GH_Convert.ToDictionary<int, string>(positivePromptsWrapper);
+                //var negativePrompts = libs.GH_Convert.ToDictionary<int, string>(negativePromptsWrapper);
 
                 if (prompts.Count == 0) {
                     prompts.Add(0, "None  tiny cute bunny, vibrant diffraction, highly detailed, intricate, ultra hd, sharp photo, crepuscular rays, in focus --neg nsfw, nude  ");
@@ -77,7 +72,7 @@ namespace PrintborgGH.GH_Components.ImageAi.Deforum
                     prompts.Add(90, "None  a beautiful durian, award winning photography --neg nsfw, nude  ");
                 }
 
-                DA.SetData(0, new PromptSettings(prompts, positivePrompt, negativePrompts));
+                DA.SetData(0, new PromptSettings(prompts, positivePromptsWrapper, negativePromptsWrapper));
                 return;
             }
             catch (Exception e) {

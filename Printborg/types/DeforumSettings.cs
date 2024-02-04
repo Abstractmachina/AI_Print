@@ -45,7 +45,10 @@ namespace Printborg.Types.Deforum {
             Motion = motion;
         }
 
-
+        /// <summary>
+        /// Converts to a Deforum-readable json payload
+        /// </summary>
+        /// <returns></returns>
         public string ToJson() {
 
             var run = JObject.Parse(JsonConvert.SerializeObject(Run));
@@ -78,7 +81,10 @@ namespace Printborg.Types.Deforum {
             JObject defaultSettings = JObject.Parse(hiddenSettings);
             result.Merge(defaultSettings);
 
-            return result.ToString();
+
+            string output = $"\"deforum_settings\" {{{result.ToString()}}}";
+
+            return output;
         }
 
     }
@@ -94,7 +100,7 @@ namespace Printborg.Types.Deforum {
         public int W;
         [JsonProperty("H")]
         public int H;
-        [JsonProperty("seeds")]
+        [JsonProperty("seed")]
         public int Seed;
         [JsonProperty("batch_name")]
         public string BatchName;
@@ -164,7 +170,7 @@ namespace Printborg.Types.Deforum {
         /// "max_f{int}" : "path"
         /// </summary>
         [JsonProperty("init_images")]
-        public Dictionary<string, string> InitImages;
+        string InitImages;
         // TODO find out correct structure
         [JsonProperty("image_strength_schedule")]
         public string ImageStrengthSchedule;
@@ -180,7 +186,7 @@ namespace Printborg.Types.Deforum {
             AssignDefaultValues();
         }
 
-        public GuidedImagesSettings(Dictionary<string, string> initImages, string imageStrengthSchedule, string blendFactorMax, string blendFactorSlope, string tweeningFramesSchedule) {
+        public GuidedImagesSettings(string initImages, string imageStrengthSchedule, string blendFactorMax, string blendFactorSlope, string tweeningFramesSchedule) {
             InitImages = initImages;
             ImageStrengthSchedule = imageStrengthSchedule;
             BlendFactorMax = blendFactorMax;
@@ -190,18 +196,20 @@ namespace Printborg.Types.Deforum {
 
         public void AssignDefaultValues() {
 
-            var initImages = new Dictionary<string, string> {
-                { "0", "https://deforum.github.io/a1/Gi1.png" },
-             { "max_f/4-5", "https://deforum.github.io/a1/Gi2.png"},
-             {"max_f/2-10", "https://deforum.github.io/a1/Gi3.png"},
-             {"3*max_f/4-15", "https://deforum.github.io/a1/Gi4.jpg" },
-             {"max_f-20", "https://deforum.github.io/a1/Gi1.png" }
-            };
-            InitImages = initImages;
+            AssignDefaultInitImages();
             ImageStrengthSchedule = "0:(0.75)";
             BlendFactorMax = "0:(0.35)";
             BlendFactorSlope = "0:(0.25)";
             TweeningFramesSchedule = "0:(20)";
+        }
+
+        public void AssignDefaultInitImages() {
+            InitImages = GenerateDefaultInitImages();
+        }
+
+        public static string GenerateDefaultInitImages() {
+            string initImages = "{\n    \"0\": \"https://deforum.github.io/a1/Gi1.png\",\n    \"max_f/4-5\": \"https://deforum.github.io/a1/Gi2.png\",\n    \"max_f/2-10\": \"https://deforum.github.io/a1/Gi3.png\",\n    \"3*max_f/4-15\": \"https://deforum.github.io/a1/Gi4.jpg\",\n    \"max_f-20\": \"https://deforum.github.io/a1/Gi1.png\"\n}";
+            return initImages;
         }
     }
 
@@ -209,14 +217,14 @@ namespace Printborg.Types.Deforum {
         [JsonProperty("prompts")]
         public Dictionary<int, string> Prompts;
         [JsonProperty("positive_prompts")]
-        public Dictionary<int, string> PositivePrompts;
+        public string PositivePrompts;
         [JsonProperty("negative_prompts")]
-        public Dictionary<int, string> NegativePrompt;
+        public string NegativePrompt;
 
         public PromptSettings() {
             AssignDefaultValues();
         }
-        public PromptSettings(Dictionary<int, string> prompts, Dictionary<int, string> positivePrompts,  Dictionary<int, string> negativePrompts) {
+        public PromptSettings(Dictionary<int, string> prompts, string positivePrompts, string negativePrompts) {
             Prompts = prompts;
             PositivePrompts = positivePrompts;
             NegativePrompt = negativePrompts;
@@ -224,13 +232,13 @@ namespace Printborg.Types.Deforum {
 
         public void AssignDefaultValues() {
             Prompts = new Dictionary<int, string> {
-                { 0, "None None  tiny cute bunny, vibrant diffraction, highly detailed, intricate, ultra hd, sharp photo, crepuscular rays, in focus --neg nsfw, nude    " },
-                { 30, "None None  anthropomorphic clean cat, surrounded by fractals, epic angle and pose, symmetrical, 3d, depth of field --neg nsfw, nude    " },
-                { 60, "None None  a beautiful coconut --neg photo, realistic  nsfw, nude    " },
-                { 90, "None None  a beautiful durian, award winning photography --neg nsfw, nude    " }
+                { 0, "None  tiny cute bunny, vibrant diffraction, highly detailed, intricate, ultra hd, sharp photo, crepuscular rays, in focus --neg nsfw, nude    " },
+                { 30, "None  anthropomorphic clean cat, surrounded by fractals, epic angle and pose, symmetrical, 3d, depth of field --neg nsfw, nude    " },
+                { 60, "None  a beautiful coconut --neg photo, realistic  nsfw, nude    " },
+                { 90, "None  a beautiful durian, award winning photography --neg nsfw, nude    " }
             };
             PositivePrompts = null;
-            NegativePrompt = null;
+            NegativePrompt = "";
         }
     }
 

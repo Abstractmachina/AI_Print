@@ -71,7 +71,8 @@ namespace PrintborgGH.GH_Components.ImageAi
 
 
             if (input.Value == null) {
-                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid Input");
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid or empty input");
+                return;
             }
             IJob job = input.Value;
             DA.SetData("ID", job.Id);

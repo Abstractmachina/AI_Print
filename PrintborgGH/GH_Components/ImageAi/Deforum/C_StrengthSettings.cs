@@ -32,8 +32,8 @@ namespace PrintborgGH.GH_Components.ImageAi.Deforum
 
             if(!DA.GetData(0, ref strengthSchedule)) { return; }    
 
-            DA.SetData(0, new StrengthSettings(strengthSchedule));
-
+            DA.SetData(0,  
+                (strengthSchedule == "") ? new StrengthSettings() : new StrengthSettings(strengthSchedule));
         }
 
         /// <summary>
