@@ -155,16 +155,22 @@ namespace Printborg.Controllers {
         }
 
         /// <summary>
-        /// Not implemented in the deforum API currently
+        /// Get all batch ids and associated job ids.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Json string. Can be deserialized to a Dictionary(string, string[]) where key is the batch id and value are job ids.</returns>
+        /// <exception cref="StatusCodeFailedException">when things go wrong.</exception>
+
         public async Task<string> GET_Batches() {
-            string endpoint = "deforum_api/batches";
+            string endpoint = "deforum_api/batches?id=.";
 
             using (var client = new HttpClient()) {
                 Setup(client);
 
                 var response = await client.GetAsync(endpoint);
+
+                if (!response.IsSuccessStatusCode) 
+                    throw new Exception($"Getting batches failed: {(int)response.StatusCode}");
+
                 return await response.Content.ReadAsStringAsync();
             }
         }
