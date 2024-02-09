@@ -68,7 +68,7 @@ namespace Printborg.Types.Deforum {
     /// <summary>
     /// simple receipt object of job submission result.
     /// </summary>
-    public class DeforumJobReceipt : IJobReceipt {
+    public class DeforumBatchReceipt : IJobReceipt {
         // response format example
         //{
         //    "message": "Job(s) accepted",
@@ -98,10 +98,12 @@ namespace Printborg.Types.Deforum {
     /// <summary>
     /// alternative receipt object with multiple ids.
     /// </summary>
-    public class DeforumBatchReceipt : IBatchReceipt {
+    public class DeforumCancelBatchReceipt : IBatchReceipt {
         // note the extra colon in the property!! >:((
         [JsonProperty("message:")]
         public Status Status { get; set; }
+        [JsonProperty("Id")]
+        public string Id { get; set; }
         [JsonProperty("ids")]
         public List<string> Ids { get; set; }
     }

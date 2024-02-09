@@ -84,7 +84,7 @@ namespace Printborg.Controllers {
             throw new NotImplementedException();
         }
 
-        public async Task<string> POST_Job(string payload) {
+        public async Task<string> POST_Batch(string payload) {
             const string endpoint = "deforum_api/batches";
 
             ValidateBaseAddress();
@@ -171,28 +171,64 @@ namespace Printborg.Controllers {
 
         public async Task<string> DELETE_Job(string id) {
             ValidateBaseAddress();
-            string endpoint = $"deforum_api/batches/{id}";
+            string endpoint = $"deforum_api/jobs/{id}";
             using (var client = new HttpClient()) {
                 Setup(client);
 
                 var response = await client.DeleteAsync(endpoint);
                 return await response.Content.ReadAsStringAsync();
-
-//              {
-    //              "ids": [
-    //                  "batch(273370305)-0"
-    //              ],
-    //              "message:": "1 job(s) cancelled."
-//              }
-                }
+            }
+                // response format:
+                //{
+                //    "id": "batch(400876029)-0",
+                //    "message": "Job cancelled."
+                //}
         }
 
-        public async Task<List<string>> DELETE_Jobs() {
+        public async Task<string> DELETE_Batch(string id) {
+            ValidateBaseAddress();
+            string endpoint = $"deforum_api/batches/{id}";
+            using (var client = new HttpClient()) {
+                Setup(client);
+
+                var response = await client.DeleteAsync(endpoint);
+
+                if (!response.IsSuccessStatusCode) throw new Exception($"Could not delete batch ({(int)response.StatusCode})");
+
+                return await response.Content.ReadAsStringAsync();
+            }
+            // response format:
+            // {
+            //      "ids": [
+            //          "batch(273370305)-0"
+            //      ],
+            //      "message:": "1 job(s) cancelled."
+            // }
+        }
+
+        public async Task<HttpResponseMessage> DELETE_Batch_temp(string id) {
+            ValidateBaseAddress();
+            string endpoint = $"deforum_api/batches/{id}";
+            using (var client = new HttpClient()) {
+                Setup(client);
+
+                return await client.DeleteAsync(endpoint);
+            }
+            // response format:
+            // {
+            //      "ids": [
+            //          "batch(273370305)-0"
+            //      ],
+            //      "message:": "1 job(s) cancelled."
+            // }
+        }
+
+        public async Task<List<string>> DELETE_Batches() {
             var jobIds = JsonConvert.DeserializeObject<Dictionary<string, DeforumJob>>(await this.GET_Jobs()).Select(j => j.Value.Id);
 
             var outList = new List<string>();
             foreach (var id in jobIds) {
-                var response = await this.DELETE_Job(id);
+                var response = await this.DELETE_Batch(id);
                 var status = JsonConvert.DeserializeObject<Dictionary<string, string>>(response);
                 outList.Add($"{status["id"]} : {status["message"]}");
             }

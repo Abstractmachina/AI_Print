@@ -105,11 +105,18 @@ namespace PrintborgGH.GH_Components.ImageAi
                     if (_deforumSettings == null) throw new Exception("invalid settings");
 
                     _runtimeMessages.Add((GH_RuntimeMessageLevel.Remark, "baseAddress: " + _baseAddress));
-                   
+                    _client = new ImageToImageClient(new DeforumController(_baseAddress, 30));
+
 
                     _debug.Add( _deforumSettings.ToJson());
 
                     if (!_startRequest) {
+                        var statusList = await _client.CancelAllJobs();
+                        if (statusList.Count > 0 && statusList != null) {
+                            foreach (var status in statusList) {
+                                _runtimeMessages.Add((GH_RuntimeMessageLevel.Warning, $"Previous job canceled: {status}"));
+                            }
+                        }
                         _runtimeMessages.Add((GH_RuntimeMessageLevel.Warning, "Process not started."));
                         Done();
                         return;
@@ -118,7 +125,6 @@ namespace PrintborgGH.GH_Components.ImageAi
                     _runtimeMessages.Add((GH_RuntimeMessageLevel.Remark, "... sending post request"));
                     _runtimeMessages.Add((GH_RuntimeMessageLevel.Remark, "... Submitting Job ..."));
 
-                    _client = new ImageToImageClient(new DeforumController(_baseAddress, 30));
 
                     var payload = _deforumSettings.ToJson();
                     // TODO: cancel previous jobs if server allows multiple jobs concurrently
