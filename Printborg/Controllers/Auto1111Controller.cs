@@ -235,11 +235,11 @@ namespace Printborg.Controllers
             }
         }
 
-        public Task<string> POST_Job(string payload) {
+        public Task<string> POST_Batch(string payload) {
             throw new NotImplementedException();
         }
 
-        public Task<string> DELETE_Job(string id) {
+        public Task<string> DELETE_Batch(string id) {
             throw new NotImplementedException();
         }
 
@@ -260,7 +260,7 @@ namespace Printborg.Controllers
             throw new NotImplementedException();
         }
 
-        public Task<List<string>> DELETE_Jobs() {
+        public Task<List<string>> DELETE_Batches() {
             throw new NotImplementedException();
         }
 

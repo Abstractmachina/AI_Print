@@ -51,7 +51,7 @@ namespace Printborg.Services {
         /// </summary>
         /// <returns>Job receipt informing user of status and job id</returns>
         public async Task<IJobReceipt> SubmitJob(string payload) {
-            string response = await _controller.POST_Job(payload);
+            string response = await _controller.POST_Batch(payload);
 
             // response gets processed and returns a standardized return statement (accepted, failed)
             IJobReceipt processedResponse = processCreateJobResponse(response);
@@ -114,17 +114,20 @@ namespace Printborg.Services {
 
         public async Task<IBatchReceipt> CancelJob(string id) {
 
-            var response = await _controller.DELETE_Job(id);
+            var response = await _controller.DELETE_Batch(id);
             if (_controller.GetType() == typeof (DeforumController)) {
-                return JsonConvert.DeserializeObject<DeforumBatchReceipt>(response);
+                return JsonConvert.DeserializeObject<DeforumCancelBatchReceipt>(response);
 
             }
             return null;
 
         }
-        public async Task CancelAllJobs() { 
-            
+        public async Task<List<string>> CancelAllJobs() {
+            //get all job ids
 
+            //cancel jobs one by one?
+            var result = await _controller.DELETE_Batches();
+            return result;
 
         }
 
@@ -137,7 +140,7 @@ namespace Printborg.Services {
             /// <returns></returns>
             private IJobReceipt processCreateJobResponse(string rawResponse) {
            if (_controller.GetType() == typeof(DeforumController)) {
-                var deforumReceipt = JsonConvert.DeserializeObject<DeforumJobReceipt>(rawResponse);
+                var deforumReceipt = JsonConvert.DeserializeObject<DeforumBatchReceipt>(rawResponse);
 
                 return deforumReceipt;
             }
