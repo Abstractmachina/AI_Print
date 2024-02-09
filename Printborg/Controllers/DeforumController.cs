@@ -230,15 +230,16 @@ namespace Printborg.Controllers {
         }
 
         public async Task<List<string>> DELETE_Batches() {
-            var jobIds = JsonConvert.DeserializeObject<Dictionary<string, DeforumJob>>(await this.GET_Jobs()).Select(j => j.Value.Id);
+            throw new NotImplementedException();
+            //var jobIds = JsonConvert.DeserializeObject<Dictionary<string, DeforumJob>>(await this.GET_Jobs()).Select(j => j.Value.Id);
 
-            var outList = new List<string>();
-            foreach (var id in jobIds) {
-                var response = await this.DELETE_Batch(id);
-                var status = JsonConvert.DeserializeObject<Dictionary<string, string>>(response);
-                outList.Add($"{status["id"]} : {status["message"]}");
-            }
-            return outList;
+            //var outList = new List<string>();
+            //foreach (var id in jobIds) {
+            //    var response = await this.DELETE_Batch(id);
+            //    var status = JsonConvert.DeserializeObject<Dictionary<string, string>>(response);
+            //    outList.Add($"{status["id"]} : {status["message"]}");
+            //}
+            //return outList;
         }
 
         public async Task<double> GET_Progress(string id) {
