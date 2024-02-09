@@ -20,10 +20,10 @@ namespace PrintBorgTests.UnitTests {
         }
 
         [Fact]
-        private async Task CanDeleteOneJobById() {
-            _output.WriteLine("... Submitting test payload ...");
+        private async Task CanDeleteOneBatchById() {
 
             try {
+                _output.WriteLine("... Submitting test payload ...");
                 var PostResponse = await _controller.POST_Batch(_payload);
                 _output.WriteLine(PostResponse);
                 var convertedReceipt = JsonConvert.DeserializeObject<DeforumBatchReceipt>(PostResponse);
@@ -48,9 +48,57 @@ namespace PrintBorgTests.UnitTests {
                 _output.WriteLine($"Deleting batch failed: {e.Message}");
                 Assert.Fail(e.Message);
             }
-
-
-
         }
+
+        [Fact]
+        private async Task CanDeleteAllBatches() {
+            try {
+
+                // submit jobs
+                _output.WriteLine("... Submitting test payloads ...");
+
+                var postResponseList = new List<DeforumBatchReceipt>();
+
+                for (int i = 0; i < 3; i++) {
+                    var r = await _controller.POST_Batch(_payload);
+                    _output.WriteLine(r);
+
+                    postResponseList.Add(JsonConvert.DeserializeObject<DeforumBatchReceipt>(r));
+                }
+
+                Thread.Sleep(2000);
+
+                _output.WriteLine("... Getting all batches ...");
+                var getBatchesRes = await _controller.GET_Batches();
+                _output.WriteLine(getBatchesRes);
+                var batchesResObjects = JsonConvert.DeserializeObject<Dictionary<string, string[]>>(getBatchesRes);
+                _output.WriteLine("Converted response objects:");
+                foreach (KeyValuePair<string, string[]> entry in batchesResObjects) {
+                    _output.WriteLine(entry.Key);
+                    foreach (string value in entry.Value) _output.WriteLine($"\t{value}");
+                }
+
+                _output.WriteLine("... Cancelling Jobs ...");
+
+                var cancelResponseList = new List<DeforumCancelBatchReceipt>();
+                _output.WriteLine("raw cancel responses");
+                foreach (KeyValuePair<string, string[]> entry in batchesResObjects) {
+                    var res = await _controller.DELETE_Batch(entry.Key);
+                    _output.WriteLine(res);
+                    cancelResponseList.Add(JsonConvert.DeserializeObject<DeforumCancelBatchReceipt>(res));
+                }
+
+                foreach (var r in cancelResponseList) {
+                    _output.WriteLine($"converted receipt: {r.Id}; {r.Status}");
+                    Assert.True(r.Status == Status.CANCELLED);
+                }
+
+
+            }
+            catch (Exception e) {
+                _output.WriteLine($"Deleting batches failed: {e.Message}");
+                Assert.Fail(e.Message);
+            }
+        } 
     }
 }
