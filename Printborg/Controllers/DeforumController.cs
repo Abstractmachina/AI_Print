@@ -212,23 +212,6 @@ namespace Printborg.Controllers {
             // }
         }
 
-        public async Task<HttpResponseMessage> DELETE_Batch_temp(string id) {
-            ValidateBaseAddress();
-            string endpoint = $"deforum_api/batches/{id}";
-            using (var client = new HttpClient()) {
-                Setup(client);
-
-                return await client.DeleteAsync(endpoint);
-            }
-            // response format:
-            // {
-            //      "ids": [
-            //          "batch(273370305)-0"
-            //      ],
-            //      "message:": "1 job(s) cancelled."
-            // }
-        }
-
         public async Task<List<string>> DELETE_Batches() {
             throw new NotImplementedException();
             //var jobIds = JsonConvert.DeserializeObject<Dictionary<string, DeforumJob>>(await this.GET_Jobs()).Select(j => j.Value.Id);
